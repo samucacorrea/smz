@@ -1,14 +1,3 @@
-export const SEO_FIELDS = /* GraphQL */ `
-  seo {
-    title
-    metaDesc
-    canonical
-    opengraphImage {
-      sourceUrl
-    }
-  }
-`;
-
 export const MEDIA_FIELDS = /* GraphQL */ `
   featuredImage {
     node {
@@ -61,7 +50,6 @@ export const POST_BASE_FIELDS = /* GraphQL */ `
   content
   date
   modified
-  ${SEO_FIELDS}
   ${AUTHOR_FIELDS}
   ${TAXONOMY_FIELDS}
   ${MEDIA_FIELDS}
@@ -72,7 +60,6 @@ export const PAGE_BASE_FIELDS = /* GraphQL */ `
   slug
   title
   content
-  ${SEO_FIELDS}
 `;
 
 export const CATEGORY_BASE_FIELDS = /* GraphQL */ `
@@ -81,7 +68,6 @@ export const CATEGORY_BASE_FIELDS = /* GraphQL */ `
   name
   description
   count
-  ${SEO_FIELDS}
 `;
 
 export const TAG_BASE_FIELDS = /* GraphQL */ `
@@ -90,7 +76,6 @@ export const TAG_BASE_FIELDS = /* GraphQL */ `
   name
   description
   count
-  ${SEO_FIELDS}
 `;
 
 export const AUTHOR_BASE_FIELDS = /* GraphQL */ `
@@ -264,66 +249,6 @@ export const GET_AUTHOR_BY_SLUG_QUERY = /* GraphQL */ `
   query GetAuthorBySlug($slug: ID!) {
     user(id: $slug, idType: SLUG) {
       ${AUTHOR_BASE_FIELDS}
-    }
-  }
-`;
-
-export const GET_POST_SEO_QUERY = /* GraphQL */ `
-  query GetPostSeo($slug: ID!) {
-    post(id: $slug, idType: SLUG) {
-      seo {
-        title
-        metaDesc
-        canonical
-        opengraphImage {
-          sourceUrl
-        }
-      }
-    }
-  }
-`;
-
-export const GET_PAGE_SEO_QUERY = /* GraphQL */ `
-  query GetPageSeo($slug: ID!) {
-    page(id: $slug, idType: URI) {
-      seo {
-        title
-        metaDesc
-        canonical
-        opengraphImage {
-          sourceUrl
-        }
-      }
-    }
-  }
-`;
-
-export const GET_CATEGORY_SEO_QUERY = /* GraphQL */ `
-  query GetCategorySeo($slug: ID!) {
-    category(id: $slug, idType: SLUG) {
-      seo {
-        title
-        metaDesc
-        canonical
-        opengraphImage {
-          sourceUrl
-        }
-      }
-    }
-  }
-`;
-
-export const GET_TAG_SEO_QUERY = /* GraphQL */ `
-  query GetTagSeo($slug: ID!) {
-    tag(id: $slug, idType: SLUG) {
-      seo {
-        title
-        metaDesc
-        canonical
-        opengraphImage {
-          sourceUrl
-        }
-      }
     }
   }
 `;
