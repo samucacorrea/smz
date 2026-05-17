@@ -1,6 +1,12 @@
 import type { SearchResult } from "@/types/content";
 import { GET_CATEGORIES_QUERY, GET_SEARCH_POSTS_QUERY, GET_TAGS_QUERY } from "@/graphql/queries";
 import { mockContent } from "@/lib/mock-data";
+import {
+  canUseWordPressMockFallback,
+  getWordPressConfigurationError,
+  handleWordPressError,
+  isWordPressConfigured,
+} from "@/lib/wp-mode";
 import { wpFetch } from "@/lib/wp-client";
 import type { WpCategoriesQuery, WpPostsQuery, WpTagsQuery } from "@/types/wp";
 
@@ -49,7 +55,11 @@ function dedupeResults(results: SearchResult[]) {
 export async function getSearchPageData(query: string): Promise<SearchPageData> {
   const trimmedQuery = query.trim() || "IA";
 
-  if (!process.env.WORDPRESS_GRAPHQL_ENDPOINT) {
+  if (!isWordPressConfigured()) {
+    if (!canUseWordPressMockFallback()) {
+      throw getWordPressConfigurationError(`search query "${trimmedQuery}"`);
+    }
+
     return {
       query: trimmedQuery,
       results: filterMockResults(trimmedQuery),
@@ -155,7 +165,13 @@ export async function getSearchPageData(query: string): Promise<SearchPageData> 
         ...mockAuxiliaryResults,
       ]),
     };
-  } catch {
+  } catch (error) {
+    handleWordPressError(`search data (${trimmedQuery})`, error);
+
+    if (!canUseWordPressMockFallback()) {
+      throw error;
+    }
+
     return {
       query: trimmedQuery,
       results: filterMockResults(trimmedQuery),

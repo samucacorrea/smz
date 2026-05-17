@@ -5,6 +5,12 @@ import {
   GET_TAGS_QUERY,
 } from "@/graphql/queries";
 import { getPostsByTagSlug, getTagBySlug, mockContent } from "@/lib/mock-data";
+import {
+  canUseWordPressMockFallback,
+  getWordPressConfigurationError,
+  handleWordPressError,
+  isWordPressConfigured,
+} from "@/lib/wp-mode";
 import { wpFetch } from "@/lib/wp-client";
 import type {
   WpPost,
@@ -124,8 +130,10 @@ function mapMockTagData(slug: string): BlogTagData | null {
 }
 
 export async function getBlogTagStaticParams() {
-  if (!process.env.WORDPRESS_GRAPHQL_ENDPOINT) {
-    return mockContent.tags.map((tag) => ({ slug: tag.slug }));
+  if (!isWordPressConfigured()) {
+    return canUseWordPressMockFallback()
+      ? mockContent.tags.map((tag) => ({ slug: tag.slug }))
+      : [];
   }
 
   try {
@@ -142,14 +150,25 @@ export async function getBlogTagStaticParams() {
       tag.slug ? [{ slug: tag.slug }] : [],
     );
 
-    return slugs.length ? slugs : mockContent.tags.map((tag) => ({ slug: tag.slug }));
-  } catch {
-    return mockContent.tags.map((tag) => ({ slug: tag.slug }));
+    return slugs.length
+      ? slugs
+      : canUseWordPressMockFallback()
+        ? mockContent.tags.map((tag) => ({ slug: tag.slug }))
+        : [];
+  } catch (error) {
+    handleWordPressError("tag static params", error);
+    return canUseWordPressMockFallback()
+      ? mockContent.tags.map((tag) => ({ slug: tag.slug }))
+      : [];
   }
 }
 
 export async function getBlogTagData(slug: string): Promise<BlogTagData | null> {
-  if (!process.env.WORDPRESS_GRAPHQL_ENDPOINT) {
+  if (!isWordPressConfigured()) {
+    if (!canUseWordPressMockFallback()) {
+      throw getWordPressConfigurationError(`tag ${slug}`);
+    }
+
     return mapMockTagData(slug);
   }
 
@@ -185,6 +204,9 @@ export async function getBlogTagData(slug: string): Promise<BlogTagData | null> 
     const tag = tagResponse.tag;
 
     if (!tag?.slug || !tag.name) {
+      if (!canUseWordPressMockFallback()) {
+        throw new Error(`WordPress returned no tag for slug "${slug}".`);
+      }
       return mapMockTagData(slug);
     }
 
@@ -193,6 +215,9 @@ export async function getBlogTagData(slug: string): Promise<BlogTagData | null> 
       .filter((post): post is TagArchivePost => Boolean(post));
 
     if (!posts.length) {
+      if (!canUseWordPressMockFallback()) {
+        throw new Error(`WordPress returned no posts for tag "${slug}".`);
+      }
       return mapMockTagData(slug);
     }
 
@@ -222,7 +247,13 @@ export async function getBlogTagData(slug: string): Promise<BlogTagData | null> 
         (postsResponse.posts?.nodes ?? []).map((post) => post.author?.node?.slug ?? post.id),
       ).size,
     };
-  } catch {
+  } catch (error) {
+    handleWordPressError(`tag data (${slug})`, error);
+
+    if (!canUseWordPressMockFallback()) {
+      throw error;
+    }
+
     return mapMockTagData(slug);
   }
 }

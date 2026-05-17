@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { LeadCaptureProvider } from "@/components/lead/LeadCaptureProvider";
 import { mockContent } from "@/lib/mock-data";
 import "@/styles/globals.css";
 
@@ -46,7 +47,9 @@ export default function RootLayout({ children }: RootLayoutProps) {
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeBootstrapScript }} />
       </head>
-      <body>{children}</body>
+      <body>
+        <LeadCaptureProvider>{children}</LeadCaptureProvider>
+      </body>
     </html>
   );
 }

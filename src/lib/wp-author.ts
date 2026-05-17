@@ -1,6 +1,12 @@
 import type { Author, SeoData } from "@/types/content";
 import { GET_AUTHORS_QUERY, GET_AUTHOR_BY_SLUG_QUERY, GET_POSTS_QUERY } from "@/graphql/queries";
 import { getAuthorBySlug, getPostsByAuthorSlug, mockContent } from "@/lib/mock-data";
+import {
+  canUseWordPressMockFallback,
+  getWordPressConfigurationError,
+  handleWordPressError,
+  isWordPressConfigured,
+} from "@/lib/wp-mode";
 import { wpFetch } from "@/lib/wp-client";
 import type {
   WpAuthor,
@@ -180,8 +186,10 @@ function mapMockAuthorData(slug: string): BlogAuthorData | null {
 }
 
 export async function getBlogAuthorStaticParams() {
-  if (!process.env.WORDPRESS_GRAPHQL_ENDPOINT) {
-    return mockContent.authors.map((author) => ({ slug: author.slug }));
+  if (!isWordPressConfigured()) {
+    return canUseWordPressMockFallback()
+      ? mockContent.authors.map((author) => ({ slug: author.slug }))
+      : [];
   }
 
   try {
@@ -198,14 +206,25 @@ export async function getBlogAuthorStaticParams() {
       author.slug ? [{ slug: author.slug }] : [],
     );
 
-    return slugs.length ? slugs : mockContent.authors.map((author) => ({ slug: author.slug }));
-  } catch {
-    return mockContent.authors.map((author) => ({ slug: author.slug }));
+    return slugs.length
+      ? slugs
+      : canUseWordPressMockFallback()
+        ? mockContent.authors.map((author) => ({ slug: author.slug }))
+        : [];
+  } catch (error) {
+    handleWordPressError("author static params", error);
+    return canUseWordPressMockFallback()
+      ? mockContent.authors.map((author) => ({ slug: author.slug }))
+      : [];
   }
 }
 
 export async function getBlogAuthorData(slug: string): Promise<BlogAuthorData | null> {
-  if (!process.env.WORDPRESS_GRAPHQL_ENDPOINT) {
+  if (!isWordPressConfigured()) {
+    if (!canUseWordPressMockFallback()) {
+      throw getWordPressConfigurationError(`author ${slug}`);
+    }
+
     return mapMockAuthorData(slug);
   }
 
@@ -232,6 +251,9 @@ export async function getBlogAuthorData(slug: string): Promise<BlogAuthorData | 
     const author = authorResponse.user;
 
     if (!author?.slug || !author.name) {
+      if (!canUseWordPressMockFallback()) {
+        throw new Error(`WordPress returned no author for slug "${slug}".`);
+      }
       return mapMockAuthorData(slug);
     }
 
@@ -242,6 +264,9 @@ export async function getBlogAuthorData(slug: string): Promise<BlogAuthorData | 
       .filter((post): post is AuthorArchivePost => Boolean(post));
 
     if (!posts.length) {
+      if (!canUseWordPressMockFallback()) {
+        throw new Error(`WordPress returned no posts for author "${slug}".`);
+      }
       return mapMockAuthorData(slug);
     }
 
@@ -285,7 +310,13 @@ export async function getBlogAuthorData(slug: string): Promise<BlogAuthorData | 
       posts,
       schemaAuthor,
     };
-  } catch {
+  } catch (error) {
+    handleWordPressError(`author data (${slug})`, error);
+
+    if (!canUseWordPressMockFallback()) {
+      throw error;
+    }
+
     return mapMockAuthorData(slug);
   }
 }

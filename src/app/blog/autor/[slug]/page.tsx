@@ -4,23 +4,22 @@ import Link from "next/link";
 import { Breadcrumbs } from "@/components/blog/Breadcrumbs";
 import { NewsletterCta } from "@/components/blog/NewsletterCta";
 import { MainLayout } from "@/components/layout/MainLayout";
+import { LeadCtaButton } from "@/components/lead/LeadCtaButton";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { buildPageMetadata } from "@/lib/seo/metadata";
 import { buildBreadcrumbListSchema, buildCollectionPageSchema, buildPersonSchema } from "@/lib/seo/schema";
 import { PostArtwork } from "@/components/blog/PostArtwork";
 import { mockContent } from "@/lib/mock-data";
-import { getBlogAuthorData, getBlogAuthorStaticParams } from "@/lib/wp-author";
+import { getBlogAuthorData } from "@/lib/wp-author";
 import { formatDateLabel } from "@/utils/format";
+
+export const dynamic = "force-dynamic";
 
 type AuthorPageProps = {
   params: Promise<{
     slug: string;
   }>;
 };
-
-export async function generateStaticParams() {
-  return getBlogAuthorStaticParams();
-}
 
 export async function generateMetadata({ params }: AuthorPageProps): Promise<Metadata> {
   const { slug } = await params;
@@ -103,12 +102,12 @@ export default async function AuthorPage({ params }: AuthorPageProps) {
                 </div>
 
                 <div className="author-actions">
-                  <a href="https://wa.me/" target="_blank" rel="noopener noreferrer" className="btn btn-primary">
+                  <LeadCtaButton className="btn btn-primary" source="author_page_contact">
                     Falar direto com {author.name.split(" ")[0]}
                     <svg className="arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M5 12h14M13 5l7 7-7 7" />
                     </svg>
-                  </a>
+                  </LeadCtaButton>
                   {author.socials.map((social) => (
                     <a key={social.href} href={social.href} className="social-btn" aria-label={social.label}>
                       {social.label[0]}

@@ -7,6 +7,8 @@ import { buildPageMetadata } from "@/lib/seo/metadata";
 import { buildBreadcrumbListSchema, buildCollectionPageSchema } from "@/lib/seo/schema";
 import { getSearchPageData } from "@/lib/wp-search";
 
+export const dynamic = "force-dynamic";
+
 type SearchPageProps = {
   searchParams?: Promise<{
     q?: string;

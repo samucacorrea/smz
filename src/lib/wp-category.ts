@@ -1,5 +1,11 @@
 import type { Category, SeoData } from "@/types/content";
 import {
+  canUseWordPressMockFallback,
+  getWordPressConfigurationError,
+  handleWordPressError,
+  isWordPressConfigured,
+} from "@/lib/wp-mode";
+import {
   GET_CATEGORIES_QUERY,
   GET_CATEGORY_BY_SLUG_QUERY,
   GET_POSTS_BY_CATEGORY_SLUG_QUERY,
@@ -154,8 +160,10 @@ function mapCategorySeo(category: WpCategory): SeoData {
 }
 
 export async function getBlogCategoryStaticParams() {
-  if (!process.env.WORDPRESS_GRAPHQL_ENDPOINT) {
-    return mockContent.categories.map((category) => ({ slug: category.slug }));
+  if (!isWordPressConfigured()) {
+    return canUseWordPressMockFallback()
+      ? mockContent.categories.map((category) => ({ slug: category.slug }))
+      : [];
   }
 
   try {
@@ -172,14 +180,25 @@ export async function getBlogCategoryStaticParams() {
       category.slug ? [{ slug: category.slug }] : [],
     );
 
-    return slugs.length ? slugs : mockContent.categories.map((category) => ({ slug: category.slug }));
-  } catch {
-    return mockContent.categories.map((category) => ({ slug: category.slug }));
+    return slugs.length
+      ? slugs
+      : canUseWordPressMockFallback()
+        ? mockContent.categories.map((category) => ({ slug: category.slug }))
+        : [];
+  } catch (error) {
+    handleWordPressError("category static params", error);
+    return canUseWordPressMockFallback()
+      ? mockContent.categories.map((category) => ({ slug: category.slug }))
+      : [];
   }
 }
 
 export async function getBlogCategoryData(slug: string): Promise<BlogCategoryData | null> {
-  if (!process.env.WORDPRESS_GRAPHQL_ENDPOINT) {
+  if (!isWordPressConfigured()) {
+    if (!canUseWordPressMockFallback()) {
+      throw getWordPressConfigurationError(`category ${slug}`);
+    }
+
     return mapMockCategoryData(slug);
   }
 
@@ -215,6 +234,9 @@ export async function getBlogCategoryData(slug: string): Promise<BlogCategoryDat
     const category = categoryResponse.category;
 
     if (!category?.slug || !category.name) {
+      if (!canUseWordPressMockFallback()) {
+        throw new Error(`WordPress returned no category for slug "${slug}".`);
+      }
       return mapMockCategoryData(slug);
     }
 
@@ -223,6 +245,9 @@ export async function getBlogCategoryData(slug: string): Promise<BlogCategoryDat
       .filter((post): post is CategoryArchivePost => Boolean(post));
 
     if (!posts.length) {
+      if (!canUseWordPressMockFallback()) {
+        throw new Error(`WordPress returned no posts for category "${slug}".`);
+      }
       return mapMockCategoryData(slug);
     }
 
@@ -250,7 +275,13 @@ export async function getBlogCategoryData(slug: string): Promise<BlogCategoryDat
         (postsResponse.posts?.nodes ?? []).map((post) => post.author?.node?.slug ?? post.id),
       ).size,
     };
-  } catch {
+  } catch (error) {
+    handleWordPressError(`category data (${slug})`, error);
+
+    if (!canUseWordPressMockFallback()) {
+      throw error;
+    }
+
     return mapMockCategoryData(slug);
   }
 }

@@ -1,5 +1,11 @@
 import { GET_CATEGORIES_QUERY, GET_POSTS_QUERY } from "@/graphql/queries";
 import { mockContent } from "@/lib/mock-data";
+import {
+  canUseWordPressMockFallback,
+  getWordPressConfigurationError,
+  handleWordPressError,
+  isWordPressConfigured,
+} from "@/lib/wp-mode";
 import { wpFetch } from "@/lib/wp-client";
 import type { WpCategoriesQuery, WpCategory, WpPost, WpPostsQuery } from "@/types/wp";
 
@@ -89,7 +95,11 @@ function mapWpPostToArchivePost(post: WpPost): BlogArchivePost | null {
 }
 
 export async function getBlogArchiveData(): Promise<BlogArchiveData> {
-  if (!process.env.WORDPRESS_GRAPHQL_ENDPOINT) {
+  if (!isWordPressConfigured()) {
+    if (!canUseWordPressMockFallback()) {
+      throw getWordPressConfigurationError("blog archive");
+    }
+
     return {
       posts: mockContent.posts.map((post) => {
         const author = mockContent.authors.find((item) => item.slug === post.authorSlug);
@@ -148,7 +158,13 @@ export async function getBlogArchiveData(): Promise<BlogArchiveData> {
       posts,
       categoryCount: (categoriesResponse.categories?.nodes ?? []).length,
     };
-  } catch {
+  } catch (error) {
+    handleWordPressError("blog archive", error);
+
+    if (!canUseWordPressMockFallback()) {
+      throw error;
+    }
+
     return {
       posts: mockContent.posts.map((post) => {
         const author = mockContent.authors.find((item) => item.slug === post.authorSlug);

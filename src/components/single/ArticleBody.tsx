@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { ButtonLink } from "@/components/ui/Button";
+import { LeadCtaButton } from "@/components/lead/LeadCtaButton";
 
 type ArticleBodyProps = {
   children: ReactNode;
@@ -38,7 +38,7 @@ export function ArticleBody({ children, cta, tags }: ArticleBodyProps) {
             <h3>{cta.title}</h3>
             <p>{cta.description}</p>
           </div>
-          <ButtonLink href={cta.href} variant="dark">
+          <LeadCtaButton className="btn btn-dark" source="single_article_cta">
             {cta.label}
             <svg
               className="arrow"
@@ -53,7 +53,7 @@ export function ArticleBody({ children, cta, tags }: ArticleBodyProps) {
             >
               <path d="M5 12h14M13 5l7 7-7 7" />
             </svg>
-          </ButtonLink>
+          </LeadCtaButton>
         </aside>
       ) : null}
     </div>

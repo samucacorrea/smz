@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { LeadCtaButton } from "@/components/lead/LeadCtaButton";
 
 const serviceLinks = [
   "Tráfego pago",
@@ -18,9 +19,9 @@ const agencyLinks = [
 ];
 
 const contactLinks = [
-  { href: "https://instagram.com/ag.smz", label: "@ag.smz" },
-  { href: "https://wa.me/", label: "WhatsApp" },
-  { href: "mailto:contato@ag.smz", label: "contato@ag.smz" },
+  { href: "https://instagram.com/ag.smz", label: "@ag.smz", type: "external" as const },
+  { label: "WhatsApp", type: "lead" as const },
+  { href: "mailto:contato@ag.smz", label: "contato@ag.smz", type: "external" as const },
 ];
 
 export function SiteFooter() {
@@ -77,10 +78,16 @@ export function SiteFooter() {
             <h4>Contato</h4>
             <ul>
               {contactLinks.map((item) => (
-                <li key={item.href}>
-                  <a href={item.href} target="_blank" rel="noopener noreferrer">
-                    {item.label}
-                  </a>
+                <li key={item.label}>
+                  {item.type === "lead" ? (
+                    <LeadCtaButton className="footer-link-button" source="footer_whatsapp">
+                      {item.label}
+                    </LeadCtaButton>
+                  ) : (
+                    <a href={item.href} target="_blank" rel="noopener noreferrer">
+                      {item.label}
+                    </a>
+                  )}
                 </li>
               ))}
             </ul>

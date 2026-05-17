@@ -23,6 +23,7 @@ NEXT_PUBLIC_SITE_URL=https://seudominio.com
 WORDPRESS_GRAPHQL_ENDPOINT=https://wp.seudominio.com/graphql
 WORDPRESS_SITE_URL=https://wp.seudominio.com
 REVALIDATE_SECRET=change-me
+LEAD_WEBHOOK_URL=https://hooks.seudominio.com/lead
 ```
 
 ## Como rodar localmente

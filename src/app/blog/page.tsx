@@ -14,6 +14,8 @@ import { buildPageMetadata } from "@/lib/seo/metadata";
 import { buildBreadcrumbListSchema, buildCollectionPageSchema } from "@/lib/seo/schema";
 import { formatDateLabel } from "@/utils/format";
 
+export const dynamic = "force-dynamic";
+
 export function generateMetadata(): Metadata {
   return buildPageMetadata(mockContent.seo.blog);
 }

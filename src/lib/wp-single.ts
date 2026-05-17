@@ -1,6 +1,12 @@
 import type { Author, Category, Post, SeoData, Tag } from "@/types/content";
 import { GET_POST_BY_SLUG_QUERY, GET_POSTS_QUERY } from "@/graphql/queries";
 import { getAuthorBySlug, getCategoryBySlug, getPostBySlug, mockContent } from "@/lib/mock-data";
+import {
+  canUseWordPressMockFallback,
+  getWordPressConfigurationError,
+  handleWordPressError,
+  isWordPressConfigured,
+} from "@/lib/wp-mode";
 import { wpFetch } from "@/lib/wp-client";
 import type { WpPost, WpPostBySlugQuery, WpPostsQuery } from "@/types/wp";
 
@@ -338,8 +344,10 @@ function mapWpPostToSingleData(post: WpPost, relatedNodes: WpPost[]): BlogSingle
 }
 
 export async function getBlogSingleStaticParams() {
-  if (!process.env.WORDPRESS_GRAPHQL_ENDPOINT) {
-    return mockContent.posts.map((post) => ({ slug: post.slug }));
+  if (!isWordPressConfigured()) {
+    return canUseWordPressMockFallback()
+      ? mockContent.posts.map((post) => ({ slug: post.slug }))
+      : [];
   }
 
   try {
@@ -355,14 +363,25 @@ export async function getBlogSingleStaticParams() {
     const slugs = (response.posts?.nodes ?? [])
       .flatMap((post) => (post.slug ? [{ slug: post.slug }] : []));
 
-    return slugs.length ? slugs : mockContent.posts.map((post) => ({ slug: post.slug }));
-  } catch {
-    return mockContent.posts.map((post) => ({ slug: post.slug }));
+    return slugs.length
+      ? slugs
+      : canUseWordPressMockFallback()
+        ? mockContent.posts.map((post) => ({ slug: post.slug }))
+        : [];
+  } catch (error) {
+    handleWordPressError("single static params", error);
+    return canUseWordPressMockFallback()
+      ? mockContent.posts.map((post) => ({ slug: post.slug }))
+      : [];
   }
 }
 
 export async function getBlogSingleData(slug: string): Promise<BlogSingleData | null> {
-  if (!process.env.WORDPRESS_GRAPHQL_ENDPOINT) {
+  if (!isWordPressConfigured()) {
+    if (!canUseWordPressMockFallback()) {
+      throw getWordPressConfigurationError(`post ${slug}`);
+    }
+
     return mapMockSingleData(slug);
   }
 
@@ -389,6 +408,9 @@ export async function getBlogSingleData(slug: string): Promise<BlogSingleData | 
     const post = postResponse.post;
 
     if (!post) {
+      if (!canUseWordPressMockFallback()) {
+        return null;
+      }
       return mapMockSingleData(slug);
     }
 
@@ -396,8 +418,18 @@ export async function getBlogSingleData(slug: string): Promise<BlogSingleData | 
       (item) => item.slug && item.slug !== slug,
     );
 
-    return mapWpPostToSingleData(post, relatedNodes) ?? mapMockSingleData(slug);
-  } catch {
+    const mapped = mapWpPostToSingleData(post, relatedNodes);
+    if (!mapped && !canUseWordPressMockFallback()) {
+      throw new Error(`WordPress returned an invalid post payload for "${slug}".`);
+    }
+    return mapped ?? mapMockSingleData(slug);
+  } catch (error) {
+    handleWordPressError(`single data (${slug})`, error);
+
+    if (!canUseWordPressMockFallback()) {
+      throw error;
+    }
+
     return mapMockSingleData(slug);
   }
 }

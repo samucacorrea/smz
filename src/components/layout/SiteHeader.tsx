@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { LeadCtaButton } from "@/components/lead/LeadCtaButton";
 import { ThemeToggle } from "@/components/layout/ThemeToggle";
 
 const navigationItems = [
@@ -46,12 +47,7 @@ export function SiteHeader() {
         <div className="nav-actions">
           <ThemeToggle />
 
-          <a
-            href="https://wa.me/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="btn btn-primary btn-sm"
-          >
+          <LeadCtaButton className="btn btn-primary btn-sm" source="header_whatsapp">
             Falar no WhatsApp
             <svg
               className="arrow"
@@ -66,7 +62,7 @@ export function SiteHeader() {
             >
               <path d="M5 12h14M13 5l7 7-7 7" />
             </svg>
-          </a>
+          </LeadCtaButton>
         </div>
       </div>
     </header>

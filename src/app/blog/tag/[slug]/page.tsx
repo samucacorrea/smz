@@ -8,18 +8,16 @@ import { JsonLd } from "@/components/seo/JsonLd";
 import { buildPageMetadata } from "@/lib/seo/metadata";
 import { buildBreadcrumbListSchema, buildCollectionPageSchema } from "@/lib/seo/schema";
 import { mockContent } from "@/lib/mock-data";
-import { getBlogTagData, getBlogTagStaticParams } from "@/lib/wp-tag";
+import { getBlogTagData } from "@/lib/wp-tag";
 import { formatDateLabel } from "@/utils/format";
+
+export const dynamic = "force-dynamic";
 
 type TagPageProps = {
   params: Promise<{
     slug: string;
   }>;
 };
-
-export async function generateStaticParams() {
-  return getBlogTagStaticParams();
-}
 
 export async function generateMetadata({ params }: TagPageProps): Promise<Metadata> {
   const { slug } = await params;

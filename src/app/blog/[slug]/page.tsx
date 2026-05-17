@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { PostArtwork } from "@/components/blog/PostArtwork";
 import { MainLayout } from "@/components/layout/MainLayout";
+import { LeadCtaButton } from "@/components/lead/LeadCtaButton";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { ArticleBody } from "@/components/single/ArticleBody";
 import { ArticleHeader } from "@/components/single/ArticleHeader";
@@ -12,18 +13,16 @@ import { TableOfContents } from "@/components/single/TableOfContents";
 import { mockContent } from "@/lib/mock-data";
 import { buildPageMetadata } from "@/lib/seo/metadata";
 import { buildArticleSchema, buildBreadcrumbListSchema, buildPersonSchema } from "@/lib/seo/schema";
-import { getBlogSingleData, getBlogSingleStaticParams } from "@/lib/wp-single";
+import { getBlogSingleData } from "@/lib/wp-single";
 import { formatDateLabel } from "@/utils/format";
+
+export const dynamic = "force-dynamic";
 
 type BlogPostPageProps = {
   params: Promise<{
     slug: string;
   }>;
 };
-
-export async function generateStaticParams() {
-  return getBlogSingleStaticParams();
-}
 
 export async function generateMetadata({ params }: BlogPostPageProps): Promise<Metadata> {
   const { slug } = await params;
@@ -204,12 +203,12 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                       Uma conversa curta para identificar pontos de aceleração sem forçar
                       ferramenta onde ela não cabe.
                     </p>
-                    <a href="https://wa.me/" target="_blank" rel="noopener noreferrer" className="btn btn-primary btn-sm">
+                    <LeadCtaButton className="btn btn-primary btn-sm" source="single_sidebar_contact">
                       Agendar conversa
                       <svg className="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
                         <path d="M5 12h14M13 5l7 7-7 7" />
                       </svg>
-                    </a>
+                    </LeadCtaButton>
                   </div>
                 </aside>
               </div>

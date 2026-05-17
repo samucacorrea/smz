@@ -10,18 +10,16 @@ import { JsonLd } from "@/components/seo/JsonLd";
 import { buildPageMetadata } from "@/lib/seo/metadata";
 import { buildBreadcrumbListSchema, buildCollectionPageSchema } from "@/lib/seo/schema";
 import { mockContent } from "@/lib/mock-data";
-import { getBlogCategoryData, getBlogCategoryStaticParams } from "@/lib/wp-category";
+import { getBlogCategoryData } from "@/lib/wp-category";
 import { formatDateLabel } from "@/utils/format";
+
+export const dynamic = "force-dynamic";
 
 type CategoryPageProps = {
   params: Promise<{
     slug: string;
   }>;
 };
-
-export async function generateStaticParams() {
-  return getBlogCategoryStaticParams();
-}
 
 export async function generateMetadata({ params }: CategoryPageProps): Promise<Metadata> {
   const { slug } = await params;

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { LeadCtaButton } from "@/components/lead/LeadCtaButton";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { buildPageMetadata } from "@/lib/seo/metadata";
@@ -58,9 +59,9 @@ export default function NotFound() {
                   <path d="M5 12h14M13 5l7 7-7 7" />
                 </svg>
               </Link>
-              <a href="https://wa.me/" target="_blank" rel="noopener noreferrer" className="btn btn-ghost">
+              <LeadCtaButton className="btn btn-ghost" source="not_found_contact">
                 Falar com um estrategista
-              </a>
+              </LeadCtaButton>
             </div>
 
             <form className="error-search" role="search" action="/busca">
