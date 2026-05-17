@@ -1,6 +1,7 @@
 import type { Author, SeoData } from "@/types/content";
 import { GET_AUTHORS_QUERY, GET_AUTHOR_BY_SLUG_QUERY, GET_POSTS_QUERY } from "@/graphql/queries";
 import { getAuthorBySlug, getPostsByAuthorSlug, mockContent } from "@/lib/mock-data";
+import { buildSiteUrl } from "@/lib/site";
 import {
   canUseWordPressMockFallback,
   getWordPressConfigurationError,
@@ -124,7 +125,7 @@ function buildSeo(author: WpAuthor, fallback?: Author): SeoData {
   return {
     title: fallback?.seo.title || `${name} · SMZ`,
     description: fallback?.seo.description || description,
-    canonical: fallback?.seo.canonical || `https://ag.smz/blog/autor/${slug}`,
+    canonical: fallback?.seo.canonical || buildSiteUrl(`/blog/autor/${slug}`),
     ogImage: fallback?.seo.ogImage,
   };
 }

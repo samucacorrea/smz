@@ -4,12 +4,13 @@ import { LeadCtaButton } from "@/components/lead/LeadCtaButton";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { buildPageMetadata } from "@/lib/seo/metadata";
+import { buildSiteUrl } from "@/lib/site";
 
 export function generateMetadata(): Metadata {
   return buildPageMetadata({
     title: "Página não encontrada — SMZ",
     description: "A rota acessada não existe ou foi movida dentro do site da SMZ.",
-    canonical: "https://ag.smz/404",
+    canonical: buildSiteUrl("/404"),
   });
 }
 

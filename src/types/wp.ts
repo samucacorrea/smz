@@ -79,6 +79,7 @@ export type WpPage = {
   slug?: string | null;
   title?: string | null;
   content?: string | null;
+  modified?: string | null;
   seo?: WpSeo | null;
 };
 

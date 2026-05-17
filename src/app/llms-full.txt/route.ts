@@ -1,4 +1,5 @@
 import { mockContent } from "@/lib/mock-data";
+import { buildSiteUrl } from "@/lib/site";
 
 export function GET() {
   const lines = [
@@ -34,7 +35,7 @@ export function GET() {
     ),
     "",
     "Search endpoint:",
-    "- https://ag.smz/busca?q={termo}",
+    `- ${buildSiteUrl("/busca")}?q={termo}`,
   ];
 
   return new Response(lines.join("\n"), {

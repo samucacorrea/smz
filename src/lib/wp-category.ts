@@ -11,6 +11,7 @@ import {
   GET_POSTS_BY_CATEGORY_SLUG_QUERY,
 } from "@/graphql/queries";
 import { getCategoryBySlug, getPostsByCategorySlug, mockContent } from "@/lib/mock-data";
+import { buildSiteUrl } from "@/lib/site";
 import { wpFetch } from "@/lib/wp-client";
 import type {
   WpCategoriesQuery,
@@ -152,9 +153,7 @@ function mapCategorySeo(category: WpCategory): SeoData {
   return {
     title: category.seo?.title || `${category.name ?? "Categoria"} · Blog SMZ`,
     description: category.seo?.metaDesc || category.description?.trim() || "",
-    canonical:
-      category.seo?.canonical ||
-      `https://ag.smz/blog/categoria/${category.slug ?? ""}`,
+    canonical: category.seo?.canonical || buildSiteUrl(`/blog/categoria/${category.slug ?? ""}`),
     ogImage: category.seo?.opengraphImage?.sourceUrl ?? undefined,
   };
 }

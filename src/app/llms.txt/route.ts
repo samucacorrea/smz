@@ -1,4 +1,5 @@
 import { mockContent } from "@/lib/mock-data";
+import { buildSiteUrl } from "@/lib/site";
 
 export function GET() {
   const lines = [
@@ -6,9 +7,9 @@ export function GET() {
     "",
     "> Agencia de marketing focada em resultado, operacao e crescimento.",
     "",
-    "Site: https://ag.smz/",
-    "Blog: https://ag.smz/blog",
-    "Search: https://ag.smz/busca",
+    `Site: ${buildSiteUrl("/")}`,
+    `Blog: ${buildSiteUrl("/blog")}`,
+    `Search: ${buildSiteUrl("/busca")}`,
     "",
     "Key sections:",
     `- Home: ${mockContent.home.seo.canonical}`,

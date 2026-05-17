@@ -5,6 +5,7 @@ import { JsonLd } from "@/components/seo/JsonLd";
 import { mockContent } from "@/lib/mock-data";
 import { buildPageMetadata } from "@/lib/seo/metadata";
 import { buildBreadcrumbListSchema, buildCollectionPageSchema } from "@/lib/seo/schema";
+import { buildSiteUrl } from "@/lib/site";
 import { getSearchPageData } from "@/lib/wp-search";
 
 export const dynamic = "force-dynamic";
@@ -23,8 +24,8 @@ export async function generateMetadata({ searchParams }: SearchPageProps): Promi
     title: `Busca por ${query} — SMZ`,
     description: `Resultados de busca por ${query} no conteúdo da SMZ.`,
     canonical: query
-      ? `https://ag.smz/busca?q=${encodeURIComponent(query)}`
-      : "https://ag.smz/busca",
+      ? `${buildSiteUrl("/busca")}?q=${encodeURIComponent(query)}`
+      : buildSiteUrl("/busca"),
   });
 }
 
@@ -33,8 +34,8 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
   const query = (resolvedSearchParams?.q ?? "IA").trim();
   const data = await getSearchPageData(query);
   const canonical = query
-    ? `https://ag.smz/busca?q=${encodeURIComponent(query)}`
-    : "https://ag.smz/busca";
+    ? `${buildSiteUrl("/busca")}?q=${encodeURIComponent(query)}`
+    : buildSiteUrl("/busca");
 
   return (
     <MainLayout>

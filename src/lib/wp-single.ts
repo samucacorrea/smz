@@ -1,6 +1,7 @@
 import type { Author, Category, Post, SeoData, Tag } from "@/types/content";
 import { GET_POST_BY_SLUG_QUERY, GET_POSTS_QUERY } from "@/graphql/queries";
 import { getAuthorBySlug, getCategoryBySlug, getPostBySlug, mockContent } from "@/lib/mock-data";
+import { buildSiteUrl } from "@/lib/site";
 import {
   canUseWordPressMockFallback,
   getWordPressConfigurationError,
@@ -234,7 +235,7 @@ function mapWpPostToSingleData(post: WpPost, relatedNodes: WpPost[]): BlogSingle
   const seo: SeoData = {
     title: post.seo?.title || stripHtml(post.title),
     description: post.seo?.metaDesc || stripHtml(post.excerpt ?? post.content ?? ""),
-    canonical: post.seo?.canonical || `https://ag.smz/blog/${post.slug}`,
+    canonical: post.seo?.canonical || buildSiteUrl(`/blog/${post.slug}`),
     ogImage: post.seo?.opengraphImage?.sourceUrl ?? undefined,
   };
 
@@ -261,7 +262,7 @@ function mapWpPostToSingleData(post: WpPost, relatedNodes: WpPost[]): BlogSingle
     seo: {
       title: `${author.name} · SMZ`,
       description: author.bio,
-      canonical: `https://ag.smz/blog/autor/${author.slug}`,
+      canonical: buildSiteUrl(`/blog/autor/${author.slug}`),
     },
   };
 
@@ -275,9 +276,7 @@ function mapWpPostToSingleData(post: WpPost, relatedNodes: WpPost[]): BlogSingle
       title: primaryCategory.seo?.title || `${primaryCategory.name} · Blog SMZ`,
       description:
         primaryCategory.seo?.metaDesc || primaryCategory.description?.trim() || "",
-      canonical:
-        primaryCategory.seo?.canonical ||
-        `https://ag.smz/blog/categoria/${primaryCategory.slug}`,
+      canonical: primaryCategory.seo?.canonical || buildSiteUrl(`/blog/categoria/${primaryCategory.slug}`),
       ogImage: primaryCategory.seo?.opengraphImage?.sourceUrl ?? undefined,
     },
   };

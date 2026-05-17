@@ -7,6 +7,7 @@ import type {
   SearchResult,
   Tag,
 } from "@/types/content";
+import { buildSiteUrl, getSiteOrigin } from "@/lib/site";
 
 const authors: Author[] = [
   {
@@ -628,7 +629,95 @@ const searchResults: SearchResult[] = [
   },
 ];
 
-export const mockContent: MockContent = {
+function replaceLegacyDomain(value: string) {
+  return value
+    .replaceAll("https://ag.smz/", `${getSiteOrigin()}/`)
+    .replaceAll("https://ag.smz", getSiteOrigin())
+    .replaceAll("https://smz.ag", getSiteOrigin())
+    .replaceAll("ag.smz", "smz.agency");
+}
+
+function normalizeMockContent(content: MockContent): MockContent {
+  return {
+    ...content,
+    authors: content.authors.map((author) => ({
+      ...author,
+      socials: author.socials.map((social) => ({
+        ...social,
+        href: replaceLegacyDomain(social.href),
+      })),
+      seo: {
+        ...author.seo,
+        canonical: replaceLegacyDomain(author.seo.canonical),
+        ogImage: author.seo.ogImage ? replaceLegacyDomain(author.seo.ogImage) : undefined,
+      },
+    })),
+    categories: content.categories.map((category) => ({
+      ...category,
+      seo: {
+        ...category.seo,
+        canonical: replaceLegacyDomain(category.seo.canonical),
+        ogImage: category.seo.ogImage ? replaceLegacyDomain(category.seo.ogImage) : undefined,
+      },
+    })),
+    tags: content.tags.map((tag) => ({
+      ...tag,
+      seo: {
+        ...tag.seo,
+        canonical: replaceLegacyDomain(tag.seo.canonical),
+        ogImage: tag.seo.ogImage ? replaceLegacyDomain(tag.seo.ogImage) : undefined,
+      },
+    })),
+    posts: content.posts.map((post) => ({
+      ...post,
+      seo: {
+        ...post.seo,
+        canonical: replaceLegacyDomain(post.seo.canonical),
+        ogImage: post.seo.ogImage ? replaceLegacyDomain(post.seo.ogImage) : undefined,
+      },
+    })),
+    home: {
+      ...content.home,
+      heroButtonUrl:
+        content.home.heroButtonUrl.startsWith("http")
+          ? replaceLegacyDomain(content.home.heroButtonUrl)
+          : content.home.heroButtonUrl,
+      finalCtaButtonUrl:
+        content.home.finalCtaButtonUrl.startsWith("http")
+          ? replaceLegacyDomain(content.home.finalCtaButtonUrl)
+          : content.home.finalCtaButtonUrl,
+      seo: {
+        ...content.home.seo,
+        canonical: replaceLegacyDomain(content.home.seo.canonical),
+        ogImage: content.home.seo.ogImage
+          ? replaceLegacyDomain(content.home.seo.ogImage)
+          : undefined,
+      },
+    },
+    searchResults: content.searchResults.map((result) => ({
+      ...result,
+      breadcrumb: result.breadcrumb.map((item) => replaceLegacyDomain(item)),
+    })),
+    seo: {
+      site: {
+        ...content.seo.site,
+        canonical: buildSiteUrl("/"),
+        ogImage: content.seo.site.ogImage
+          ? replaceLegacyDomain(content.seo.site.ogImage)
+          : undefined,
+      },
+      blog: {
+        ...content.seo.blog,
+        canonical: buildSiteUrl("/blog"),
+        ogImage: content.seo.blog.ogImage
+          ? replaceLegacyDomain(content.seo.blog.ogImage)
+          : undefined,
+      },
+    },
+  };
+}
+
+export const mockContent: MockContent = normalizeMockContent({
   home,
   authors,
   categories,
@@ -650,7 +739,7 @@ export const mockContent: MockContent = {
       ogImage: "https://ag.smz/blog/og/blog-cover.png",
     },
   },
-};
+});
 
 export function getPostBySlug(slug: string) {
   return mockContent.posts.find((post) => post.slug === slug);

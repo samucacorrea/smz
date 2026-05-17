@@ -5,6 +5,7 @@ import {
   GET_TAGS_QUERY,
 } from "@/graphql/queries";
 import { getPostsByTagSlug, getTagBySlug, mockContent } from "@/lib/mock-data";
+import { buildSiteUrl } from "@/lib/site";
 import {
   canUseWordPressMockFallback,
   getWordPressConfigurationError,
@@ -67,7 +68,7 @@ function mapTagSeo(tag: WpTag): SeoData {
   return {
     title: tag.seo?.title || `#${tag.name ?? "Tag"} · Blog SMZ`,
     description: tag.seo?.metaDesc || tag.description?.trim() || "",
-    canonical: tag.seo?.canonical || `https://ag.smz/blog/tag/${tag.slug ?? ""}`,
+    canonical: tag.seo?.canonical || buildSiteUrl(`/blog/tag/${tag.slug ?? ""}`),
     ogImage: tag.seo?.opengraphImage?.sourceUrl ?? undefined,
   };
 }

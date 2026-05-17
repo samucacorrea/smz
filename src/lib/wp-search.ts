@@ -109,7 +109,7 @@ export async function getSearchPageData(query: string): Promise<SearchPageData> 
           title: stripHtml(post.title!),
           href: `/blog/${post.slug}`,
           snippet: stripHtml(post.excerpt ?? post.content ?? ""),
-          breadcrumb: ["ag.smz", "blog", post.slug!],
+          breadcrumb: ["smz.agency", "blog", post.slug!],
           meta: [
             post.date ? new Date(post.date).toLocaleDateString("pt-BR") : "Sem data",
             authorName,
@@ -131,7 +131,7 @@ export async function getSearchPageData(query: string): Promise<SearchPageData> 
         title: category.name!,
         href: `/blog/categoria/${category.slug}`,
         snippet: stripHtml(category.description ?? ""),
-        breadcrumb: ["ag.smz", "blog", "categoria", category.slug!],
+        breadcrumb: ["smz.agency", "blog", "categoria", category.slug!],
         meta: ["Categoria editorial"],
       }));
 
@@ -148,7 +148,7 @@ export async function getSearchPageData(query: string): Promise<SearchPageData> 
         title: `#${tag.name!}`,
         href: `/blog/tag/${tag.slug}`,
         snippet: stripHtml(tag.description ?? ""),
-        breadcrumb: ["ag.smz", "blog", "tag", tag.slug!],
+        breadcrumb: ["smz.agency", "blog", "tag", tag.slug!],
         meta: ["Tag editorial"],
       }));
 

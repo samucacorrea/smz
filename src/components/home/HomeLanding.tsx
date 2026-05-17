@@ -479,17 +479,17 @@ export function HomeLanding({ data }: HomeLandingProps) {
                   <span className="info-label">Instagram</span>
                   <a
                     className="info-value"
-                    href="https://instagram.com/ag.smz"
+                    href="https://instagram.com/smz.agency"
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    @ag.smz
+                    @smz.agency
                   </a>
                 </div>
                 <div className="info-row">
                   <span className="info-label">E-mail</span>
-                  <a className="info-value" href="mailto:contato@ag.smz">
-                    contato@ag.smz
+                  <a className="info-value" href="mailto:contato@smz.agency">
+                    contato@smz.agency
                   </a>
                 </div>
                 <div className="info-row">
