@@ -1,3 +1,5 @@
+import type { SeoData } from "@/types/content";
+
 export function getSiteOrigin() {
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim();
 
@@ -13,4 +15,31 @@ export function buildSiteUrl(path = "/") {
   const normalizedPath = path.startsWith("/") ? path : `/${path}`;
 
   return new URL(normalizedPath, origin).toString();
+}
+
+export function getSiteSeo(): SeoData {
+  return {
+    title: "SMZ",
+    description:
+      "Agencia de marketing focada em resultado, operacao, SEO, performance e crescimento.",
+    canonical: buildSiteUrl("/"),
+  };
+}
+
+export function getHomeSeo(): SeoData {
+  return {
+    title: "SMZ",
+    description:
+      "Estrategia que se paga. Marketing que se mede. Operacao, acquisicao e crescimento orientados por dados.",
+    canonical: buildSiteUrl("/"),
+  };
+}
+
+export function getBlogSeo(): SeoData {
+  return {
+    title: "Blog SMZ",
+    description:
+      "Artigos da SMZ sobre operacao, SEO, trafego pago, CRO, CRM, IA e crescimento.",
+    canonical: buildSiteUrl("/blog"),
+  };
 }

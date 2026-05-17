@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { MainLayout } from "@/components/layout/MainLayout";
 import { SearchExperience } from "@/components/search/SearchExperience";
 import { JsonLd } from "@/components/seo/JsonLd";
-import { mockContent } from "@/lib/mock-data";
 import { buildPageMetadata } from "@/lib/seo/metadata";
 import { buildBreadcrumbListSchema, buildCollectionPageSchema } from "@/lib/seo/schema";
 import { buildSiteUrl } from "@/lib/site";
@@ -42,7 +41,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
       <main>
         <JsonLd
           data={buildBreadcrumbListSchema([
-            { name: "Início", url: mockContent.home.seo.canonical },
+            { name: "Início", url: buildSiteUrl("/") },
             { name: "Busca", url: canonical },
           ])}
         />

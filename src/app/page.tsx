@@ -5,12 +5,12 @@ import { JsonLd } from "@/components/seo/JsonLd";
 import { getHomePageData } from "@/lib/wp-home";
 import { buildPageMetadata } from "@/lib/seo/metadata";
 import { buildOrganizationSchema, buildWebSiteSchema } from "@/lib/seo/schema";
-import { mockContent } from "@/lib/mock-data";
+import { getHomeSeo } from "@/lib/site";
 
 export const dynamic = "force-dynamic";
 
 export function generateMetadata(): Metadata {
-  return buildPageMetadata(mockContent.home.seo);
+  return buildPageMetadata(getHomeSeo());
 }
 
 export default async function HomePage() {

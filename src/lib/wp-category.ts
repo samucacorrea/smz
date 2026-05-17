@@ -1,6 +1,5 @@
 import type { Category, SeoData } from "@/types/content";
 import {
-  canUseWordPressMockFallback,
   getWordPressConfigurationError,
   handleWordPressError,
   isWordPressConfigured,
@@ -10,7 +9,6 @@ import {
   GET_CATEGORY_BY_SLUG_QUERY,
   GET_POSTS_BY_CATEGORY_SLUG_QUERY,
 } from "@/graphql/queries";
-import { getCategoryBySlug, getPostsByCategorySlug, mockContent } from "@/lib/mock-data";
 import { buildSiteUrl } from "@/lib/site";
 import { wpFetch } from "@/lib/wp-client";
 import type {
@@ -112,43 +110,6 @@ function mapWpPost(post: WpPost): CategoryArchivePost | null {
   };
 }
 
-function mapMockCategoryData(slug: string): BlogCategoryData | null {
-  const category = getCategoryBySlug(slug);
-
-  if (!category) {
-    return null;
-  }
-
-  const posts = getPostsByCategorySlug(category.slug);
-
-  return {
-    category,
-    posts: posts.map((post) => {
-      const author = mockContent.authors.find((item) => item.slug === post.authorSlug);
-      const postCategory = mockContent.categories.find((item) =>
-        post.categorySlugs.includes(item.slug),
-      );
-
-      return {
-        slug: post.slug,
-        title: post.title,
-        excerpt: post.excerpt,
-        date: post.date,
-        readingTime: post.readingTime,
-        authorInitials: author?.initials ?? "SMZ",
-        categoryName: postCategory?.name ?? category.name,
-        featuredArtKey: post.featuredArtKey,
-      };
-    }),
-    categories: mockContent.categories.map((item) => ({
-      slug: item.slug,
-      name: item.name,
-      articleCount: item.articleCount,
-    })),
-    authorCount: new Set(posts.map((post) => post.authorSlug)).size,
-  };
-}
-
 function mapCategorySeo(category: WpCategory): SeoData {
   return {
     title: category.seo?.title || `${category.name ?? "Categoria"} · Blog SMZ`,
@@ -160,9 +121,7 @@ function mapCategorySeo(category: WpCategory): SeoData {
 
 export async function getBlogCategoryStaticParams() {
   if (!isWordPressConfigured()) {
-    return canUseWordPressMockFallback()
-      ? mockContent.categories.map((category) => ({ slug: category.slug }))
-      : [];
+    return [];
   }
 
   try {
@@ -179,26 +138,16 @@ export async function getBlogCategoryStaticParams() {
       category.slug ? [{ slug: category.slug }] : [],
     );
 
-    return slugs.length
-      ? slugs
-      : canUseWordPressMockFallback()
-        ? mockContent.categories.map((category) => ({ slug: category.slug }))
-        : [];
+    return slugs;
   } catch (error) {
     handleWordPressError("category static params", error);
-    return canUseWordPressMockFallback()
-      ? mockContent.categories.map((category) => ({ slug: category.slug }))
-      : [];
+    return [];
   }
 }
 
 export async function getBlogCategoryData(slug: string): Promise<BlogCategoryData | null> {
   if (!isWordPressConfigured()) {
-    if (!canUseWordPressMockFallback()) {
-      throw getWordPressConfigurationError(`category ${slug}`);
-    }
-
-    return mapMockCategoryData(slug);
+    throw getWordPressConfigurationError(`category ${slug}`);
   }
 
   try {
@@ -233,22 +182,12 @@ export async function getBlogCategoryData(slug: string): Promise<BlogCategoryDat
     const category = categoryResponse.category;
 
     if (!category?.slug || !category.name) {
-      if (!canUseWordPressMockFallback()) {
-        throw new Error(`WordPress returned no category for slug "${slug}".`);
-      }
-      return mapMockCategoryData(slug);
+      throw new Error(`WordPress returned no category for slug "${slug}".`);
     }
 
     const posts = (postsResponse.posts?.nodes ?? [])
       .map(mapWpPost)
       .filter((post): post is CategoryArchivePost => Boolean(post));
-
-    if (!posts.length) {
-      if (!canUseWordPressMockFallback()) {
-        throw new Error(`WordPress returned no posts for category "${slug}".`);
-      }
-      return mapMockCategoryData(slug);
-    }
 
     return {
       category: {
@@ -264,11 +203,7 @@ export async function getBlogCategoryData(slug: string): Promise<BlogCategoryDat
         .map((item) => ({
           slug: item.slug!,
           name: item.name!,
-          articleCount:
-            item.count ??
-            mockContent.categories.find((mockCategory) => mockCategory.slug === item.slug)
-              ?.articleCount ??
-            0,
+          articleCount: item.count ?? 0,
         })),
       authorCount: new Set(
         (postsResponse.posts?.nodes ?? []).map((post) => post.author?.node?.slug ?? post.id),
@@ -276,11 +211,6 @@ export async function getBlogCategoryData(slug: string): Promise<BlogCategoryDat
     };
   } catch (error) {
     handleWordPressError(`category data (${slug})`, error);
-
-    if (!canUseWordPressMockFallback()) {
-      throw error;
-    }
-
-    return mapMockCategoryData(slug);
+    throw error;
   }
 }

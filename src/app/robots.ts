@@ -1,8 +1,8 @@
 import type { MetadataRoute } from "next";
-import { mockContent } from "@/lib/mock-data";
+import { getSiteOrigin } from "@/lib/site";
 
 export default function robots(): MetadataRoute.Robots {
-  const siteOrigin = new URL(mockContent.home.seo.canonical).origin;
+  const siteOrigin = getSiteOrigin();
 
   return {
     rules: [

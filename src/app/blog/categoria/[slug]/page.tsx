@@ -9,7 +9,7 @@ import { MainLayout } from "@/components/layout/MainLayout";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { buildPageMetadata } from "@/lib/seo/metadata";
 import { buildBreadcrumbListSchema, buildCollectionPageSchema } from "@/lib/seo/schema";
-import { mockContent } from "@/lib/mock-data";
+import { getBlogSeo, getHomeSeo } from "@/lib/site";
 import { getBlogCategoryData } from "@/lib/wp-category";
 import { formatDateLabel } from "@/utils/format";
 
@@ -46,8 +46,8 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
       <main>
         <JsonLd
           data={buildBreadcrumbListSchema([
-            { name: "Início", url: mockContent.home.seo.canonical },
-            { name: "Blog", url: mockContent.seo.blog.canonical },
+            { name: "Início", url: getHomeSeo().canonical },
+            { name: "Blog", url: getBlogSeo().canonical },
             { name: category.name, url: category.seo.canonical },
           ])}
         />

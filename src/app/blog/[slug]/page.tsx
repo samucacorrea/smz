@@ -10,9 +10,9 @@ import { AuthorBio } from "@/components/single/AuthorBio";
 import { RelatedPosts } from "@/components/single/RelatedPosts";
 import { ShareBar } from "@/components/single/ShareBar";
 import { TableOfContents } from "@/components/single/TableOfContents";
-import { mockContent } from "@/lib/mock-data";
 import { buildPageMetadata } from "@/lib/seo/metadata";
 import { buildArticleSchema, buildBreadcrumbListSchema, buildPersonSchema } from "@/lib/seo/schema";
+import { buildSiteUrl, getBlogSeo, getHomeSeo } from "@/lib/site";
 import { getBlogSingleData } from "@/lib/wp-single";
 import { formatDateLabel } from "@/utils/format";
 
@@ -48,11 +48,11 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
       <main>
         <JsonLd
           data={buildBreadcrumbListSchema([
-            { name: "Início", url: mockContent.home.seo.canonical },
-            { name: "Blog", url: mockContent.seo.blog.canonical },
+            { name: "Início", url: getHomeSeo().canonical },
+            { name: "Blog", url: getBlogSeo().canonical },
             {
               name: post.primaryCategory.name,
-              url: `${mockContent.home.seo.canonical}blog/categoria/${post.primaryCategory.slug}`,
+              url: buildSiteUrl(`/blog/categoria/${post.primaryCategory.slug}`),
             },
             { name: post.title, url: post.seo.canonical },
           ])}
@@ -145,47 +145,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                     label: "Falar no WhatsApp",
                   }}
                 >
-                  {post.contentHtml ? (
-                    <div dangerouslySetInnerHTML={{ __html: post.contentHtml }} />
-                  ) : post.mockPost ? (
-                    <>
-                      <p className="lead">{post.mockPost.content}</p>
-                      <h2 id="ponto-de-partida">Por que esse assunto importa agora</h2>
-                      <p>
-                        A operação de marketing ficou mais complexa, mais rápida e mais cara.
-                        O ganho real não vem de opinião genérica, mas de ciclos curtos de teste,
-                        leitura e decisão.
-                      </p>
-                      <h2 id="operacao">Onde isso entra na operação</h2>
-                      <p>
-                        Dentro da SMZ, esse tema aparece em planejamento, mídia, CRM, conteúdo e
-                        análise. A lógica é simples: reduzir ruído, aumentar velocidade e manter a
-                        decisão humana no centro.
-                      </p>
-                      <blockquote>
-                        O objetivo não é automatizar tudo. É descobrir onde a máquina acelera e
-                        onde o humano protege resultado.
-                        <cite>— {post.author.name}</cite>
-                      </blockquote>
-                      <h2 id="aprendizados">O que aprendemos na prática</h2>
-                      <ul>
-                        <li>Processo ruim continua ruim, só mais rápido.</li>
-                        <li>Clareza operacional costuma gerar mais resultado que volume bruto.</li>
-                        <li>Decisão estratégica não deve ser terceirizada para ferramenta.</li>
-                      </ul>
-                      {post.mockPost.faq?.length ? (
-                        <>
-                          <h2 id="faq">Perguntas frequentes</h2>
-                          {post.mockPost.faq.map((item) => (
-                            <div key={item.question}>
-                              <h3>{item.question}</h3>
-                              <p>{item.answer}</p>
-                            </div>
-                          ))}
-                        </>
-                      ) : null}
-                    </>
-                  ) : null}
+                  <div dangerouslySetInnerHTML={{ __html: post.contentHtml }} />
 
                   <AuthorBio
                     initials={post.author.initials}

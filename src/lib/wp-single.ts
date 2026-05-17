@@ -1,9 +1,7 @@
 import type { Author, Category, Post, SeoData, Tag } from "@/types/content";
 import { GET_POST_BY_SLUG_QUERY, GET_POSTS_QUERY } from "@/graphql/queries";
-import { getAuthorBySlug, getCategoryBySlug, getPostBySlug, mockContent } from "@/lib/mock-data";
 import { buildSiteUrl } from "@/lib/site";
 import {
-  canUseWordPressMockFallback,
   getWordPressConfigurationError,
   handleWordPressError,
   isWordPressConfigured,
@@ -61,8 +59,7 @@ export type BlogSingleData = {
   tags: SingleTag[];
   relatedPosts: SingleRelatedPost[];
   headings: SingleHeading[];
-  contentHtml?: string;
-  mockPost?: Post;
+  contentHtml: string;
   schemaPost: Post;
   schemaAuthor: Author;
   schemaCategory: Category | Tag;
@@ -145,77 +142,6 @@ function decorateHeadings(html?: string | null) {
   });
 
   return { contentHtml, headings };
-}
-
-function mapMockSingleData(slug: string): BlogSingleData | null {
-  const post = getPostBySlug(slug);
-
-  if (!post) {
-    return null;
-  }
-
-  const author = getAuthorBySlug(post.authorSlug);
-  const primaryCategory = getCategoryBySlug(post.categorySlugs[0]);
-  const relatedPosts = post.relatedPostSlugs
-    .map((itemSlug) => getPostBySlug(itemSlug))
-    .filter((item): item is NonNullable<typeof item> => Boolean(item));
-
-  if (!author || !primaryCategory) {
-    return null;
-  }
-
-  return {
-    title: post.title,
-    excerpt: post.excerpt,
-    date: post.date,
-    modified: post.modified,
-    readingTime: post.readingTime,
-    featuredArtKey: post.featuredArtKey,
-    seo: post.seo,
-    author: {
-      slug: author.slug,
-      name: author.name,
-      initials: author.initials,
-      role: author.role,
-      bio: author.shortBio,
-      href: `/blog/autor/${author.slug}`,
-    },
-    primaryCategory: {
-      slug: primaryCategory.slug,
-      name: primaryCategory.name,
-      href: `/blog/categoria/${primaryCategory.slug}`,
-    },
-    tags: post.tagSlugs.map((tagSlug) => ({
-      href: `/blog/tag/${tagSlug}`,
-      label: mockContent.tags.find((tag) => tag.slug === tagSlug)?.name ?? tagSlug,
-    })),
-    relatedPosts: relatedPosts.map((item) => {
-      const itemAuthor = getAuthorBySlug(item.authorSlug);
-      const itemCategory = getCategoryBySlug(item.categorySlugs[0]);
-
-      return {
-        href: `/blog/${item.slug}`,
-        category: itemCategory?.name ?? "Blog",
-        date: item.date,
-        readingTime: item.readingTime,
-        title: item.title,
-        excerpt: item.excerpt,
-        author: itemAuthor?.name ?? "SMZ",
-        featuredArtKey: item.featuredArtKey,
-        slug: item.slug,
-      };
-    }),
-    headings: [
-      { href: "#ponto-de-partida", label: "Por que isso importa" },
-      { href: "#operacao", label: "Onde entrou na operação" },
-      { href: "#aprendizados", label: "Principais aprendizados" },
-      { href: "#faq", label: "Perguntas frequentes" },
-    ],
-    mockPost: post,
-    schemaPost: post,
-    schemaAuthor: author,
-    schemaCategory: primaryCategory,
-  };
 }
 
 function mapWpPostToSingleData(post: WpPost, relatedNodes: WpPost[]): BlogSingleData | null {
@@ -335,7 +261,7 @@ function mapWpPostToSingleData(post: WpPost, relatedNodes: WpPost[]): BlogSingle
         };
       }),
     headings: decorated.headings,
-    contentHtml: decorated.contentHtml,
+    contentHtml: decorated.contentHtml || "<p>Conteudo indisponivel.</p>",
     schemaPost,
     schemaAuthor,
     schemaCategory,
@@ -344,9 +270,7 @@ function mapWpPostToSingleData(post: WpPost, relatedNodes: WpPost[]): BlogSingle
 
 export async function getBlogSingleStaticParams() {
   if (!isWordPressConfigured()) {
-    return canUseWordPressMockFallback()
-      ? mockContent.posts.map((post) => ({ slug: post.slug }))
-      : [];
+    return [];
   }
 
   try {
@@ -362,26 +286,16 @@ export async function getBlogSingleStaticParams() {
     const slugs = (response.posts?.nodes ?? [])
       .flatMap((post) => (post.slug ? [{ slug: post.slug }] : []));
 
-    return slugs.length
-      ? slugs
-      : canUseWordPressMockFallback()
-        ? mockContent.posts.map((post) => ({ slug: post.slug }))
-        : [];
+    return slugs;
   } catch (error) {
     handleWordPressError("single static params", error);
-    return canUseWordPressMockFallback()
-      ? mockContent.posts.map((post) => ({ slug: post.slug }))
-      : [];
+    return [];
   }
 }
 
 export async function getBlogSingleData(slug: string): Promise<BlogSingleData | null> {
   if (!isWordPressConfigured()) {
-    if (!canUseWordPressMockFallback()) {
-      throw getWordPressConfigurationError(`post ${slug}`);
-    }
-
-    return mapMockSingleData(slug);
+    throw getWordPressConfigurationError(`post ${slug}`);
   }
 
   try {
@@ -407,10 +321,7 @@ export async function getBlogSingleData(slug: string): Promise<BlogSingleData | 
     const post = postResponse.post;
 
     if (!post) {
-      if (!canUseWordPressMockFallback()) {
-        return null;
-      }
-      return mapMockSingleData(slug);
+      return null;
     }
 
     const relatedNodes = (relatedResponse.posts?.nodes ?? []).filter(
@@ -418,17 +329,12 @@ export async function getBlogSingleData(slug: string): Promise<BlogSingleData | 
     );
 
     const mapped = mapWpPostToSingleData(post, relatedNodes);
-    if (!mapped && !canUseWordPressMockFallback()) {
+    if (!mapped) {
       throw new Error(`WordPress returned an invalid post payload for "${slug}".`);
     }
-    return mapped ?? mapMockSingleData(slug);
+    return mapped;
   } catch (error) {
     handleWordPressError(`single data (${slug})`, error);
-
-    if (!canUseWordPressMockFallback()) {
-      throw error;
-    }
-
-    return mapMockSingleData(slug);
+    throw error;
   }
 }

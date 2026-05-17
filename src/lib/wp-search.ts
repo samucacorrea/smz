@@ -1,8 +1,6 @@
 import type { SearchResult } from "@/types/content";
 import { GET_CATEGORIES_QUERY, GET_SEARCH_POSTS_QUERY, GET_TAGS_QUERY } from "@/graphql/queries";
-import { mockContent } from "@/lib/mock-data";
 import {
-  canUseWordPressMockFallback,
   getWordPressConfigurationError,
   handleWordPressError,
   isWordPressConfigured,
@@ -21,20 +19,6 @@ function stripHtml(value: string) {
 
 function normalizeText(value: string) {
   return value.trim().toLowerCase();
-}
-
-function filterMockResults(query: string) {
-  const normalized = normalizeText(query);
-
-  return mockContent.searchResults.filter((result) => {
-    if (!normalized) {
-      return true;
-    }
-
-    return normalizeText(
-      [result.title, result.snippet, result.breadcrumb.join(" "), result.meta.join(" ")].join(" "),
-    ).includes(normalized);
-  });
 }
 
 function dedupeResults(results: SearchResult[]) {
@@ -56,14 +40,7 @@ export async function getSearchPageData(query: string): Promise<SearchPageData> 
   const trimmedQuery = query.trim() || "IA";
 
   if (!isWordPressConfigured()) {
-    if (!canUseWordPressMockFallback()) {
-      throw getWordPressConfigurationError(`search query "${trimmedQuery}"`);
-    }
-
-    return {
-      query: trimmedQuery,
-      results: filterMockResults(trimmedQuery),
-    };
+    throw getWordPressConfigurationError(`search query "${trimmedQuery}"`);
   }
 
   try {
@@ -152,29 +129,12 @@ export async function getSearchPageData(query: string): Promise<SearchPageData> 
         meta: ["Tag editorial"],
       }));
 
-    const mockAuxiliaryResults = filterMockResults(trimmedQuery).filter(
-      (result) => result.type === "servico" || result.type === "case",
-    );
-
     return {
       query: trimmedQuery,
-      results: dedupeResults([
-        ...postResults,
-        ...categoryResults,
-        ...tagResults,
-        ...mockAuxiliaryResults,
-      ]),
+      results: dedupeResults([...postResults, ...categoryResults, ...tagResults]),
     };
   } catch (error) {
     handleWordPressError(`search data (${trimmedQuery})`, error);
-
-    if (!canUseWordPressMockFallback()) {
-      throw error;
-    }
-
-    return {
-      query: trimmedQuery,
-      results: filterMockResults(trimmedQuery),
-    };
+    throw error;
   }
 }

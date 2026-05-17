@@ -9,7 +9,7 @@ import { JsonLd } from "@/components/seo/JsonLd";
 import { buildPageMetadata } from "@/lib/seo/metadata";
 import { buildBreadcrumbListSchema, buildCollectionPageSchema, buildPersonSchema } from "@/lib/seo/schema";
 import { PostArtwork } from "@/components/blog/PostArtwork";
-import { mockContent } from "@/lib/mock-data";
+import { getBlogSeo, getHomeSeo } from "@/lib/site";
 import { getBlogAuthorData } from "@/lib/wp-author";
 import { formatDateLabel } from "@/utils/format";
 
@@ -46,8 +46,8 @@ export default async function AuthorPage({ params }: AuthorPageProps) {
       <main>
         <JsonLd
           data={buildBreadcrumbListSchema([
-            { name: "Início", url: mockContent.home.seo.canonical },
-            { name: "Blog", url: mockContent.seo.blog.canonical },
+            { name: "Início", url: getHomeSeo().canonical },
+            { name: "Blog", url: getBlogSeo().canonical },
             { name: "Autores" },
             { name: author.name, url: author.seo.canonical },
           ])}

@@ -1,7 +1,46 @@
-import { mockContent } from "@/lib/mock-data";
-import { buildSiteUrl } from "@/lib/site";
+import {
+  GET_AUTHORS_QUERY,
+  GET_CATEGORIES_QUERY,
+} from "@/graphql/queries";
+import { buildSiteUrl, getBlogSeo, getHomeSeo } from "@/lib/site";
+import { isWordPressConfigured } from "@/lib/wp-mode";
+import { wpFetch } from "@/lib/wp-client";
+import type { WpAuthorsQuery, WpCategoriesQuery } from "@/types/wp";
 
-export function GET() {
+export async function GET() {
+  let categoryLines: string[] = [];
+  let authorLines: string[] = [];
+
+  if (isWordPressConfigured()) {
+    try {
+      const [categoriesResponse, authorsResponse] = await Promise.all([
+        wpFetch<WpCategoriesQuery>({
+          query: GET_CATEGORIES_QUERY,
+          variables: { first: 20 },
+          tags: ["wp:categories"],
+          revalidate: 300,
+        }),
+        wpFetch<WpAuthorsQuery>({
+          query: GET_AUTHORS_QUERY,
+          variables: { first: 20 },
+          tags: ["wp:authors"],
+          revalidate: 300,
+        }),
+      ]);
+
+      categoryLines = (categoriesResponse.categories?.nodes ?? [])
+        .filter((category) => category.slug)
+        .map((category) => `- Category: ${buildSiteUrl(`/blog/categoria/${category.slug}`)}`);
+
+      authorLines = (authorsResponse.users?.nodes ?? [])
+        .filter((author) => author.slug)
+        .map((author) => `- Author: ${buildSiteUrl(`/blog/autor/${author.slug}`)}`);
+    } catch {
+      categoryLines = [];
+      authorLines = [];
+    }
+  }
+
   const lines = [
     "# SMZ",
     "",
@@ -12,10 +51,10 @@ export function GET() {
     `Search: ${buildSiteUrl("/busca")}`,
     "",
     "Key sections:",
-    `- Home: ${mockContent.home.seo.canonical}`,
-    `- Blog: ${mockContent.seo.blog.canonical}`,
-    ...mockContent.categories.map((category) => `- Category: ${category.seo.canonical}`),
-    ...mockContent.authors.map((author) => `- Author: ${author.seo.canonical}`),
+    `- Home: ${getHomeSeo().canonical}`,
+    `- Blog: ${getBlogSeo().canonical}`,
+    ...categoryLines,
+    ...authorLines,
     "",
     "Primary topics:",
     "- IA aplicada ao marketing",

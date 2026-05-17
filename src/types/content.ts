@@ -117,16 +117,3 @@ export type SearchResult = {
   breadcrumb: string[];
   meta: string[];
 };
-
-export type MockContent = {
-  home: HomeContent;
-  authors: Author[];
-  categories: Category[];
-  tags: Tag[];
-  posts: Post[];
-  searchResults: SearchResult[];
-  seo: {
-    site: SeoData;
-    blog: SeoData;
-  };
-};

@@ -3,7 +3,6 @@ import { GET_PAGE_BY_SLUG_QUERY, GET_PAGES_QUERY } from "@/graphql/queries";
 import { buildBreadcrumbListSchema } from "@/lib/seo/schema";
 import { getSiteOrigin } from "@/lib/site";
 import {
-  canUseWordPressMockFallback,
   getWordPressConfigurationError,
   handleWordPressError,
   isWordPressConfigured,
@@ -101,11 +100,7 @@ export async function getWpPageStaticParams() {
 
 export async function getWpPageData(slug: string): Promise<WpPageData | null> {
   if (!isWordPressConfigured()) {
-    if (!canUseWordPressMockFallback()) {
-      throw getWordPressConfigurationError(`page ${slug}`);
-    }
-
-    return null;
+    throw getWordPressConfigurationError(`page ${slug}`);
   }
 
   try {
@@ -118,11 +113,6 @@ export async function getWpPageData(slug: string): Promise<WpPageData | null> {
     return mapWpPage(page);
   } catch (error) {
     handleWordPressError(`page data (${slug})`, error);
-
-    if (!canUseWordPressMockFallback()) {
-      throw error;
-    }
-
-    return null;
+    throw error;
   }
 }

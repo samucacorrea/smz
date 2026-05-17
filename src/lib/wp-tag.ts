@@ -4,10 +4,8 @@ import {
   GET_TAG_BY_SLUG_QUERY,
   GET_TAGS_QUERY,
 } from "@/graphql/queries";
-import { getPostsByTagSlug, getTagBySlug, mockContent } from "@/lib/mock-data";
 import { buildSiteUrl } from "@/lib/site";
 import {
-  canUseWordPressMockFallback,
   getWordPressConfigurationError,
   handleWordPressError,
   isWordPressConfigured,
@@ -29,7 +27,10 @@ type TagArchivePost = {
   readingTime: string;
   authorName: string;
   categoryName: string;
-  tagSlugs: string[];
+  tags: Array<{
+    slug: string;
+    name: string;
+  }>;
 };
 
 type TagCloudItem = {
@@ -44,7 +45,6 @@ export type BlogTagData = {
     name: string;
     description: string;
     articleCount: number;
-    categorySlug?: string;
     seo: SeoData;
   };
   posts: TagArchivePost[];
@@ -86,55 +86,18 @@ function mapWpPost(post: WpPost): TagArchivePost | null {
     readingTime: estimateReadingTime(post.content),
     authorName: post.author?.node?.name?.trim() || "SMZ",
     categoryName: post.categories?.nodes?.[0]?.name?.trim() || "Blog",
-    tagSlugs: (post.tags?.nodes ?? []).flatMap((tag) => (tag?.slug ? [tag.slug] : [])),
-  };
-}
-
-function mapMockTagData(slug: string): BlogTagData | null {
-  const tag = getTagBySlug(slug);
-
-  if (!tag) {
-    return null;
-  }
-
-  const posts = getPostsByTagSlug(tag.slug);
-
-  return {
-    tag,
-    posts: posts.map((post) => {
-      const author = mockContent.authors.find((item) => item.slug === post.authorSlug);
-      const category = mockContent.categories.find((item) =>
-        post.categorySlugs.includes(item.slug),
-      );
-
-      return {
-        slug: post.slug,
-        title: post.title,
-        excerpt: post.excerpt,
-        date: post.date,
-        readingTime: post.readingTime,
-        authorName: author?.name ?? "SMZ",
-        categoryName: category?.name ?? "Blog",
-        tagSlugs: post.tagSlugs,
-      };
-    }),
-    relatedTags: mockContent.tags
-      .filter((item) => item.slug !== tag.slug)
-      .slice(0, 6)
-      .map((item) => ({
-        slug: item.slug,
-        name: item.name,
-        articleCount: item.articleCount,
+    tags: (post.tags?.nodes ?? [])
+      .filter((tag): tag is WpTag => Boolean(tag?.slug && tag?.name))
+      .map((tag) => ({
+        slug: tag.slug!,
+        name: tag.name!,
       })),
-    authorCount: new Set(posts.map((post) => post.authorSlug)).size,
   };
 }
 
 export async function getBlogTagStaticParams() {
   if (!isWordPressConfigured()) {
-    return canUseWordPressMockFallback()
-      ? mockContent.tags.map((tag) => ({ slug: tag.slug }))
-      : [];
+    return [];
   }
 
   try {
@@ -151,26 +114,16 @@ export async function getBlogTagStaticParams() {
       tag.slug ? [{ slug: tag.slug }] : [],
     );
 
-    return slugs.length
-      ? slugs
-      : canUseWordPressMockFallback()
-        ? mockContent.tags.map((tag) => ({ slug: tag.slug }))
-        : [];
+    return slugs;
   } catch (error) {
     handleWordPressError("tag static params", error);
-    return canUseWordPressMockFallback()
-      ? mockContent.tags.map((tag) => ({ slug: tag.slug }))
-      : [];
+    return [];
   }
 }
 
 export async function getBlogTagData(slug: string): Promise<BlogTagData | null> {
   if (!isWordPressConfigured()) {
-    if (!canUseWordPressMockFallback()) {
-      throw getWordPressConfigurationError(`tag ${slug}`);
-    }
-
-    return mapMockTagData(slug);
+    throw getWordPressConfigurationError(`tag ${slug}`);
   }
 
   try {
@@ -205,22 +158,12 @@ export async function getBlogTagData(slug: string): Promise<BlogTagData | null> 
     const tag = tagResponse.tag;
 
     if (!tag?.slug || !tag.name) {
-      if (!canUseWordPressMockFallback()) {
-        throw new Error(`WordPress returned no tag for slug "${slug}".`);
-      }
-      return mapMockTagData(slug);
+      throw new Error(`WordPress returned no tag for slug "${slug}".`);
     }
 
     const posts = (postsResponse.posts?.nodes ?? [])
       .map(mapWpPost)
       .filter((post): post is TagArchivePost => Boolean(post));
-
-    if (!posts.length) {
-      if (!canUseWordPressMockFallback()) {
-        throw new Error(`WordPress returned no posts for tag "${slug}".`);
-      }
-      return mapMockTagData(slug);
-    }
 
     return {
       tag: {
@@ -228,8 +171,6 @@ export async function getBlogTagData(slug: string): Promise<BlogTagData | null> 
         name: tag.name,
         description: tag.description?.trim() || "",
         articleCount: tag.count ?? posts.length,
-        categorySlug:
-          mockContent.tags.find((item) => item.slug === tag.slug)?.categorySlug ?? undefined,
         seo: mapTagSeo(tag),
       },
       posts,
@@ -239,10 +180,7 @@ export async function getBlogTagData(slug: string): Promise<BlogTagData | null> 
         .map((item) => ({
           slug: item.slug!,
           name: item.name!,
-          articleCount:
-            item.count ??
-            mockContent.tags.find((mockTag) => mockTag.slug === item.slug)?.articleCount ??
-            0,
+          articleCount: item.count ?? 0,
         })),
       authorCount: new Set(
         (postsResponse.posts?.nodes ?? []).map((post) => post.author?.node?.slug ?? post.id),
@@ -250,11 +188,6 @@ export async function getBlogTagData(slug: string): Promise<BlogTagData | null> 
     };
   } catch (error) {
     handleWordPressError(`tag data (${slug})`, error);
-
-    if (!canUseWordPressMockFallback()) {
-      throw error;
-    }
-
-    return mapMockTagData(slug);
+    throw error;
   }
 }

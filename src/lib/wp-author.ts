@@ -1,9 +1,7 @@
 import type { Author, SeoData } from "@/types/content";
 import { GET_AUTHORS_QUERY, GET_AUTHOR_BY_SLUG_QUERY, GET_POSTS_QUERY } from "@/graphql/queries";
-import { getAuthorBySlug, getPostsByAuthorSlug, mockContent } from "@/lib/mock-data";
 import { buildSiteUrl } from "@/lib/site";
 import {
-  canUseWordPressMockFallback,
   getWordPressConfigurationError,
   handleWordPressError,
   isWordPressConfigured,
@@ -116,25 +114,19 @@ function mapWpPost(post: WpPost): AuthorArchivePost | null {
   };
 }
 
-function buildSeo(author: WpAuthor, fallback?: Author): SeoData {
-  const slug = author.slug ?? fallback?.slug ?? "autor";
-  const name = author.name ?? fallback?.name ?? "Autor SMZ";
-  const description =
-    author.description?.trim() || fallback?.shortBio || "Autor da equipe editorial da SMZ.";
+function buildSeo(author: WpAuthor): SeoData {
+  const slug = author.slug ?? "autor";
+  const name = author.name ?? "Autor SMZ";
+  const description = author.description?.trim() || "Autor da equipe editorial da SMZ.";
 
   return {
-    title: fallback?.seo.title || `${name} · SMZ`,
-    description: fallback?.seo.description || description,
-    canonical: fallback?.seo.canonical || buildSiteUrl(`/blog/autor/${slug}`),
-    ogImage: fallback?.seo.ogImage,
+    title: `${name} · SMZ`,
+    description,
+    canonical: buildSiteUrl(`/blog/autor/${slug}`),
   };
 }
 
-function buildStats(posts: AuthorArchivePost[], fallback?: Author): AuthorStatsItem[] {
-  if (fallback?.stats.length) {
-    return fallback.stats;
-  }
-
+function buildStats(posts: AuthorArchivePost[]): AuthorStatsItem[] {
   const latest = posts[0]?.date;
 
   return [
@@ -156,41 +148,9 @@ function buildStats(posts: AuthorArchivePost[], fallback?: Author): AuthorStatsI
   ];
 }
 
-function mapMockAuthorData(slug: string): BlogAuthorData | null {
-  const author = getAuthorBySlug(slug);
-
-  if (!author) {
-    return null;
-  }
-
-  const posts = getPostsByAuthorSlug(author.slug);
-
-  return {
-    author,
-    posts: posts.map((post) => {
-      const category = mockContent.categories.find((item) =>
-        post.categorySlugs.includes(item.slug),
-      );
-
-      return {
-        slug: post.slug,
-        title: post.title,
-        excerpt: post.excerpt,
-        date: post.date,
-        readingTime: post.readingTime,
-        categoryName: category?.name ?? "Blog",
-        featuredArtKey: post.featuredArtKey,
-      };
-    }),
-    schemaAuthor: author,
-  };
-}
-
 export async function getBlogAuthorStaticParams() {
   if (!isWordPressConfigured()) {
-    return canUseWordPressMockFallback()
-      ? mockContent.authors.map((author) => ({ slug: author.slug }))
-      : [];
+    return [];
   }
 
   try {
@@ -207,26 +167,16 @@ export async function getBlogAuthorStaticParams() {
       author.slug ? [{ slug: author.slug }] : [],
     );
 
-    return slugs.length
-      ? slugs
-      : canUseWordPressMockFallback()
-        ? mockContent.authors.map((author) => ({ slug: author.slug }))
-        : [];
+    return slugs;
   } catch (error) {
     handleWordPressError("author static params", error);
-    return canUseWordPressMockFallback()
-      ? mockContent.authors.map((author) => ({ slug: author.slug }))
-      : [];
+    return [];
   }
 }
 
 export async function getBlogAuthorData(slug: string): Promise<BlogAuthorData | null> {
   if (!isWordPressConfigured()) {
-    if (!canUseWordPressMockFallback()) {
-      throw getWordPressConfigurationError(`author ${slug}`);
-    }
-
-    return mapMockAuthorData(slug);
+    throw getWordPressConfigurationError(`author ${slug}`);
   }
 
   try {
@@ -252,43 +202,24 @@ export async function getBlogAuthorData(slug: string): Promise<BlogAuthorData | 
     const author = authorResponse.user;
 
     if (!author?.slug || !author.name) {
-      if (!canUseWordPressMockFallback()) {
-        throw new Error(`WordPress returned no author for slug "${slug}".`);
-      }
-      return mapMockAuthorData(slug);
+      throw new Error(`WordPress returned no author for slug "${slug}".`);
     }
-
-    const fallbackAuthor = getAuthorBySlug(author.slug);
     const posts = (postsResponse.posts?.nodes ?? [])
       .filter((post) => post.author?.node?.slug === author.slug)
       .map(mapWpPost)
       .filter((post): post is AuthorArchivePost => Boolean(post));
 
-    if (!posts.length) {
-      if (!canUseWordPressMockFallback()) {
-        throw new Error(`WordPress returned no posts for author "${slug}".`);
-      }
-      return mapMockAuthorData(slug);
-    }
-
     const authorData = {
       slug: author.slug,
       name: author.name,
       initials: getInitials(author.name),
-      role: fallbackAuthor?.role || "Equipe editorial",
-      shortBio:
-        author.description?.trim() ||
-        fallbackAuthor?.shortBio ||
-        "Autor da equipe editorial da SMZ.",
-      longBio:
-        fallbackAuthor?.longBio.length
-          ? fallbackAuthor.longBio
-          : [author.description?.trim() || "Especialista da equipe editorial da SMZ."],
-      expertise: fallbackAuthor?.expertise || [],
-      socials: fallbackAuthor?.socials || [],
-      stats: buildStats(posts, fallbackAuthor || undefined),
-      quote: fallbackAuthor?.quote,
-      seo: buildSeo(author, fallbackAuthor || undefined),
+      role: "Equipe editorial",
+      shortBio: author.description?.trim() || "Autor da equipe editorial da SMZ.",
+      longBio: [author.description?.trim() || "Especialista da equipe editorial da SMZ."],
+      expertise: [],
+      socials: [],
+      stats: buildStats(posts),
+      seo: buildSeo(author),
     };
 
     const schemaAuthor: Author = {
@@ -301,7 +232,7 @@ export async function getBlogAuthorData(slug: string): Promise<BlogAuthorData | 
       longBio: authorData.longBio,
       expertise: authorData.expertise,
       stats: authorData.stats,
-      quote: authorData.quote,
+      quote: undefined,
       socials: authorData.socials,
       seo: authorData.seo,
     };
@@ -313,11 +244,6 @@ export async function getBlogAuthorData(slug: string): Promise<BlogAuthorData | 
     };
   } catch (error) {
     handleWordPressError(`author data (${slug})`, error);
-
-    if (!canUseWordPressMockFallback()) {
-      throw error;
-    }
-
-    return mapMockAuthorData(slug);
+    throw error;
   }
 }

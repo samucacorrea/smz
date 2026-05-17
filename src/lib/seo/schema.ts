@@ -1,4 +1,4 @@
-import { mockContent } from "@/lib/mock-data";
+import { getSiteSeo } from "@/lib/site";
 import type { Author, Category, Post, SeoData, Tag } from "@/types/content";
 
 type BreadcrumbItem = {
@@ -12,7 +12,7 @@ type CollectionPageInput = {
   description: string;
 };
 
-const siteSeo = mockContent.seo.site;
+const siteSeo = getSiteSeo();
 
 export function buildOrganizationSchema() {
   return {

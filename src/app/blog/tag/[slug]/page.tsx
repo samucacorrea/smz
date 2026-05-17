@@ -7,7 +7,7 @@ import { MainLayout } from "@/components/layout/MainLayout";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { buildPageMetadata } from "@/lib/seo/metadata";
 import { buildBreadcrumbListSchema, buildCollectionPageSchema } from "@/lib/seo/schema";
-import { mockContent } from "@/lib/mock-data";
+import { getBlogSeo, getHomeSeo } from "@/lib/site";
 import { getBlogTagData } from "@/lib/wp-tag";
 import { formatDateLabel } from "@/utils/format";
 
@@ -44,8 +44,8 @@ export default async function TagPage({ params }: TagPageProps) {
       <main>
         <JsonLd
           data={buildBreadcrumbListSchema([
-            { name: "Início", url: mockContent.home.seo.canonical },
-            { name: "Blog", url: mockContent.seo.blog.canonical },
+            { name: "Início", url: getHomeSeo().canonical },
+            { name: "Blog", url: getBlogSeo().canonical },
             { name: "Tags" },
             { name: tag.name, url: tag.seo.canonical },
           ])}
@@ -84,14 +84,6 @@ export default async function TagPage({ params }: TagPageProps) {
                 <p className="def-body">{tag.description}</p>
                 <div className="def-foot">
                   <span>Tag · micro-assunto</span>
-                  {tag.categorySlug ? (
-                    <span className="belongs-to">
-                      ↳ pertence a{" "}
-                      <Link href={`/blog/categoria/${tag.categorySlug}`}>
-                        #{mockContent.categories.find((category) => category.slug === tag.categorySlug)?.name}
-                      </Link>
-                    </span>
-                  ) : null}
                 </div>
               </div>
             </div>
@@ -149,20 +141,19 @@ export default async function TagPage({ params }: TagPageProps) {
                     <h3>{post.title}</h3>
                     <p className="tc-excerpt">{post.excerpt}</p>
                     <div className="tc-tags">
-                      {post.tagSlugs.map((itemSlug) => {
-                        const item = mockContent.tags.find((tagItem) => tagItem.slug === itemSlug);
+                      {post.tags.map((item) => {
                         return (
                           <span
-                            key={itemSlug}
+                            key={item.slug}
                             className={[
                               "tc-mini-tag",
-                              itemSlug === tag.slug ? "this" : "",
+                              item.slug === tag.slug ? "this" : "",
                             ]
                               .filter(Boolean)
                               .join(" ")}
                           >
                             <span className="hash">#</span>
-                            {item?.name ?? itemSlug}
+                            {item.name}
                           </span>
                         );
                       })}

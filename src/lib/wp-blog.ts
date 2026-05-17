@@ -1,7 +1,5 @@
 import { GET_CATEGORIES_QUERY, GET_POSTS_QUERY } from "@/graphql/queries";
-import { mockContent } from "@/lib/mock-data";
 import {
-  canUseWordPressMockFallback,
   getWordPressConfigurationError,
   handleWordPressError,
   isWordPressConfigured,
@@ -96,34 +94,7 @@ function mapWpPostToArchivePost(post: WpPost): BlogArchivePost | null {
 
 export async function getBlogArchiveData(): Promise<BlogArchiveData> {
   if (!isWordPressConfigured()) {
-    if (!canUseWordPressMockFallback()) {
-      throw getWordPressConfigurationError("blog archive");
-    }
-
-    return {
-      posts: mockContent.posts.map((post) => {
-        const author = mockContent.authors.find((item) => item.slug === post.authorSlug);
-        const category = mockContent.categories.find((item) =>
-          post.categorySlugs.includes(item.slug),
-        );
-
-        return {
-          id: post.id,
-          slug: post.slug,
-          title: post.title,
-          excerpt: post.excerpt,
-          date: post.date,
-          readingTime: post.readingTime,
-          authorName: author?.name ?? "SMZ",
-          authorRole: author?.role ?? "Equipe editorial",
-          authorInitials: author?.initials ?? "SMZ",
-          categoryName: category?.name ?? "Blog",
-          categorySlug: category?.slug,
-          featuredArtKey: post.featuredArtKey,
-        };
-      }),
-      categoryCount: mockContent.categories.length,
-    };
+    throw getWordPressConfigurationError("blog archive");
   }
 
   try {
@@ -160,34 +131,6 @@ export async function getBlogArchiveData(): Promise<BlogArchiveData> {
     };
   } catch (error) {
     handleWordPressError("blog archive", error);
-
-    if (!canUseWordPressMockFallback()) {
-      throw error;
-    }
-
-    return {
-      posts: mockContent.posts.map((post) => {
-        const author = mockContent.authors.find((item) => item.slug === post.authorSlug);
-        const category = mockContent.categories.find((item) =>
-          post.categorySlugs.includes(item.slug),
-        );
-
-        return {
-          id: post.id,
-          slug: post.slug,
-          title: post.title,
-          excerpt: post.excerpt,
-          date: post.date,
-          readingTime: post.readingTime,
-          authorName: author?.name ?? "SMZ",
-          authorRole: author?.role ?? "Equipe editorial",
-          authorInitials: author?.initials ?? "SMZ",
-          categoryName: category?.name ?? "Blog",
-          categorySlug: category?.slug,
-          featuredArtKey: post.featuredArtKey,
-        };
-      }),
-      categoryCount: mockContent.categories.length,
-    };
+    throw error;
   }
 }

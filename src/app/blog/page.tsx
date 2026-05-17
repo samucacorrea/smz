@@ -9,15 +9,15 @@ import { PostGrid } from "@/components/blog/PostGrid";
 import { MainLayout } from "@/components/layout/MainLayout";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { getBlogArchiveData } from "@/lib/wp-blog";
-import { mockContent } from "@/lib/mock-data";
 import { buildPageMetadata } from "@/lib/seo/metadata";
 import { buildBreadcrumbListSchema, buildCollectionPageSchema } from "@/lib/seo/schema";
+import { getBlogSeo, getHomeSeo } from "@/lib/site";
 import { formatDateLabel } from "@/utils/format";
 
 export const dynamic = "force-dynamic";
 
 export function generateMetadata(): Metadata {
-  return buildPageMetadata(mockContent.seo.blog);
+  return buildPageMetadata(getBlogSeo());
 }
 
 export default async function BlogPage() {
@@ -55,15 +55,15 @@ export default async function BlogPage() {
       <main>
         <JsonLd
           data={buildBreadcrumbListSchema([
-            { name: "Início", url: mockContent.home.seo.canonical },
-            { name: "Blog", url: mockContent.seo.blog.canonical },
+            { name: "Início", url: getHomeSeo().canonical },
+            { name: "Blog", url: getBlogSeo().canonical },
           ])}
         />
         <JsonLd
           data={buildCollectionPageSchema({
-            seo: mockContent.seo.blog,
+            seo: getBlogSeo(),
             name: "Blog SMZ",
-            description: mockContent.seo.blog.description,
+            description: getBlogSeo().description,
           })}
         />
         <section className="blog-hero">

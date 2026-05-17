@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import { LeadCaptureProvider } from "@/components/lead/LeadCaptureProvider";
-import { mockContent } from "@/lib/mock-data";
+import { getSiteSeo } from "@/lib/site";
 import "@/styles/globals.css";
 
-const siteSeo = mockContent.seo.site;
+const siteSeo = getSiteSeo();
 const siteUrl = new URL(siteSeo.canonical);
 
 export const metadata: Metadata = {
