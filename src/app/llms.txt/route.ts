@@ -1,44 +1,71 @@
 import {
   GET_AUTHORS_QUERY,
   GET_CATEGORIES_QUERY,
+  GET_PAGES_QUERY,
+  GET_POSTS_QUERY,
 } from "@/graphql/queries";
 import { buildSiteUrl, getBlogSeo, getHomeSeo } from "@/lib/site";
 import { isWordPressConfigured } from "@/lib/wp-mode";
 import { wpFetch } from "@/lib/wp-client";
-import type { WpAuthorsQuery, WpCategoriesQuery } from "@/types/wp";
+import type { WpAuthorsQuery, WpCategoriesQuery, WpPagesQuery, WpPostsQuery } from "@/types/wp";
+
+export const dynamic = "force-dynamic";
 
 export async function GET() {
   let categoryLines: string[] = [];
   let authorLines: string[] = [];
+  let pageLines: string[] = [];
+  let postLines: string[] = [];
 
   if (isWordPressConfigured()) {
-    try {
-      const [categoriesResponse, authorsResponse] = await Promise.all([
-        wpFetch<WpCategoriesQuery>({
-          query: GET_CATEGORIES_QUERY,
-          variables: { first: 20 },
-          tags: ["wp:categories"],
-          revalidate: 300,
-        }),
-        wpFetch<WpAuthorsQuery>({
-          query: GET_AUTHORS_QUERY,
-          variables: { first: 20 },
-          tags: ["wp:authors"],
-          revalidate: 300,
-        }),
-      ]);
+    const [categoriesResult, authorsResult, pagesResult, postsResult] = await Promise.allSettled([
+      wpFetch<WpCategoriesQuery>({
+        query: GET_CATEGORIES_QUERY,
+        variables: { first: 20 },
+        tags: ["wp:categories"],
+        revalidate: 300,
+      }),
+      wpFetch<WpAuthorsQuery>({
+        query: GET_AUTHORS_QUERY,
+        variables: { first: 20 },
+        tags: ["wp:authors"],
+        revalidate: 300,
+      }),
+      wpFetch<WpPagesQuery>({
+        query: GET_PAGES_QUERY,
+        variables: { first: 50 },
+        tags: ["wp:pages"],
+        revalidate: 300,
+      }),
+      wpFetch<WpPostsQuery>({
+        query: GET_POSTS_QUERY,
+        variables: { first: 50 },
+        tags: ["wp:posts"],
+        revalidate: 300,
+      }),
+    ]);
 
-      categoryLines = (categoriesResponse.categories?.nodes ?? [])
-        .filter((category) => category.slug)
-        .map((category) => `- Category: ${buildSiteUrl(`/blog/categoria/${category.slug}`)}`);
+    const categoriesResponse =
+      categoriesResult.status === "fulfilled" ? categoriesResult.value : null;
+    const authorsResponse = authorsResult.status === "fulfilled" ? authorsResult.value : null;
+    const pagesResponse = pagesResult.status === "fulfilled" ? pagesResult.value : null;
+    const postsResponse = postsResult.status === "fulfilled" ? postsResult.value : null;
 
-      authorLines = (authorsResponse.users?.nodes ?? [])
-        .filter((author) => author.slug)
-        .map((author) => `- Author: ${buildSiteUrl(`/blog/autor/${author.slug}`)}`);
-    } catch {
-      categoryLines = [];
-      authorLines = [];
-    }
+    categoryLines = (categoriesResponse?.categories?.nodes ?? [])
+      .filter((category) => category.slug)
+      .map((category) => `- Category: ${buildSiteUrl(`/blog/categoria/${category.slug}`)}`);
+
+    authorLines = (authorsResponse?.users?.nodes ?? [])
+      .filter((author) => author.slug)
+      .map((author) => `- Author: ${buildSiteUrl(`/blog/autor/${author.slug}`)}`);
+
+    pageLines = (pagesResponse?.pages?.nodes ?? [])
+      .filter((page) => page.slug && page.slug !== "home" && page.slug !== "blog")
+      .map((page) => `- Page: ${buildSiteUrl(`/${page.slug}`)}`);
+
+    postLines = (postsResponse?.posts?.nodes ?? [])
+      .filter((post) => post.slug)
+      .map((post) => `- Post: ${buildSiteUrl(`/blog/${post.slug}`)}`);
   }
 
   const lines = [
@@ -53,6 +80,8 @@ export async function GET() {
     "Key sections:",
     `- Home: ${getHomeSeo().canonical}`,
     `- Blog: ${getBlogSeo().canonical}`,
+    ...pageLines,
+    ...postLines,
     ...categoryLines,
     ...authorLines,
     "",

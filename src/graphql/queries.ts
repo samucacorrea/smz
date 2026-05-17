@@ -60,6 +60,7 @@ export const PAGE_BASE_FIELDS = /* GraphQL */ `
   slug
   title
   content
+  modified
 `;
 
 export const CATEGORY_BASE_FIELDS = /* GraphQL */ `
