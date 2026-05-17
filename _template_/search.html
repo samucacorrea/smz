@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Resultados de busca — SMZ</title>
+<meta name="description" content="Encontre artigos, cases e serviços da SMZ que respondem à sua pergunta." />
+<meta name="robots" content="noindex, follow" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<!-- ====================== HEADER ====================== -->
+<header class="site-header">
+  <div class="container nav">
+    <a href="index.html" class="brand" aria-label="SMZ — Início">
+      <img class="logo-dark" src="assets/logo-dark.png" alt="SMZ" />
+      <img class="logo-light" src="assets/logo-light.png" alt="SMZ" />
+    </a>
+    <nav aria-label="Principal">
+      <ul class="nav-links">
+        <li><a href="index.html#servicos">Serviços</a></li>
+        <li><a href="index.html#resultados">Resultados</a></li>
+        <li><a href="index.html#processo">Processo</a></li>
+        <li><a href="blog/index.html">Blog</a></li>
+        <li><a href="index.html#contato">Contato</a></li>
+      </ul>
+    </nav>
+    <div class="nav-actions">
+      <button class="theme-toggle" id="themeToggle" aria-label="Alternar tema">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      </button>
+      <a href="https://wa.me/" target="_blank" rel="noopener" class="btn btn-primary btn-sm">
+        Falar no WhatsApp
+        <svg class="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+  </div>
+</header>
+
+<main>
+
+<!-- ====================== SEARCH HERO ====================== -->
+<section class="search-hero">
+  <div class="hero-bg" aria-hidden="true"></div>
+  <div class="container" style="position: relative;">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="index.html">Início</a>
+      <span class="sep">/</span>
+      <span class="current">Busca</span>
+    </nav>
+
+    <span class="search-eyebrow">Resultados para a sua busca</span>
+    <h1>Você procurou por<br /><em>algo sobre</em> <span class="query-term" id="queryDisplay">IA</span>.</h1>
+
+    <!-- Big search bar -->
+    <form class="search-big" role="search" onsubmit="event.preventDefault(); runSearch(this.q.value);">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+      <input type="search" name="q" id="searchInput" placeholder="Buscar artigos, cases, serviços..." value="IA" autocomplete="off" />
+      <button type="button" class="clear-btn" id="clearBtn" aria-label="Limpar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+      <button type="submit" class="submit-btn">Buscar</button>
+    </form>
+
+    <div class="search-summary">
+      <span class="count-big"><span class="accent" id="resultCount">14</span> resultados encontrados</span>
+      <span class="took">em <strong id="searchTime">42</strong> ms</span>
+      <span>Ordenado por relevância</span>
+    </div>
+
+    <!-- Type tabs -->
+    <div class="search-tabs" role="tablist">
+      <button class="search-tab active" data-type="all" role="tab" aria-selected="true">Todos <span class="count">14</span></button>
+      <button class="search-tab" data-type="post" role="tab">Artigos <span class="count">8</span></button>
+      <button class="search-tab" data-type="case" role="tab">Cases <span class="count">3</span></button>
+      <button class="search-tab" data-type="servico" role="tab">Serviços <span class="count">2</span></button>
+      <button class="search-tab" data-type="categoria" role="tab">Categorias <span class="count">1</span></button>
+    </div>
+  </div>
+</section>
+
+<!-- ====================== RESULTS ====================== -->
+<section class="results-list">
+  <div class="container">
+    <div class="search-grid">
+      <!-- ============ MAIN COLUMN ============ -->
+      <div>
+        <div id="resultsContainer">
+
+          <!-- Result 1 — Post -->
+          <article class="result-item" data-type="post">
+            <div class="result-type"><span class="badge">Artigo</span></div>
+            <div class="result-content">
+              <div class="result-breadcrumb">
+                <span>ag.smz</span><span class="sep">/</span>
+                <span>blog</span><span class="sep">/</span>
+                <span>como-a-ia-acelera-resultados</span>
+              </div>
+              <h3 class="result-title"><a href="blog/como-a-ia-acelera-resultados.html">Como a <mark>IA</mark> está acelerando os resultados dos nossos clientes</a></h3>
+              <p class="result-snippet">
+                Em 18 meses, a <mark>IA</mark> deixou de ser pauta de tendência e virou parte do nosso processo. Este texto descreve, sem mistificação, o que mudou na operação da SMZ — e o que escolhemos não automatizar, mesmo quando a tecnologia já permite...
+              </p>
+              <div class="result-meta">
+                <span>14 mai 2026</span>
+                <span class="meta-sep">·</span>
+                <span>8 min</span>
+                <span class="meta-sep">·</span>
+                <span>Marina Souza</span>
+                <span class="meta-sep">·</span>
+                <span style="color: var(--green);">Match no título</span>
+              </div>
+            </div>
+            <a href="blog/como-a-ia-acelera-resultados.html" class="result-arrow" aria-label="Abrir resultado">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+            </a>
+          </article>
+
+          <!-- Result 2 — Categoria -->
+          <article class="result-item" data-type="categoria">
+            <div class="result-type"><span class="badge">Categoria</span></div>
+            <div class="result-content">
+              <div class="result-breadcrumb">
+                <span>ag.smz</span><span class="sep">/</span>
+                <span>blog</span><span class="sep">/</span>
+                <span>categoria</span><span class="sep">/</span>
+                <span>ia</span>
+              </div>
+              <h3 class="result-title"><a href="blog/categoria/ia.html"><mark>IA</mark> aplicada ao marketing de verdade</a></h3>
+              <p class="result-snippet">
+                Página de categoria · 8 artigos sobre <mark>IA</mark> na operação de marketing: automação de mídia, criação assistida, análise de campanhas e onde a <mark>IA</mark> não substitui o humano.
+              </p>
+              <div class="result-meta">
+                <span>Atualizado em 14 mai 2026</span>
+                <span class="meta-sep">·</span>
+                <span>8 artigos</span>
+              </div>
+            </div>
+            <a href="blog/categoria/ia.html" class="result-arrow" aria-label="Abrir resultado">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+            </a>
+          </article>
+
+          <!-- Result 3 — Case -->
+          <article class="result-item" data-type="case">
+            <div class="result-type"><span class="badge type-case">Case</span></div>
+            <div class="result-content">
+              <div class="result-breadcrumb">
+                <span>ag.smz</span><span class="sep">/</span>
+                <span>blog</span><span class="sep">/</span>
+                <span>case-roi-3x</span>
+              </div>
+              <h3 class="result-title"><a href="#">O case que multiplicou o ROI em 3x usando <mark>IA</mark> na criação de campanhas</a></h3>
+              <p class="result-snippet">
+                Como um cliente B2B passou de 1,4x para 4,2x de retorno sobre mídia em 90 dias, combinando <mark>IA</mark> generativa, hipóteses humanas e um processo de testes mais disciplinado. ROAS, CAC e o método replicável.
+              </p>
+              <div class="result-meta">
+                <span>02 mai 2026</span>
+                <span class="meta-sep">·</span>
+                <span>6 min</span>
+                <span class="meta-sep">·</span>
+                <span>Felipe Almeida</span>
+              </div>
+            </div>
+            <a href="#" class="result-arrow" aria-label="Abrir resultado">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+            </a>
+          </article>
+
+          <!-- Result 4 — Serviço -->
+          <article class="result-item" data-type="servico">
+            <div class="result-type"><span class="badge type-servico">Serviço</span></div>
+            <div class="result-content">
+              <div class="result-breadcrumb">
+                <span>ag.smz</span><span class="sep">/</span>
+                <span>servicos</span><span class="sep">/</span>
+                <span>automacao-crm</span>
+              </div>
+              <h3 class="result-title"><a href="index.html#servicos">Automação &amp; CRM com <mark>IA</mark></a></h3>
+              <p class="result-snippet">
+                Implantação de HubSpot, RD ou n8n com agentes de <mark>IA</mark>, fluxos de nutrição, qualificação automatizada e reativação — para que o lead não seja perdido e o cliente não seja esquecido.
+              </p>
+              <div class="result-meta">
+                <span>Serviço ativo</span>
+                <span class="meta-sep">·</span>
+                <span>Diagnóstico em 1 semana</span>
+              </div>
+            </div>
+            <a href="index.html#servicos" class="result-arrow" aria-label="Abrir resultado">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+            </a>
+          </article>
+
+          <!-- Result 5 — Post -->
+          <article class="result-item" data-type="post">
+            <div class="result-type"><span class="badge">Artigo</span></div>
+            <div class="result-content">
+              <div class="result-breadcrumb">
+                <span>ag.smz</span><span class="sep">/</span>
+                <span>blog</span><span class="sep">/</span>
+                <span>5-automacoes-ia</span>
+              </div>
+              <h3 class="result-title"><a href="#">5 automações de marketing que pagaram o investimento em <mark>IA</mark></a></h3>
+              <p class="result-snippet">
+                Os fluxos que mais retornam tempo na operação — qualificação, briefing, follow-up, relatório e produção criativa. Quanto cada um economiza por mês na sua agência ou time interno.
+              </p>
+              <div class="result-meta">
+                <span>10 nov 2025</span>
+                <span class="meta-sep">·</span>
+                <span>7 min</span>
+                <span class="meta-sep">·</span>
+                <span>Pedro Vilela</span>
+              </div>
+            </div>
+            <a href="#" class="result-arrow" aria-label="Abrir resultado">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+            </a>
+          </article>
+
+          <!-- Result 6 — Post -->
+          <article class="result-item" data-type="post">
+            <div class="result-type"><span class="badge">Artigo</span></div>
+            <div class="result-content">
+              <div class="result-breadcrumb">
+                <span>ag.smz</span><span class="sep">/</span>
+                <span>blog</span><span class="sep">/</span>
+                <span>agente-briefing</span>
+              </div>
+              <h3 class="result-title"><a href="#">Construímos um agente de <mark>IA</mark> para fazer briefing — eis o que aprendemos</a></h3>
+              <p class="result-snippet">
+                Seis meses depois do experimento: o que funciona, o que não funciona e onde o agente nos surpreendeu (para melhor e para pior). Stack, custos e o que mantemos rodando até hoje.
+              </p>
+              <div class="result-meta">
+                <span>25 set 2025</span>
+                <span class="meta-sep">·</span>
+                <span>11 min</span>
+                <span class="meta-sep">·</span>
+                <span>Marina Souza</span>
+              </div>
+            </div>
+            <a href="#" class="result-arrow" aria-label="Abrir resultado">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+            </a>
+          </article>
+
+          <!-- Result 7 — Post -->
+          <article class="result-item" data-type="post">
+            <div class="result-type"><span class="badge">Artigo</span></div>
+            <div class="result-content">
+              <div class="result-breadcrumb">
+                <span>ag.smz</span><span class="sep">/</span>
+                <span>blog</span><span class="sep">/</span>
+                <span>criativos-em-escala-ia</span>
+              </div>
+              <h3 class="result-title"><a href="#">Como produzir 40 variações de criativo por sprint sem perder qualidade</a></h3>
+              <p class="result-snippet">
+                A divisão de trabalho entre direção de arte humana e expansão por <mark>IA</mark>. Templates, prompts e o controle de qualidade que evita campanha &ldquo;cara de <mark>IA</mark>&rdquo; em Meta Ads.
+              </p>
+              <div class="result-meta">
+                <span>12 ago 2025</span>
+                <span class="meta-sep">·</span>
+                <span>9 min</span>
+                <span class="meta-sep">·</span>
+                <span>Felipe Almeida</span>
+              </div>
+            </div>
+            <a href="#" class="result-arrow" aria-label="Abrir resultado">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+            </a>
+          </article>
+
+          <!-- Result 8 — Case -->
+          <article class="result-item" data-type="case">
+            <div class="result-type"><span class="badge type-case">Case</span></div>
+            <div class="result-content">
+              <div class="result-breadcrumb">
+                <span>ag.smz</span><span class="sep">/</span>
+                <span>blog</span><span class="sep">/</span>
+                <span>loja-verde-cac</span>
+              </div>
+              <h3 class="result-title"><a href="#">Loja Verde: -41% de CAC com a mesma verba de mídia (usando <mark>IA</mark>)</a></h3>
+              <p class="result-snippet">
+                Como ajustamos a alocação entre prospecção e remarketing num e-commerce de moda, com apoio de modelos de previsão por <mark>IA</mark>, para virar o custo de aquisição em 6 meses.
+              </p>
+              <div class="result-meta">
+                <span>12 dez 2025</span>
+                <span class="meta-sep">·</span>
+                <span>6 min</span>
+                <span class="meta-sep">·</span>
+                <span>Felipe Almeida</span>
+              </div>
+            </div>
+            <a href="#" class="result-arrow" aria-label="Abrir resultado">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+            </a>
+          </article>
+
+          <!-- Result 9 — Post -->
+          <article class="result-item" data-type="post">
+            <div class="result-type"><span class="badge">Artigo</span></div>
+            <div class="result-content">
+              <div class="result-breadcrumb">
+                <span>ag.smz</span><span class="sep">/</span>
+                <span>blog</span><span class="sep">/</span>
+                <span>ia-substituir-redator</span>
+              </div>
+              <h3 class="result-title"><a href="#">A <mark>IA</mark> vai substituir o redator? A resposta honesta de quem contrata os dois</a></h3>
+              <p class="result-snippet">
+                Os tipos de texto em que a <mark>IA</mark> ganha, os tipos em que ela perde feio, e onde a SMZ aceita pagar a hora cara do redator humano sem hesitar. Tabela de decisão e exemplos reais.
+              </p>
+              <div class="result-meta">
+                <span>22 mai 2025</span>
+                <span class="meta-sep">·</span>
+                <span>10 min</span>
+                <span class="meta-sep">·</span>
+                <span>Marina Souza</span>
+              </div>
+            </div>
+            <a href="#" class="result-arrow" aria-label="Abrir resultado">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+            </a>
+          </article>
+
+          <!-- Result 10 — Servico -->
+          <article class="result-item" data-type="servico">
+            <div class="result-type"><span class="badge type-servico">Serviço</span></div>
+            <div class="result-content">
+              <div class="result-breadcrumb">
+                <span>ag.smz</span><span class="sep">/</span>
+                <span>servicos</span><span class="sep">/</span>
+                <span>consultoria</span>
+              </div>
+              <h3 class="result-title"><a href="index.html#servicos">Consultoria Estratégica + Adoção de <mark>IA</mark></a></h3>
+              <p class="result-snippet">
+                Para times internos que já operam mas precisam de direção em <mark>IA</mark>: mapeamento de processos, ICP, mix de canais, métricas e governança trimestre a trimestre. Fractional CMO + roadmap de automação.
+              </p>
+              <div class="result-meta">
+                <span>Serviço ativo</span>
+                <span class="meta-sep">·</span>
+                <span>Contratos a partir de 3 meses</span>
+              </div>
+            </div>
+            <a href="index.html#servicos" class="result-arrow" aria-label="Abrir resultado">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+            </a>
+          </article>
+
+        </div>
+
+        <!-- Empty state (hidden by default) -->
+        <div class="search-empty" id="emptyState" style="display:none;">
+          <p class="empty-glyph" aria-hidden="true">0<span class="accent">.</span></p>
+          <h2>Nada encontrado por aqui.</h2>
+          <p>Tente termos mais curtos, palavras-chave diferentes ou explore as buscas populares abaixo. Se está procurando algo específico, fale com a gente — provavelmente temos uma resposta direta.</p>
+          <div class="suggest-row">
+            <a href="?q=tr%C3%A1fego">tráfego pago</a>
+            <a href="?q=roas">roas</a>
+            <a href="?q=meta+ads">meta ads</a>
+            <a href="?q=cac">cac</a>
+            <a href="?q=seo">seo</a>
+            <a href="?q=automa%C3%A7%C3%A3o">automação</a>
+          </div>
+          <div style="margin-top: 36px;">
+            <a href="https://wa.me/" class="btn btn-primary" target="_blank" rel="noopener">
+              Falar direto com a SMZ
+              <svg class="arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </div>
+
+        <!-- Pagination -->
+        <nav class="pagination" aria-label="Paginação">
+          <span class="small">Mostrando <strong style="color: var(--text); font-weight: 500;">1–10</strong> de 14 resultados</span>
+          <div class="pages">
+            <a href="#" class="page" aria-label="Anterior" style="opacity: 0.35; pointer-events: none;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+            </a>
+            <a href="#" class="page current" aria-current="page">1</a>
+            <a href="#" class="page">2</a>
+            <a href="#" class="page" aria-label="Próxima">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+            </a>
+          </div>
+        </nav>
+      </div>
+
+      <!-- ============ ASIDE ============ -->
+      <aside class="search-aside" aria-label="Sugestões">
+        <div class="aside-card">
+          <p class="label">Buscas populares</p>
+          <div class="aside-tag-cloud">
+            <a href="?q=ia" class="hot">IA</a>
+            <a href="?q=tr%C3%A1fego">tráfego</a>
+            <a href="?q=roas">ROAS</a>
+            <a href="?q=cac">CAC</a>
+            <a href="?q=meta+ads">meta ads</a>
+            <a href="?q=seo">SEO</a>
+            <a href="?q=hubspot">hubspot</a>
+            <a href="?q=ecommerce">e-commerce</a>
+            <a href="?q=funil">funil</a>
+            <a href="?q=cro">CRO</a>
+          </div>
+        </div>
+
+        <div class="aside-card">
+          <p class="label">Categorias mais relevantes</p>
+          <ul>
+            <li><a href="blog/categoria/ia.html"><span>IA</span><span class="count">8</span></a></li>
+            <li><a href="#"><span>Tráfego Pago</span><span class="count">12</span></a></li>
+            <li><a href="#"><span>Cases</span><span class="count">5</span></a></li>
+            <li><a href="#"><span>Estratégia</span><span class="count">9</span></a></li>
+          </ul>
+        </div>
+
+        <div class="aside-card">
+          <p class="label">Atalhos</p>
+          <ul>
+            <li><a href="index.html#servicos"><span>Todos os serviços</span><span class="count">→</span></a></li>
+            <li><a href="index.html#processo"><span>Metodologia R/4</span><span class="count">→</span></a></li>
+            <li><a href="blog/index.html"><span>Blog completo</span><span class="count">→</span></a></li>
+            <li><a href="index.html#contato"><span>Diagnóstico grátis</span><span class="count">→</span></a></li>
+          </ul>
+        </div>
+
+        <div class="aside-card" style="background: var(--green); color: #0A0A0A; border-color: var(--green);">
+          <p class="label" style="color: #1A2E0A;">Não achou?</p>
+          <p style="font-family: var(--ff-display); font-size: 18px; font-weight: 600; letter-spacing: -0.015em; line-height: 1.25; color: #0A0A0A;">Fala com a SMZ em 1 minuto.</p>
+          <p style="font-size: 13px; color: #1A2E0A; margin-top: 10px; line-height: 1.5;">Diagnóstico de 20 minutos sem custo. Talvez o que você procura nem seja conteúdo — seja uma conversa.</p>
+          <a href="https://wa.me/" target="_blank" rel="noopener" class="btn btn-dark btn-sm" style="margin-top: 18px; width: 100%; justify-content: center; background: #0A0A0A; color: #F5F5F0;">
+            Abrir WhatsApp
+            <svg class="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ====================== FOOTER ====================== -->
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <img class="logo-dark" src="assets/logo-dark.png" alt="SMZ" />
+        <img class="logo-light" src="assets/logo-light.png" alt="SMZ" style="display:none;" />
+        <p>Agência de marketing focada em previsibilidade de receita. Trabalhamos com poucas marcas, em profundidade, e medimos tudo.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Serviços</h4>
+        <ul>
+          <li><a href="index.html#servicos">Tráfego pago</a></li>
+          <li><a href="index.html#servicos">SEO &amp; conteúdo</a></li>
+          <li><a href="index.html#servicos">Redes sociais</a></li>
+          <li><a href="index.html#servicos">Sites &amp; LPs</a></li>
+          <li><a href="index.html#servicos">Automação &amp; CRM</a></li>
+          <li><a href="index.html#servicos">Consultoria</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Agência</h4>
+        <ul>
+          <li><a href="index.html#resultados">Resultados</a></li>
+          <li><a href="index.html#processo">Metodologia R/4</a></li>
+          <li><a href="index.html#depoimentos">Depoimentos</a></li>
+          <li><a href="blog/index.html">Blog</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Contato</h4>
+        <ul>
+          <li><a href="https://instagram.com/ag.smz" target="_blank" rel="noopener">@ag.smz</a></li>
+          <li><a href="https://wa.me/" target="_blank" rel="noopener">WhatsApp</a></li>
+          <li><a href="mailto:contato@ag.smz">contato@ag.smz</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-mark" aria-hidden="true">
+      Resultado.<span class="accent">.</span>
+    </div>
+
+    <div class="footer-bottom">
+      <span>© 2026 SMZ Agência. Todos os direitos reservados.</span>
+      <div class="legals">
+        <a href="#">Política de privacidade</a>
+        <a href="#">Termos</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // ============ Theme toggle ============
+  (function () {
+    const root = document.documentElement;
+    const KEY = "smz-theme";
+    const saved = localStorage.getItem(KEY);
+    if (saved === "light" || saved === "dark") root.setAttribute("data-theme", saved);
+    function syncFooterLogo() {
+      const theme = root.getAttribute("data-theme");
+      document.querySelectorAll(".footer-brand .logo-dark").forEach(el => el.style.display = theme === "light" ? "none" : "block");
+      document.querySelectorAll(".footer-brand .logo-light").forEach(el => el.style.display = theme === "light" ? "block" : "none");
+    }
+    syncFooterLogo();
+    document.getElementById("themeToggle").addEventListener("click", () => {
+      const next = root.getAttribute("data-theme") === "light" ? "dark" : "light";
+      root.setAttribute("data-theme", next);
+      localStorage.setItem(KEY, next);
+      syncFooterLogo();
+    });
+  })();
+
+  // ============ Search state — read ?q= from URL ============
+  (function () {
+    const params = new URLSearchParams(window.location.search);
+    const q = params.get("q");
+    const input = document.getElementById("searchInput");
+    const display = document.getElementById("queryDisplay");
+    if (q) {
+      input.value = q;
+      display.textContent = q;
+      document.title = `Resultados para "${q}" — SMZ`;
+      highlightMatches(q);
+    }
+  })();
+
+  function escapeHtml(s) { return s.replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c])); }
+  function escapeRegex(s) { return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); }
+
+  function highlightMatches(query) {
+    if (!query) return;
+    const re = new RegExp(`(${escapeRegex(query)})`, "gi");
+    document.querySelectorAll(".result-title a, .result-snippet").forEach(node => {
+      // Strip existing marks back to plain text first
+      const plain = node.innerHTML.replace(/<\/?mark>/g, "");
+      node.innerHTML = plain.replace(re, "<mark>$1</mark>");
+    });
+  }
+
+  function runSearch(q) {
+    q = (q || "").trim();
+    if (!q) return;
+    const url = new URL(window.location.href);
+    url.searchParams.set("q", q);
+    window.location.href = url.toString();
+  }
+
+  // ============ Tab filter ============
+  (function () {
+    const tabs = document.querySelectorAll(".search-tab");
+    const items = document.querySelectorAll(".result-item");
+    const empty = document.getElementById("emptyState");
+    const container = document.getElementById("resultsContainer");
+
+    tabs.forEach(t => t.addEventListener("click", () => {
+      tabs.forEach(x => { x.classList.remove("active"); x.setAttribute("aria-selected", "false"); });
+      t.classList.add("active");
+      t.setAttribute("aria-selected", "true");
+      const type = t.getAttribute("data-type");
+      let shown = 0;
+      items.forEach(item => {
+        const show = type === "all" || item.getAttribute("data-type") === type;
+        item.style.display = show ? "" : "none";
+        if (show) shown++;
+      });
+      empty.style.display = shown === 0 ? "block" : "none";
+      container.style.display = shown === 0 ? "none" : "";
+    }));
+  })();
+
+  // ============ Clear button ============
+  (function () {
+    const input = document.getElementById("searchInput");
+    const clear = document.getElementById("clearBtn");
+    function syncClear() { clear.style.display = input.value ? "inline-flex" : "none"; }
+    input.addEventListener("input", syncClear);
+    clear.addEventListener("click", () => { input.value = ""; syncClear(); input.focus(); });
+    syncClear();
+  })();
+</script>
+</body>
+</html>

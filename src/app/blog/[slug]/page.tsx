@@ -1,0 +1,236 @@
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { PostArtwork } from "@/components/blog/PostArtwork";
+import { MainLayout } from "@/components/layout/MainLayout";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { ArticleBody } from "@/components/single/ArticleBody";
+import { ArticleHeader } from "@/components/single/ArticleHeader";
+import { AuthorBio } from "@/components/single/AuthorBio";
+import { RelatedPosts } from "@/components/single/RelatedPosts";
+import { ShareBar } from "@/components/single/ShareBar";
+import { TableOfContents } from "@/components/single/TableOfContents";
+import { mockContent } from "@/lib/mock-data";
+import { buildPageMetadata } from "@/lib/seo/metadata";
+import { buildArticleSchema, buildBreadcrumbListSchema, buildPersonSchema } from "@/lib/seo/schema";
+import { getBlogSingleData, getBlogSingleStaticParams } from "@/lib/wp-single";
+import { formatDateLabel } from "@/utils/format";
+
+type BlogPostPageProps = {
+  params: Promise<{
+    slug: string;
+  }>;
+};
+
+export async function generateStaticParams() {
+  return getBlogSingleStaticParams();
+}
+
+export async function generateMetadata({ params }: BlogPostPageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const post = await getBlogSingleData(slug);
+
+  if (!post) {
+    notFound();
+  }
+
+  return buildPageMetadata(post.seo, { type: "article" });
+}
+
+export default async function BlogPostPage({ params }: BlogPostPageProps) {
+  const { slug } = await params;
+  const post = await getBlogSingleData(slug);
+
+  if (!post) {
+    notFound();
+  }
+
+  return (
+    <MainLayout>
+      <main>
+        <JsonLd
+          data={buildBreadcrumbListSchema([
+            { name: "Início", url: mockContent.home.seo.canonical },
+            { name: "Blog", url: mockContent.seo.blog.canonical },
+            {
+              name: post.primaryCategory.name,
+              url: `${mockContent.home.seo.canonical}blog/categoria/${post.primaryCategory.slug}`,
+            },
+            { name: post.title, url: post.seo.canonical },
+          ])}
+        />
+        <JsonLd data={buildPersonSchema(post.schemaAuthor)} />
+        <JsonLd data={buildArticleSchema(post.schemaPost, post.schemaAuthor, post.schemaCategory)} />
+        <article>
+          <ArticleHeader
+            category={{
+              href: post.primaryCategory.href,
+              label: post.primaryCategory.name,
+            }}
+            date={formatDateLabel(post.date)}
+            dateTime={post.date}
+            description={post.excerpt}
+            readingTime={post.readingTime}
+            title={post.title}
+            editedAt={formatDateLabel(post.modified)}
+            author={{
+              href: post.author.href,
+              initials: post.author.initials,
+              name: post.author.name,
+              role: post.author.role,
+            }}
+          />
+
+          <div className="article-cover">
+            <div className="cover-frame" role="img" aria-label={post.title}>
+              <PostArtwork artKey={post.featuredArtKey} label={post.primaryCategory.name} />
+            </div>
+          </div>
+
+          <section className="article-body">
+            <div className="container">
+              <div className="article-grid">
+                <aside className="col-left">
+                  {post.headings.length ? <TableOfContents items={post.headings} /> : null}
+                  <ShareBar
+                    title={post.title}
+                    url={post.seo.canonical}
+                    items={[
+                      {
+                        platform: "linkedin",
+                        label: "Compartilhar no LinkedIn",
+                        icon: (
+                          <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M19 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2zM8.3 18.3H5.7V9.7h2.7v8.6zM7 8.6a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm11.3 9.7h-2.7v-4.2c0-1-.4-1.7-1.3-1.7s-1.4.6-1.4 1.7v4.2H10.3V9.7h2.6v1.2c.4-.6 1.2-1.4 2.6-1.4 1.9 0 2.8 1.2 2.8 3.4v5.4z" />
+                          </svg>
+                        ),
+                      },
+                      {
+                        platform: "x",
+                        label: "Compartilhar no X",
+                        icon: (
+                          <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M17.5 3h3l-7 8 8 10h-6l-5-6-5.5 6h-3l7.5-8.5L2 3h6l4.5 5.5L17.5 3zm-1 16h1.5L7.5 5H6l10.5 14z" />
+                          </svg>
+                        ),
+                      },
+                      {
+                        platform: "whatsapp",
+                        label: "Compartilhar no WhatsApp",
+                        icon: (
+                          <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm5.7 14.2c-.2.7-1.3 1.3-1.8 1.4-.5.1-1.1.1-1.8-.1-.4-.1-1-.3-1.7-.6-3-1.3-4.9-4.3-5-4.5-.1-.2-1.2-1.6-1.2-3 0-1.5.8-2.2 1-2.5.3-.3.6-.4.9-.4h.6c.2 0 .5-.1.7.5l1 2.3c.1.2.1.4 0 .6l-.3.4-.3.4c-.1.2-.3.3-.1.6.1.3.7 1.1 1.5 1.8 1 .9 1.8 1.2 2.1 1.3.3.1.5.1.6-.1l.8-1c.2-.3.4-.2.6-.1l1.9 1c.3.2.5.3.6.4.1.2.1.8-.1 1.5z" />
+                          </svg>
+                        ),
+                      },
+                      {
+                        platform: "copy",
+                        label: "Copiar link",
+                        icon: (
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.5 1.5" />
+                            <path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7L12 19" />
+                          </svg>
+                        ),
+                      },
+                    ]}
+                  />
+                </aside>
+
+                <ArticleBody
+                  tags={post.tags}
+                  cta={{
+                    title: "Quer aplicar isso na sua operação?",
+                    description:
+                      "Diagnóstico de 20 minutos para mapear gargalos de aquisição, operação e conteúdo.",
+                    href: "https://wa.me/",
+                    label: "Falar no WhatsApp",
+                  }}
+                >
+                  {post.contentHtml ? (
+                    <div dangerouslySetInnerHTML={{ __html: post.contentHtml }} />
+                  ) : post.mockPost ? (
+                    <>
+                      <p className="lead">{post.mockPost.content}</p>
+                      <h2 id="ponto-de-partida">Por que esse assunto importa agora</h2>
+                      <p>
+                        A operação de marketing ficou mais complexa, mais rápida e mais cara.
+                        O ganho real não vem de opinião genérica, mas de ciclos curtos de teste,
+                        leitura e decisão.
+                      </p>
+                      <h2 id="operacao">Onde isso entra na operação</h2>
+                      <p>
+                        Dentro da SMZ, esse tema aparece em planejamento, mídia, CRM, conteúdo e
+                        análise. A lógica é simples: reduzir ruído, aumentar velocidade e manter a
+                        decisão humana no centro.
+                      </p>
+                      <blockquote>
+                        O objetivo não é automatizar tudo. É descobrir onde a máquina acelera e
+                        onde o humano protege resultado.
+                        <cite>— {post.author.name}</cite>
+                      </blockquote>
+                      <h2 id="aprendizados">O que aprendemos na prática</h2>
+                      <ul>
+                        <li>Processo ruim continua ruim, só mais rápido.</li>
+                        <li>Clareza operacional costuma gerar mais resultado que volume bruto.</li>
+                        <li>Decisão estratégica não deve ser terceirizada para ferramenta.</li>
+                      </ul>
+                      {post.mockPost.faq?.length ? (
+                        <>
+                          <h2 id="faq">Perguntas frequentes</h2>
+                          {post.mockPost.faq.map((item) => (
+                            <div key={item.question}>
+                              <h3>{item.question}</h3>
+                              <p>{item.answer}</p>
+                            </div>
+                          ))}
+                        </>
+                      ) : null}
+                    </>
+                  ) : null}
+
+                  <AuthorBio
+                    initials={post.author.initials}
+                    name={post.author.name}
+                    bio={post.author.bio}
+                    href={post.author.href}
+                  />
+                </ArticleBody>
+
+                <aside className="col-right" aria-label="Lateral">
+                  <div className="rail-card">
+                    <p className="rail-label">Diagnóstico SMZ</p>
+                    <h4>Vale a pena começar com IA no seu marketing agora?</h4>
+                    <p>
+                      Uma conversa curta para identificar pontos de aceleração sem forçar
+                      ferramenta onde ela não cabe.
+                    </p>
+                    <a href="https://wa.me/" target="_blank" rel="noopener noreferrer" className="btn btn-primary btn-sm">
+                      Agendar conversa
+                      <svg className="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M5 12h14M13 5l7 7-7 7" />
+                      </svg>
+                    </a>
+                  </div>
+                </aside>
+              </div>
+            </div>
+          </section>
+        </article>
+
+        <RelatedPosts
+          items={post.relatedPosts.map((item) => ({
+            href: item.href,
+            category: item.category,
+            date: formatDateLabel(item.date),
+            readingTime: item.readingTime,
+            title: item.title,
+            excerpt: item.excerpt,
+            author: item.author,
+            cover: <PostArtwork artKey={item.featuredArtKey} label={item.category} />,
+            readMoreLabel: item.slug.includes("case") ? "Ler case" : "Ler artigo",
+          }))}
+        />
+      </main>
+    </MainLayout>
+  );
+}

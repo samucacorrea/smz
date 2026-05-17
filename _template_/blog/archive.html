@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<!-- ============ SEO ============ -->
+<title>Blog SMZ — Notas de quem está dentro da operação de marketing</title>
+<meta name="description" content="Artigos do time da SMZ sobre marketing focado em resultado: tráfego pago, SEO, IA, CRO, automação e estratégia. Sem manual genérico — só o que muda o ponteiro." />
+<meta name="author" content="SMZ Agência" />
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large" />
+<meta name="keywords" content="blog marketing digital, agência de marketing, IA marketing, tráfego pago, performance, ROAS, CAC, estratégia de aquisição" />
+<link rel="canonical" href="https://ag.smz/blog" />
+
+<!-- ============ Open Graph ============ -->
+<meta property="og:type" content="website" />
+<meta property="og:locale" content="pt_BR" />
+<meta property="og:site_name" content="SMZ Agência" />
+<meta property="og:title" content="Blog SMZ — Notas de quem está dentro da operação" />
+<meta property="og:description" content="Artigos sobre marketing focado em resultado: tráfego, SEO, IA, CRO, automação e estratégia. Direto do time que opera as contas." />
+<meta property="og:url" content="https://ag.smz/blog" />
+<meta property="og:image" content="https://ag.smz/blog/og/blog-cover.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+
+<!-- ============ Twitter ============ -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Blog SMZ" />
+<meta name="twitter:description" content="Notas de quem está dentro da operação de marketing." />
+<meta name="twitter:image" content="https://ag.smz/blog/og/blog-cover.png" />
+<meta name="twitter:site" content="@ag.smz" />
+
+<!-- ============ JSON-LD: Blog + ItemList + Breadcrumb ============ -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Blog",
+  "name": "Blog SMZ",
+  "url": "https://ag.smz/blog",
+  "description": "Artigos do time da SMZ sobre marketing focado em resultado.",
+  "inLanguage": "pt-BR",
+  "publisher": {
+    "@type": "Organization",
+    "name": "SMZ Agência",
+    "url": "https://ag.smz",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://ag.smz/assets/logo-dark.png"
+    }
+  }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Início", "item": "https://ag.smz/" },
+    { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://ag.smz/blog" }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  "name": "Artigos em destaque",
+  "itemListOrder": "https://schema.org/ItemListOrderDescending",
+  "numberOfItems": 9,
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "url": "https://ag.smz/blog/como-a-ia-acelera-resultados", "name": "Como a IA está acelerando os resultados dos nossos clientes" },
+    { "@type": "ListItem", "position": 2, "url": "https://ag.smz/blog/case-roi-3x", "name": "O case que multiplicou o ROI em 3x usando IA na criação de campanhas" },
+    { "@type": "ListItem", "position": 3, "url": "https://ag.smz/blog/identificar-boa-agencia", "name": "Como identificar uma boa agência de marketing em 2026" },
+    { "@type": "ListItem", "position": 4, "url": "https://ag.smz/blog/cac-ltv-payback", "name": "CAC, LTV, payback: o tripé que decide se vale a pena investir em mídia" },
+    { "@type": "ListItem", "position": 5, "url": "https://ag.smz/blog/anatomia-criativo-converte", "name": "Anatomia de um criativo que converte em Meta Ads" },
+    { "@type": "ListItem", "position": 6, "url": "https://ag.smz/blog/seo-2026-organico", "name": "SEO em 2026: o orgânico ainda vale a pena com IA dominando a SERP?" },
+    { "@type": "ListItem", "position": 7, "url": "https://ag.smz/blog/cro-checkout-ecommerce", "name": "8 atritos invisíveis no checkout do seu e-commerce" },
+    { "@type": "ListItem", "position": 8, "url": "https://ag.smz/blog/hubspot-rd-station", "name": "HubSpot ou RD Station: como escolher o CRM certo para 2026" },
+    { "@type": "ListItem", "position": 9, "url": "https://ag.smz/blog/posicionamento-saas", "name": "Posicionamento para SaaS B2B: pare de soar como todo mundo" }
+  ]
+}
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../styles.css" />
+</head>
+<body>
+
+<!-- ====================== HEADER ====================== -->
+<header class="site-header">
+  <div class="container nav">
+    <a href="../index.html" class="brand" aria-label="SMZ — Início">
+      <img class="logo-dark" src="../assets/logo-dark.png" alt="SMZ" />
+      <img class="logo-light" src="../assets/logo-light.png" alt="SMZ" />
+    </a>
+    <nav aria-label="Principal">
+      <ul class="nav-links">
+        <li><a href="../index.html#servicos">Serviços</a></li>
+        <li><a href="../index.html#resultados">Resultados</a></li>
+        <li><a href="../index.html#processo">Processo</a></li>
+        <li><a href="index.html">Blog</a></li>
+        <li><a href="../index.html#contato">Contato</a></li>
+      </ul>
+    </nav>
+    <div class="nav-actions">
+      <button class="theme-toggle" id="themeToggle" aria-label="Alternar tema">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      </button>
+      <a href="https://wa.me/" target="_blank" rel="noopener" class="btn btn-primary btn-sm">
+        Falar no WhatsApp
+        <svg class="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+  </div>
+</header>
+
+<main>
+
+<!-- ====================== HERO + SLIDER ====================== -->
+<section class="blog-hero">
+  <div class="hero-bg" aria-hidden="true"></div>
+  <div class="container" style="position: relative;">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="../index.html">Início</a>
+      <span class="sep">/</span>
+      <span class="current">Blog</span>
+    </nav>
+
+    <div class="lede-row">
+      <h1>
+        Notas de quem está<br />
+        <em>dentro da operação.</em><br />
+        <span class="accent">Sem manual genérico.</span>
+      </h1>
+      <div>
+        <p class="lede">
+          Artigos escritos pelo time estratégico da SMZ, baseados em contas que gerenciamos. Cobrimos tráfego, SEO, IA, CRO, automação e tudo que move ponteiro no negócio do cliente.
+        </p>
+        <div class="meta-strip">
+          <span><strong>43</strong> artigos publicados</span>
+          <span><strong>6</strong> categorias</span>
+          <span><strong>Atualizado</strong> semanalmente</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Featured slider -->
+    <div class="slider" id="featuredSlider" aria-label="Posts em destaque" aria-roledescription="carrossel">
+      <div class="slider-progress" id="sliderProgress"></div>
+
+      <div class="slider-viewport">
+        <div class="slider-track" id="sliderTrack">
+
+          <!-- SLIDE 1 -->
+          <article class="slide" role="group" aria-roledescription="slide" aria-label="1 de 3">
+            <div class="slide-art">
+              <span class="art-tag">Em destaque · IA</span>
+              <svg viewBox="0 0 800 600" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+                <defs>
+                  <pattern id="grid-s1" width="32" height="32" patternUnits="userSpaceOnUse">
+                    <path d="M 32 0 L 0 0 0 32" fill="none" stroke="rgba(245,245,240,0.06)" stroke-width="1"/>
+                  </pattern>
+                  <radialGradient id="glow-s1" cx="50%" cy="50%" r="50%">
+                    <stop offset="0%" stop-color="#B6FF3C" stop-opacity="0.25"/>
+                    <stop offset="100%" stop-color="#B6FF3C" stop-opacity="0"/>
+                  </radialGradient>
+                </defs>
+                <rect width="800" height="600" fill="#0A0A0A"/>
+                <rect width="800" height="600" fill="url(#grid-s1)"/>
+                <circle cx="400" cy="300" r="240" fill="url(#glow-s1)"/>
+                <g stroke="#2E2E2E" stroke-width="1" fill="none">
+                  <line x1="160" y1="180" x2="400" y2="300"/>
+                  <line x1="160" y1="420" x2="400" y2="300"/>
+                  <line x1="640" y1="180" x2="400" y2="300"/>
+                  <line x1="640" y1="420" x2="400" y2="300"/>
+                </g>
+                <g stroke="#B6FF3C" stroke-width="1.5" fill="none" opacity="0.7">
+                  <line x1="400" y1="300" x2="640" y2="180"/>
+                </g>
+                <g font-family="JetBrains Mono, monospace" font-size="12" fill="rgba(245,245,240,0.65)" letter-spacing="1.5">
+                  <circle cx="160" cy="180" r="4" fill="#F5F5F0"/><text x="172" y="184">BRIEFING</text>
+                  <circle cx="160" cy="420" r="4" fill="#F5F5F0"/><text x="172" y="424">CRIATIVO</text>
+                  <circle cx="640" cy="180" r="4" fill="#B6FF3C"/><text x="608" y="184" text-anchor="end" fill="#B6FF3C">RECEITA</text>
+                  <circle cx="640" cy="420" r="4" fill="#F5F5F0"/><text x="608" y="424" text-anchor="end">ANÁLISE</text>
+                </g>
+                <circle cx="400" cy="300" r="64" fill="#0A0A0A" stroke="#B6FF3C" stroke-width="2"/>
+                <circle cx="400" cy="300" r="36" fill="#B6FF3C"/>
+                <text x="400" y="309" text-anchor="middle" font-family="Inter Tight" font-weight="700" font-size="24" fill="#0A0A0A">IA</text>
+              </svg>
+            </div>
+            <div class="slide-body">
+              <div class="slide-meta">
+                <span class="tag-pill">IA</span>
+                <time datetime="2026-05-14">14 mai 2026</time>
+                <span>· 8 min</span>
+              </div>
+              <h2 class="slide-title"><a href="como-a-ia-acelera-resultados.html">Como a IA está acelerando os resultados dos nossos clientes</a></h2>
+              <p class="slide-excerpt">O que mudou na rotina de mídia, criação e análise depois que automatizamos parte da operação — e o que continua sendo trabalho humano.</p>
+              <div class="slide-foot">
+                <div class="author-mini">
+                  <div class="avatar">MS</div>
+                  <div>
+                    <div class="name">Marina Souza</div>
+                    <div class="role">Head de Estratégia</div>
+                  </div>
+                </div>
+                <a href="como-a-ia-acelera-resultados.html" class="btn btn-primary btn-sm">
+                  Ler artigo
+                  <svg class="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+                </a>
+              </div>
+            </div>
+          </article>
+
+          <!-- SLIDE 2 -->
+          <article class="slide" role="group" aria-roledescription="slide" aria-label="2 de 3">
+            <div class="slide-art">
+              <span class="art-tag">Case · ROI 3x</span>
+              <svg viewBox="0 0 800 600" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+                <rect width="800" height="600" fill="#0A0A0A"/>
+                <g stroke="rgba(245,245,240,0.08)" stroke-width="1">
+                  <line x1="80" y1="120" x2="720" y2="120"/>
+                  <line x1="80" y1="220" x2="720" y2="220"/>
+                  <line x1="80" y1="320" x2="720" y2="320"/>
+                  <line x1="80" y1="420" x2="720" y2="420"/>
+                  <line x1="80" y1="520" x2="720" y2="520"/>
+                </g>
+                <g>
+                  <rect x="140" y="420" width="60" height="100" fill="rgba(245,245,240,0.18)"/>
+                  <rect x="240" y="360" width="60" height="160" fill="rgba(245,245,240,0.28)"/>
+                  <rect x="340" y="300" width="60" height="220" fill="rgba(245,245,240,0.4)"/>
+                  <rect x="440" y="240" width="60" height="280" fill="rgba(245,245,240,0.55)"/>
+                  <rect x="540" y="180" width="60" height="340" fill="rgba(245,255,200,0.7)"/>
+                  <rect x="640" y="100" width="60" height="420" fill="#B6FF3C"/>
+                </g>
+                <text x="400" y="80" text-anchor="middle" font-family="Inter Tight" font-weight="700" font-size="56" letter-spacing="-2" fill="#F5F5F0">+312<tspan fill="#B6FF3C">%</tspan></text>
+                <text x="400" y="560" text-anchor="middle" font-family="JetBrains Mono" font-size="12" letter-spacing="2" fill="rgba(245,245,240,0.5)">ROAS · MAR → JUN 2025</text>
+              </svg>
+            </div>
+            <div class="slide-body">
+              <div class="slide-meta">
+                <span class="tag-pill">Case</span>
+                <time datetime="2026-05-02">02 mai 2026</time>
+                <span>· 6 min</span>
+              </div>
+              <h2 class="slide-title"><a href="#">O case que multiplicou o ROI em 3x usando IA na criação de campanhas</a></h2>
+              <p class="slide-excerpt">Como um cliente B2B passou de 1,4x para 4,2x de retorno sobre mídia em 90 dias, combinando IA generativa, hipóteses humanas e um processo de testes mais disciplinado.</p>
+              <div class="slide-foot">
+                <div class="author-mini">
+                  <div class="avatar">FA</div>
+                  <div>
+                    <div class="name">Felipe Almeida</div>
+                    <div class="role">Performance Lead</div>
+                  </div>
+                </div>
+                <a href="#" class="btn btn-primary btn-sm">
+                  Ler case
+                  <svg class="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+                </a>
+              </div>
+            </div>
+          </article>
+
+          <!-- SLIDE 3 -->
+          <article class="slide" role="group" aria-roledescription="slide" aria-label="3 de 3">
+            <div class="slide-art">
+              <span class="art-tag">Guia · 2026</span>
+              <svg viewBox="0 0 800 600" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+                <rect width="800" height="600" fill="#0A0A0A"/>
+                <g transform="translate(400,300)">
+                  <circle r="220" fill="none" stroke="rgba(245,245,240,0.08)"/>
+                  <circle r="160" fill="none" stroke="rgba(245,245,240,0.12)"/>
+                  <circle r="100" fill="none" stroke="rgba(245,245,240,0.2)"/>
+                  <path d="M 0,-220 A 220,220 0 0,1 211,-58" fill="none" stroke="#B6FF3C" stroke-width="4"/>
+                  <circle cx="0" cy="-220" r="6" fill="#B6FF3C"/>
+                  <circle cx="211" cy="-58" r="6" fill="#B6FF3C"/>
+                </g>
+                <g font-family="JetBrains Mono" font-size="11" letter-spacing="2" fill="rgba(245,245,240,0.55)">
+                  <text x="400" y="92" text-anchor="middle">CHECKLIST</text>
+                  <text x="400" y="528" text-anchor="middle">7 PERGUNTAS · 3 ALERTAS</text>
+                </g>
+                <text x="400" y="316" text-anchor="middle" font-family="Inter Tight" font-weight="700" font-size="80" letter-spacing="-3" fill="#F5F5F0">7<tspan fill="#B6FF3C">.</tspan></text>
+              </svg>
+            </div>
+            <div class="slide-body">
+              <div class="slide-meta">
+                <span class="tag-pill">Estratégia</span>
+                <time datetime="2026-04-18">18 abr 2026</time>
+                <span>· 7 min</span>
+              </div>
+              <h2 class="slide-title"><a href="#">Como identificar uma boa agência de marketing em 2026</a></h2>
+              <p class="slide-excerpt">Sete perguntas para fazer antes de assinar contrato — e três sinais de alerta que você só percebe depois do terceiro mês. Um guia honesto, mesmo que perdêssemos clientes com ele.</p>
+              <div class="slide-foot">
+                <div class="author-mini">
+                  <div class="avatar">PV</div>
+                  <div>
+                    <div class="name">Pedro Vilela</div>
+                    <div class="role">Fundador · SMZ</div>
+                  </div>
+                </div>
+                <a href="#" class="btn btn-primary btn-sm">
+                  Ler guia
+                  <svg class="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+                </a>
+              </div>
+            </div>
+          </article>
+
+        </div>
+      </div>
+
+      <!-- Dots -->
+      <div class="slider-dots" role="tablist" aria-label="Selecionar slide">
+        <button class="active" data-go="0" aria-label="Ir para slide 1"></button>
+        <button data-go="1" aria-label="Ir para slide 2"></button>
+        <button data-go="2" aria-label="Ir para slide 3"></button>
+      </div>
+
+      <!-- Controls -->
+      <div class="slider-controls">
+        <div class="slider-counter">
+          <span class="cur" id="sliderCur">01</span>
+          <span>/ 03</span>
+        </div>
+        <div class="slider-arrows">
+          <button id="sliderPrev" aria-label="Slide anterior">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 5l-7 7 7 7"/></svg>
+          </button>
+          <button id="sliderNext" aria-label="Próximo slide">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Filter bar -->
+    <div class="filter-bar" role="navigation" aria-label="Filtros de categoria">
+      <div class="filter-chips" id="filterChips">
+        <span class="label">Categorias</span>
+        <button class="filter-chip active" data-cat="todos">Todos <span class="count">43</span></button>
+        <button class="filter-chip" data-cat="ia">IA <span class="count">8</span></button>
+        <button class="filter-chip" data-cat="trafego">Tráfego Pago <span class="count">12</span></button>
+        <button class="filter-chip" data-cat="seo">SEO <span class="count">7</span></button>
+        <button class="filter-chip" data-cat="estrategia">Estratégia <span class="count">9</span></button>
+        <button class="filter-chip" data-cat="case">Cases <span class="count">5</span></button>
+        <button class="filter-chip" data-cat="cro">CRO <span class="count">2</span></button>
+      </div>
+      <label class="search-box" aria-label="Buscar no blog">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+        <input type="search" id="searchInput" placeholder="Buscar artigo..." />
+      </label>
+    </div>
+  </div>
+</section>
+
+<!-- ====================== LISTING ====================== -->
+<section class="listing" id="listing">
+  <div class="container">
+
+    <!-- Featured row -->
+    <div class="listing-row-1">
+      <!-- Large editorial card -->
+      <a href="#" class="post post-large" data-cat="estrategia">
+        <div class="post-cover">
+          <div class="cover-art" style="background: linear-gradient(135deg, #0F2A0A, #0A0A0A);">
+            <svg viewBox="0 0 200 120" width="80%" aria-hidden="true">
+              <g stroke="rgba(182,255,60,0.25)" stroke-width="1" fill="none">
+                <circle cx="60" cy="60" r="6"/><circle cx="100" cy="40" r="6"/>
+                <circle cx="140" cy="60" r="6"/><circle cx="100" cy="80" r="6"/>
+                <line x1="60" y1="60" x2="100" y2="40"/><line x1="100" y1="40" x2="140" y2="60"/>
+                <line x1="140" y1="60" x2="100" y2="80"/><line x1="100" y1="80" x2="60" y2="60"/>
+                <line x1="60" y1="60" x2="140" y2="60"/>
+              </g>
+              <circle cx="100" cy="60" r="10" fill="#B6FF3C"/>
+              <text x="100" y="63" text-anchor="middle" font-family="Inter Tight" font-weight="700" font-size="9" fill="#0A0A0A">FUNIL</text>
+            </svg>
+          </div>
+        </div>
+        <div class="post-body">
+          <div class="post-meta">
+            <span class="tag-pill">Aquisição</span>
+            <time datetime="2026-04-05">05 abr 2026</time>
+            <span>· 9 min</span>
+          </div>
+          <h3 class="post-title">CAC, LTV, payback: o tripé que decide se vale a pena investir em mídia</h3>
+          <p class="post-excerpt">Por que &ldquo;tem mais cliente entrando&rdquo; não é necessariamente o número certo para olhar todo mês — e como construir um painel que responde à pergunta certa.</p>
+          <div class="post-foot">
+            <span>Por Marina S.</span>
+            <span class="read-more">Ler artigo <span class="arrow">→</span></span>
+          </div>
+        </div>
+      </a>
+
+      <a href="#" class="post" data-cat="trafego">
+        <div class="post-cover">
+          <div class="cover-art" style="background: linear-gradient(135deg, #0A0A0A, #161616);">
+            <svg viewBox="0 0 200 120" width="80%" aria-hidden="true">
+              <rect x="30" y="20" width="140" height="78" rx="6" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+              <rect x="40" y="32" width="60" height="40" fill="rgba(255,255,255,0.18)"/>
+              <rect x="106" y="32" width="56" height="6" fill="rgba(255,255,255,0.4)"/>
+              <rect x="106" y="44" width="40" height="4" fill="rgba(255,255,255,0.25)"/>
+              <rect x="106" y="56" width="32" height="14" fill="#B6FF3C"/>
+            </svg>
+          </div>
+        </div>
+        <div class="post-body">
+          <div class="post-meta">
+            <span class="tag-pill">Tráfego</span>
+            <time datetime="2026-03-22">22 mar 2026</time>
+            <span>· 6 min</span>
+          </div>
+          <h3 class="post-title">Anatomia de um criativo que converte em Meta Ads</h3>
+          <p class="post-excerpt">Hook, prova, fricção e CTA: os 4 blocos que separam o anúncio que &ldquo;está rodando&rdquo; do anúncio que está pagando a conta.</p>
+          <div class="post-foot">
+            <span>Por Felipe A.</span>
+            <span class="read-more">Ler <span class="arrow">→</span></span>
+          </div>
+        </div>
+      </a>
+
+      <a href="#" class="post" data-cat="seo">
+        <div class="post-cover">
+          <div class="cover-art" style="background: linear-gradient(135deg, #161616, #0A0A0A);">
+            <svg viewBox="0 0 200 120" width="80%" aria-hidden="true">
+              <circle cx="80" cy="60" r="32" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="2"/>
+              <line x1="104" y1="84" x2="130" y2="106" stroke="rgba(255,255,255,0.3)" stroke-width="3" stroke-linecap="round"/>
+              <text x="80" y="64" text-anchor="middle" font-family="Inter Tight" font-weight="700" font-size="14" fill="#B6FF3C">SEO</text>
+            </svg>
+          </div>
+        </div>
+        <div class="post-body">
+          <div class="post-meta">
+            <span class="tag-pill">SEO</span>
+            <time datetime="2026-03-10">10 mar 2026</time>
+            <span>· 8 min</span>
+          </div>
+          <h3 class="post-title">SEO em 2026: o orgânico ainda vale a pena com IA dominando a SERP?</h3>
+          <p class="post-excerpt">Resposta curta: sim, mas o jogo mudou. As novas regras de autoridade, intenção e formatos que ainda batem a IA generativa.</p>
+          <div class="post-foot">
+            <span>Por Marina S.</span>
+            <span class="read-more">Ler <span class="arrow">→</span></span>
+          </div>
+        </div>
+      </a>
+    </div>
+
+    <!-- Standard grid -->
+    <div class="listing-grid" id="listingGrid">
+
+      <a href="#" class="post" data-cat="cro">
+        <div class="post-cover">
+          <div class="cover-art" style="background: linear-gradient(135deg, #0A0A0A, #1C1C1C);">
+            <svg viewBox="0 0 200 120" width="80%" aria-hidden="true">
+              <rect x="40" y="20" width="120" height="80" rx="4" fill="none" stroke="rgba(255,255,255,0.2)"/>
+              <rect x="50" y="32" width="60" height="6" fill="rgba(255,255,255,0.35)"/>
+              <rect x="50" y="44" width="80" height="4" fill="rgba(255,255,255,0.2)"/>
+              <rect x="50" y="54" width="70" height="4" fill="rgba(255,255,255,0.2)"/>
+              <rect x="50" y="76" width="40" height="14" fill="#B6FF3C"/>
+              <line x1="92" y1="83" x2="106" y2="83" stroke="#0A0A0A" stroke-width="2"/>
+            </svg>
+          </div>
+        </div>
+        <div class="post-body">
+          <div class="post-meta">
+            <span class="tag-pill">CRO</span>
+            <time datetime="2026-02-28">28 fev 2026</time>
+            <span>· 7 min</span>
+          </div>
+          <h3 class="post-title">8 atritos invisíveis no checkout do seu e-commerce</h3>
+          <p class="post-excerpt">Os micro-bloqueios que custam 12% a 23% da conversão e que praticamente nenhum dono de loja vê na própria operação.</p>
+          <div class="post-foot">
+            <span>Por Ana P.</span>
+            <span class="read-more">Ler <span class="arrow">→</span></span>
+          </div>
+        </div>
+      </a>
+
+      <a href="#" class="post" data-cat="ia">
+        <div class="post-cover">
+          <div class="cover-art" style="background: linear-gradient(135deg, #0F2A0A, #0A0A0A);">
+            <svg viewBox="0 0 200 120" width="80%" aria-hidden="true">
+              <g stroke="rgba(182,255,60,0.3)" stroke-width="1" fill="none">
+                <path d="M 30 90 Q 60 30, 100 60 T 170 30"/>
+              </g>
+              <circle cx="100" cy="60" r="14" fill="#B6FF3C"/>
+              <text x="100" y="65" text-anchor="middle" font-family="Inter Tight" font-weight="700" font-size="11" fill="#0A0A0A">CRM</text>
+            </svg>
+          </div>
+        </div>
+        <div class="post-body">
+          <div class="post-meta">
+            <span class="tag-pill">IA</span>
+            <time datetime="2026-02-14">14 fev 2026</time>
+            <span>· 5 min</span>
+          </div>
+          <h3 class="post-title">HubSpot ou RD Station: como escolher o CRM certo para 2026</h3>
+          <p class="post-excerpt">Não é sobre features, é sobre operação. Um guia direto com base nos 30+ projetos de implantação que rodamos.</p>
+          <div class="post-foot">
+            <span>Por Pedro V.</span>
+            <span class="read-more">Ler <span class="arrow">→</span></span>
+          </div>
+        </div>
+      </a>
+
+      <a href="#" class="post" data-cat="estrategia">
+        <div class="post-cover">
+          <div class="cover-art" style="background: linear-gradient(135deg, #161616, #0A0A0A);">
+            <svg viewBox="0 0 200 120" width="80%" aria-hidden="true">
+              <text x="100" y="68" text-anchor="middle" font-family="Inter Tight" font-style="italic" font-weight="500" font-size="36" fill="rgba(255,255,255,0.85)">&ldquo;voz&rdquo;</text>
+              <line x1="50" y1="92" x2="150" y2="92" stroke="#B6FF3C" stroke-width="2"/>
+            </svg>
+          </div>
+        </div>
+        <div class="post-body">
+          <div class="post-meta">
+            <span class="tag-pill">Estratégia</span>
+            <time datetime="2026-01-30">30 jan 2026</time>
+            <span>· 11 min</span>
+          </div>
+          <h3 class="post-title">Posicionamento para SaaS B2B: pare de soar como todo mundo</h3>
+          <p class="post-excerpt">O exercício de 90 minutos que rodamos com fundadores antes de qualquer linha de copy. Diferenciação real, não slogan.</p>
+          <div class="post-foot">
+            <span>Por Marina S.</span>
+            <span class="read-more">Ler <span class="arrow">→</span></span>
+          </div>
+        </div>
+      </a>
+
+      <a href="#" class="post" data-cat="trafego">
+        <div class="post-cover">
+          <div class="cover-art" style="background: linear-gradient(135deg, #0A0A0A, #1C1C1C);">
+            <svg viewBox="0 0 200 120" width="80%" aria-hidden="true">
+              <g stroke="rgba(255,255,255,0.2)" stroke-width="1" fill="none">
+                <path d="M 20 100 L 70 70 L 110 80 L 150 40 L 180 20"/>
+              </g>
+              <path d="M 20 100 L 70 70 L 110 80 L 150 40 L 180 20" stroke="#B6FF3C" stroke-width="2" fill="none"/>
+              <circle cx="180" cy="20" r="4" fill="#B6FF3C"/>
+              <text x="180" y="10" text-anchor="end" font-family="JetBrains Mono" font-size="8" fill="#B6FF3C">+212%</text>
+            </svg>
+          </div>
+        </div>
+        <div class="post-body">
+          <div class="post-meta">
+            <span class="tag-pill">Tráfego</span>
+            <time datetime="2026-01-15">15 jan 2026</time>
+            <span>· 9 min</span>
+          </div>
+          <h3 class="post-title">Google Ads em 2026: quando ainda vale a pena usar busca pura?</h3>
+          <p class="post-excerpt">PMax engoliu metade das contas, mas há cenários onde uma campanha de busca tradicional ainda é a alavanca mais barata. Quais são.</p>
+          <div class="post-foot">
+            <span>Por Felipe A.</span>
+            <span class="read-more">Ler <span class="arrow">→</span></span>
+          </div>
+        </div>
+      </a>
+
+      <a href="#" class="post" data-cat="case">
+        <div class="post-cover">
+          <div class="cover-art" style="background: linear-gradient(135deg, #1C1C1C, #0A0A0A);">
+            <svg viewBox="0 0 200 120" width="80%" aria-hidden="true">
+              <g font-family="Inter Tight" font-weight="700" letter-spacing="-2">
+                <text x="100" y="58" text-anchor="middle" font-size="40" fill="#F5F5F0">-41<tspan font-size="22" fill="#B6FF3C">%</tspan></text>
+                <text x="100" y="86" text-anchor="middle" font-family="JetBrains Mono" font-size="10" letter-spacing="2" fill="rgba(255,255,255,0.5)">CAC EM 6 MESES</text>
+              </g>
+            </svg>
+          </div>
+        </div>
+        <div class="post-body">
+          <div class="post-meta">
+            <span class="tag-pill">Case</span>
+            <time datetime="2025-12-12">12 dez 2025</time>
+            <span>· 6 min</span>
+          </div>
+          <h3 class="post-title">Loja Verde: -41% de CAC com a mesma verba de mídia</h3>
+          <p class="post-excerpt">Como ajustamos a alocação entre prospecção e remarketing num e-commerce de moda para virar o custo de aquisição em 6 meses.</p>
+          <div class="post-foot">
+            <span>Por Felipe A.</span>
+            <span class="read-more">Ler case <span class="arrow">→</span></span>
+          </div>
+        </div>
+      </a>
+
+      <a href="#" class="post" data-cat="seo">
+        <div class="post-cover">
+          <div class="cover-art" style="background: linear-gradient(135deg, #0A0A0A, #161616);">
+            <svg viewBox="0 0 200 120" width="80%" aria-hidden="true">
+              <g font-family="JetBrains Mono" font-size="10" fill="rgba(255,255,255,0.55)" letter-spacing="1">
+                <rect x="30" y="34" width="140" height="6" fill="rgba(255,255,255,0.1)"/>
+                <rect x="30" y="34" width="140" height="6" fill="#B6FF3C"/>
+                <rect x="30" y="50" width="140" height="6" fill="rgba(255,255,255,0.1)"/>
+                <rect x="30" y="50" width="90" height="6" fill="rgba(255,255,255,0.55)"/>
+                <rect x="30" y="66" width="140" height="6" fill="rgba(255,255,255,0.1)"/>
+                <rect x="30" y="66" width="60" height="6" fill="rgba(255,255,255,0.35)"/>
+                <rect x="30" y="82" width="140" height="6" fill="rgba(255,255,255,0.1)"/>
+                <rect x="30" y="82" width="30" height="6" fill="rgba(255,255,255,0.2)"/>
+              </g>
+            </svg>
+          </div>
+        </div>
+        <div class="post-body">
+          <div class="post-meta">
+            <span class="tag-pill">SEO</span>
+            <time datetime="2025-11-28">28 nov 2025</time>
+            <span>· 10 min</span>
+          </div>
+          <h3 class="post-title">Topical authority: por que o Google premia profundidade, não quantidade</h3>
+          <p class="post-excerpt">Mapa de conteúdo, hub-and-spoke e a métrica de cobertura que substitui &ldquo;quantos posts publicar por mês&rdquo;.</p>
+          <div class="post-foot">
+            <span>Por Marina S.</span>
+            <span class="read-more">Ler <span class="arrow">→</span></span>
+          </div>
+        </div>
+      </a>
+
+      <a href="#" class="post" data-cat="ia">
+        <div class="post-cover">
+          <div class="cover-art" style="background: linear-gradient(135deg, #0F2A0A, #0A0A0A);">
+            <svg viewBox="0 0 200 120" width="80%" aria-hidden="true">
+              <g stroke="#B6FF3C" stroke-width="1" fill="none" opacity="0.5">
+                <rect x="40" y="30" width="40" height="20" rx="3"/>
+                <rect x="120" y="30" width="40" height="20" rx="3"/>
+                <rect x="40" y="70" width="40" height="20" rx="3"/>
+                <rect x="120" y="70" width="40" height="20" rx="3"/>
+                <line x1="80" y1="40" x2="120" y2="40"/>
+                <line x1="80" y1="80" x2="120" y2="80"/>
+              </g>
+              <circle cx="100" cy="60" r="10" fill="#B6FF3C"/>
+              <text x="100" y="63" text-anchor="middle" font-family="Inter Tight" font-weight="700" font-size="9" fill="#0A0A0A">n8n</text>
+            </svg>
+          </div>
+        </div>
+        <div class="post-body">
+          <div class="post-meta">
+            <span class="tag-pill">IA</span>
+            <time datetime="2025-11-10">10 nov 2025</time>
+            <span>· 7 min</span>
+          </div>
+          <h3 class="post-title">5 automações de marketing que pagaram o investimento em IA</h3>
+          <p class="post-excerpt">Os fluxos que mais retornam tempo na operação — qualificação, briefing, follow-up, relatório e produção criativa.</p>
+          <div class="post-foot">
+            <span>Por Pedro V.</span>
+            <span class="read-more">Ler <span class="arrow">→</span></span>
+          </div>
+        </div>
+      </a>
+
+      <a href="#" class="post" data-cat="estrategia">
+        <div class="post-cover">
+          <div class="cover-art" style="background: linear-gradient(135deg, #161616, #0A0A0A);">
+            <svg viewBox="0 0 200 120" width="80%" aria-hidden="true">
+              <g font-family="JetBrains Mono" font-size="10" letter-spacing="1.5" fill="rgba(255,255,255,0.6)">
+                <text x="100" y="40" text-anchor="middle">Q1</text>
+                <text x="100" y="58" text-anchor="middle">Q2</text>
+                <text x="100" y="76" text-anchor="middle">Q3</text>
+                <text x="100" y="94" text-anchor="middle" fill="#B6FF3C">Q4</text>
+              </g>
+              <line x1="40" y1="46" x2="80" y2="46" stroke="rgba(255,255,255,0.2)"/>
+              <line x1="40" y1="64" x2="80" y2="64" stroke="rgba(255,255,255,0.2)"/>
+              <line x1="40" y1="82" x2="80" y2="82" stroke="rgba(255,255,255,0.2)"/>
+              <line x1="40" y1="100" x2="80" y2="100" stroke="#B6FF3C"/>
+            </svg>
+          </div>
+        </div>
+        <div class="post-body">
+          <div class="post-meta">
+            <span class="tag-pill">Estratégia</span>
+            <time datetime="2025-10-22">22 out 2025</time>
+            <span>· 8 min</span>
+          </div>
+          <h3 class="post-title">Planejamento trimestral: como definir 3 metas que importam (e ignorar o resto)</h3>
+          <p class="post-excerpt">O método de priorização que usamos com clientes para tirar 80% do barulho do planejamento e focar no que move ponteiro.</p>
+          <div class="post-foot">
+            <span>Por Marina S.</span>
+            <span class="read-more">Ler <span class="arrow">→</span></span>
+          </div>
+        </div>
+      </a>
+
+      <a href="#" class="post" data-cat="trafego">
+        <div class="post-cover">
+          <div class="cover-art" style="background: linear-gradient(135deg, #1C1C1C, #0A0A0A);">
+            <svg viewBox="0 0 200 120" width="80%" aria-hidden="true">
+              <rect x="40" y="35" width="120" height="50" rx="6" fill="none" stroke="rgba(255,255,255,0.2)"/>
+              <text x="100" y="66" text-anchor="middle" font-family="Inter Tight" font-weight="700" font-size="22" fill="#F5F5F0">TikTok</text>
+              <circle cx="160" cy="35" r="6" fill="#B6FF3C"/>
+            </svg>
+          </div>
+        </div>
+        <div class="post-body">
+          <div class="post-meta">
+            <span class="tag-pill">Tráfego</span>
+            <time datetime="2025-10-08">08 out 2025</time>
+            <span>· 6 min</span>
+          </div>
+          <h3 class="post-title">Quando faz sentido (e quando não) colocar verba em TikTok Ads</h3>
+          <p class="post-excerpt">Os tipos de produto e ticket onde o TikTok virou aquisição rentável — e onde ele continua sendo só vitrine cara.</p>
+          <div class="post-foot">
+            <span>Por Felipe A.</span>
+            <span class="read-more">Ler <span class="arrow">→</span></span>
+          </div>
+        </div>
+      </a>
+
+    </div>
+
+    <!-- Empty state (hidden by default) -->
+    <div id="emptyState" style="display:none; text-align:center; padding: 80px 0; color: var(--text-muted);">
+      <p class="eyebrow" style="justify-content: center;">Sem resultados</p>
+      <h3 style="margin-top: 16px;">Nenhum artigo encontrado.</h3>
+      <p style="margin-top: 12px;">Tente outra categoria ou termo de busca.</p>
+    </div>
+
+    <!-- Pagination -->
+    <nav class="pagination" aria-label="Paginação">
+      <span class="small">Mostrando <strong style="color: var(--text); font-weight: 500;">1–12</strong> de 43 artigos</span>
+      <div class="pages">
+        <a href="#" class="page" aria-label="Anterior">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </a>
+        <a href="#" class="page current" aria-current="page">1</a>
+        <a href="#" class="page">2</a>
+        <a href="#" class="page">3</a>
+        <span class="page ellipsis">…</span>
+        <a href="#" class="page">4</a>
+        <a href="#" class="page" aria-label="Próxima">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+        </a>
+      </div>
+    </nav>
+
+  </div>
+</section>
+
+<!-- ====================== NEWSLETTER ====================== -->
+<section class="newsletter" aria-label="Newsletter">
+  <div class="container">
+    <div class="newsletter-grid">
+      <div>
+        <span class="eyebrow">Newsletter quinzenal</span>
+        <h2 style="margin-top: 22px;">
+          O que a gente aprendeu<br />
+          <em>operando, não opinando.</em><br />
+          <span class="accent">Direto na sua caixa.</span>
+        </h2>
+        <p>Um e-mail a cada duas semanas, com 1 análise honesta de um caso real, 3 movimentos do mercado que estamos observando e 0 enrolação. Cancela em um clique.</p>
+      </div>
+
+      <form class="form-card" style="background: var(--bg);" onsubmit="event.preventDefault(); alert('Inscrição recebida!');">
+        <div class="field">
+          <label for="nl-nome">Nome</label>
+          <input id="nl-nome" type="text" placeholder="Como te chamamos?" required />
+        </div>
+        <div class="field">
+          <label for="nl-email">E-mail profissional</label>
+          <input id="nl-email" type="email" placeholder="você@empresa.com" required />
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; margin-top: 8px;">
+          Receber a newsletter
+          <svg class="arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+        </button>
+        <p class="newsletter-foot">Sem spam, sem listas de terceiros. Só conteúdo do time da SMZ.</p>
+      </form>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ====================== FOOTER ====================== -->
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <img class="logo-dark" src="../assets/logo-dark.png" alt="SMZ" />
+        <img class="logo-light" src="../assets/logo-light.png" alt="SMZ" style="display:none;" />
+        <p>Agência de marketing focada em previsibilidade de receita. Trabalhamos com poucas marcas, em profundidade, e medimos tudo.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Serviços</h4>
+        <ul>
+          <li><a href="../index.html#servicos">Tráfego pago</a></li>
+          <li><a href="../index.html#servicos">SEO &amp; conteúdo</a></li>
+          <li><a href="../index.html#servicos">Redes sociais</a></li>
+          <li><a href="../index.html#servicos">Sites &amp; LPs</a></li>
+          <li><a href="../index.html#servicos">Automação &amp; CRM</a></li>
+          <li><a href="../index.html#servicos">Consultoria</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Agência</h4>
+        <ul>
+          <li><a href="../index.html#resultados">Resultados</a></li>
+          <li><a href="../index.html#processo">Metodologia R/4</a></li>
+          <li><a href="../index.html#depoimentos">Depoimentos</a></li>
+          <li><a href="index.html">Blog</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Contato</h4>
+        <ul>
+          <li><a href="https://instagram.com/ag.smz" target="_blank" rel="noopener">@ag.smz</a></li>
+          <li><a href="https://wa.me/" target="_blank" rel="noopener">WhatsApp</a></li>
+          <li><a href="mailto:contato@ag.smz">contato@ag.smz</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-mark" aria-hidden="true">
+      Resultado.<span class="accent">.</span>
+    </div>
+
+    <div class="footer-bottom">
+      <span>© 2026 SMZ Agência. Todos os direitos reservados.</span>
+      <div class="legals">
+        <a href="#">Política de privacidade</a>
+        <a href="#">Termos</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // ============ Theme toggle + footer logo swap ============
+  (function () {
+    const root = document.documentElement;
+    const KEY = "smz-theme";
+    const saved = localStorage.getItem(KEY);
+    if (saved === "light" || saved === "dark") root.setAttribute("data-theme", saved);
+
+    function syncFooterLogo() {
+      const theme = root.getAttribute("data-theme");
+      document.querySelectorAll(".footer-brand .logo-dark").forEach(el => el.style.display = theme === "light" ? "none" : "block");
+      document.querySelectorAll(".footer-brand .logo-light").forEach(el => el.style.display = theme === "light" ? "block" : "none");
+    }
+    syncFooterLogo();
+
+    const btn = document.getElementById("themeToggle");
+    btn.addEventListener("click", () => {
+      const next = root.getAttribute("data-theme") === "light" ? "dark" : "light";
+      root.setAttribute("data-theme", next);
+      localStorage.setItem(KEY, next);
+      syncFooterLogo();
+    });
+  })();
+
+  // ============ Featured slider ============
+  (function () {
+    const track = document.getElementById("sliderTrack");
+    const slides = track.querySelectorAll(".slide");
+    const total = slides.length;
+    const prevBtn = document.getElementById("sliderPrev");
+    const nextBtn = document.getElementById("sliderNext");
+    const dots = document.querySelectorAll(".slider-dots button");
+    const curEl = document.getElementById("sliderCur");
+    const progress = document.getElementById("sliderProgress");
+
+    let idx = 0;
+    let autoTimer, progressTimer;
+    const DURATION = 7000;
+
+    function go(n, manual) {
+      idx = (n + total) % total;
+      track.style.transform = `translateX(-${idx * 100}%)`;
+      dots.forEach((d, i) => d.classList.toggle("active", i === idx));
+      curEl.textContent = String(idx + 1).padStart(2, "0");
+      if (manual) restart();
+    }
+    function next() { go(idx + 1); }
+    function prev() { go(idx - 1); }
+
+    function startAuto() {
+      stopAuto();
+      let start = performance.now();
+      progressTimer = setInterval(() => {
+        const elapsed = performance.now() - start;
+        const pct = Math.min((elapsed / DURATION) * 100, 100);
+        progress.style.width = pct + "%";
+        if (elapsed >= DURATION) {
+          next();
+          start = performance.now();
+        }
+      }, 80);
+    }
+    function stopAuto() {
+      clearInterval(progressTimer);
+      progress.style.width = "0%";
+    }
+    function restart() {
+      stopAuto();
+      startAuto();
+    }
+
+    prevBtn.addEventListener("click", () => { prev(); restart(); });
+    nextBtn.addEventListener("click", () => { next(); restart(); });
+    dots.forEach((d, i) => d.addEventListener("click", () => { go(i); restart(); }));
+
+    // pause on hover
+    const slider = document.getElementById("featuredSlider");
+    slider.addEventListener("mouseenter", stopAuto);
+    slider.addEventListener("mouseleave", startAuto);
+
+    // keyboard nav
+    slider.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowLeft") { prev(); restart(); }
+      if (e.key === "ArrowRight") { next(); restart(); }
+    });
+    slider.tabIndex = 0;
+
+    // touch swipe
+    let touchStart = null;
+    track.addEventListener("touchstart", (e) => { touchStart = e.touches[0].clientX; }, { passive: true });
+    track.addEventListener("touchend", (e) => {
+      if (touchStart == null) return;
+      const delta = e.changedTouches[0].clientX - touchStart;
+      if (Math.abs(delta) > 50) { delta < 0 ? next() : prev(); restart(); }
+      touchStart = null;
+    });
+
+    // respect reduced motion
+    const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (!reduce) startAuto();
+  })();
+
+  // ============ Filter + search ============
+  (function () {
+    const chips = document.querySelectorAll(".filter-chip");
+    const posts = document.querySelectorAll("#listing .post[data-cat]");
+    const search = document.getElementById("searchInput");
+    const empty = document.getElementById("emptyState");
+    let activeCat = "todos";
+
+    function apply() {
+      const q = (search.value || "").trim().toLowerCase();
+      let visible = 0;
+      posts.forEach(p => {
+        const cat = p.getAttribute("data-cat");
+        const text = p.textContent.toLowerCase();
+        const matchCat = activeCat === "todos" || cat === activeCat;
+        const matchQ = !q || text.includes(q);
+        const show = matchCat && matchQ;
+        p.style.display = show ? "" : "none";
+        if (show) visible++;
+      });
+      empty.style.display = visible === 0 ? "block" : "none";
+    }
+
+    chips.forEach(c => c.addEventListener("click", () => {
+      chips.forEach(x => x.classList.remove("active"));
+      c.classList.add("active");
+      activeCat = c.getAttribute("data-cat");
+      apply();
+    }));
+    search.addEventListener("input", apply);
+  })();
+</script>
+</body>
+</html>

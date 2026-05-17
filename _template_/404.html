@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>404 · Página não encontrada — SMZ</title>
+<meta name="description" content="A página que você procura não existe ou foi movida. Volte para a SMZ e encontre o caminho certo." />
+<meta name="robots" content="noindex, follow" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<!-- ====================== HEADER ====================== -->
+<header class="site-header">
+  <div class="container nav">
+    <a href="index.html" class="brand" aria-label="SMZ — Início">
+      <img class="logo-dark" src="assets/logo-dark.png" alt="SMZ" />
+      <img class="logo-light" src="assets/logo-light.png" alt="SMZ" />
+    </a>
+    <nav aria-label="Principal">
+      <ul class="nav-links">
+        <li><a href="index.html#servicos">Serviços</a></li>
+        <li><a href="index.html#resultados">Resultados</a></li>
+        <li><a href="index.html#processo">Processo</a></li>
+        <li><a href="blog/index.html">Blog</a></li>
+        <li><a href="index.html#contato">Contato</a></li>
+      </ul>
+    </nav>
+    <div class="nav-actions">
+      <button class="theme-toggle" id="themeToggle" aria-label="Alternar tema">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      </button>
+      <a href="https://wa.me/" target="_blank" rel="noopener" class="btn btn-primary btn-sm">
+        Falar no WhatsApp
+        <svg class="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+  </div>
+</header>
+
+<!-- ====================== 404 MAIN ====================== -->
+<main class="error-main">
+  <div class="error-bg" aria-hidden="true"></div>
+
+  <div class="container error-wrap">
+    <!-- Glyph -->
+    <div>
+      <p class="error-glyph" aria-hidden="true">
+        4<span class="zero">0</span>4
+      </p>
+      <p style="font-family: var(--ff-mono); font-size: 11.5px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--text-dim); margin-top: 12px;">
+        ERROR · ROTA NÃO ENCONTRADA · HTTP/404
+      </p>
+    </div>
+
+    <!-- Content -->
+    <div class="error-side">
+      <p class="small-eyebrow"><span class="status-code">404</span> Status</p>
+      <h1>Esta página <em>fugiu</em><br />do nosso <span class="accent">funil.</span></h1>
+      <p class="lede">
+        O link que você seguiu não existe, foi movido ou nunca rodou nas nossas campanhas. Acontece — mas a próxima ação ainda pode gerar resultado.
+      </p>
+
+      <div class="error-cta-row">
+        <a href="index.html" class="btn btn-primary">
+          Voltar para o início
+          <svg class="arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+        </a>
+        <a href="https://wa.me/" target="_blank" rel="noopener" class="btn btn-ghost">
+          Falar com um estrategista
+        </a>
+      </div>
+
+      <!-- Search -->
+      <form class="error-search" role="search" onsubmit="event.preventDefault(); const q=this.q.value.trim(); if(q) window.location.href='blog/index.html#'+encodeURIComponent(q);">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+        <input type="search" name="q" placeholder="Tente buscar pelo que veio procurar..." aria-label="Buscar no site" />
+        <button type="submit">Buscar</button>
+      </form>
+
+      <!-- Suggestions -->
+      <nav class="error-suggestions" aria-label="Sugestões">
+        <p class="suggest-label">Atalhos populares</p>
+        <ul>
+          <li><a href="index.html#servicos"><span><span class="num">01</span> Conhecer os serviços da SMZ</span><span class="arrow">→</span></a></li>
+          <li><a href="index.html#processo"><span><span class="num">02</span> Entender o Framework R/4</span><span class="arrow">→</span></a></li>
+          <li><a href="blog/index.html"><span><span class="num">03</span> Ler artigos do blog</span><span class="arrow">→</span></a></li>
+          <li><a href="index.html#contato"><span><span class="num">04</span> Agendar diagnóstico gratuito</span><span class="arrow">→</span></a></li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</main>
+
+<!-- ====================== FOOTER ====================== -->
+<footer class="site-footer" style="padding-top: 56px;">
+  <div class="container">
+    <div class="footer-bottom" style="padding-top: 0; border-top: 0;">
+      <span>© 2026 SMZ Agência. Todos os direitos reservados.</span>
+      <div class="legals">
+        <a href="#">Política de privacidade</a>
+        <a href="#">Termos</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  (function () {
+    const root = document.documentElement;
+    const KEY = "smz-theme";
+    const saved = localStorage.getItem(KEY);
+    if (saved === "light" || saved === "dark") root.setAttribute("data-theme", saved);
+
+    const btn = document.getElementById("themeToggle");
+    btn.addEventListener("click", () => {
+      const next = root.getAttribute("data-theme") === "light" ? "dark" : "light";
+      root.setAttribute("data-theme", next);
+      localStorage.setItem(KEY, next);
+    });
+  })();
+</script>
+</body>
+</html>

@@ -1,0 +1,403 @@
+import type { Author, Category, Post, SeoData, Tag } from "@/types/content";
+import { GET_POST_BY_SLUG_QUERY, GET_POSTS_QUERY } from "@/graphql/queries";
+import { getAuthorBySlug, getCategoryBySlug, getPostBySlug, mockContent } from "@/lib/mock-data";
+import { wpFetch } from "@/lib/wp-client";
+import type { WpPost, WpPostBySlugQuery, WpPostsQuery } from "@/types/wp";
+
+type SingleHeading = {
+  href: string;
+  label: string;
+};
+
+type SingleTag = {
+  href: string;
+  label: string;
+};
+
+type SingleAuthor = {
+  slug: string;
+  name: string;
+  initials: string;
+  role: string;
+  bio: string;
+  href: string;
+};
+
+type SingleCategory = {
+  slug: string;
+  name: string;
+  href: string;
+};
+
+type SingleRelatedPost = {
+  href: string;
+  category: string;
+  date: string;
+  readingTime: string;
+  title: string;
+  excerpt: string;
+  author: string;
+  featuredArtKey?: string;
+  slug: string;
+};
+
+export type BlogSingleData = {
+  title: string;
+  excerpt: string;
+  date: string;
+  modified: string;
+  readingTime: string;
+  featuredArtKey?: string;
+  seo: SeoData;
+  author: SingleAuthor;
+  primaryCategory: SingleCategory;
+  tags: SingleTag[];
+  relatedPosts: SingleRelatedPost[];
+  headings: SingleHeading[];
+  contentHtml?: string;
+  mockPost?: Post;
+  schemaPost: Post;
+  schemaAuthor: Author;
+  schemaCategory: Category | Tag;
+};
+
+function stripHtml(value: string) {
+  return value.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
+}
+
+function slugify(value: string) {
+  return stripHtml(value)
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+function estimateReadingTime(content?: string | null) {
+  const plainText = stripHtml(content ?? "");
+  const wordCount = plainText ? plainText.split(/\s+/).length : 0;
+  const minutes = Math.max(1, Math.ceil(wordCount / 220));
+
+  return `${minutes} min`;
+}
+
+function getInitials(name?: string | null) {
+  const parts = (name ?? "SMZ")
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2);
+
+  return parts.map((part) => part[0]?.toUpperCase() ?? "").join("") || "SMZ";
+}
+
+function deriveArtKey(post: WpPost, categorySlug?: string | null) {
+  const slug = post.slug ?? "";
+
+  if (slug.includes("ia") || categorySlug === "ia") return "ia-network";
+  if (slug.includes("roi") || slug.includes("roas") || categorySlug === "cases") {
+    return "roi-bars";
+  }
+  if (slug.includes("seo") || categorySlug === "seo") return "seo-bars";
+  if (slug.includes("cro") || slug.includes("checkout") || categorySlug === "cro") {
+    return "checkout";
+  }
+  if (slug.includes("crm") || slug.includes("hubspot")) return "crm";
+  if (slug.includes("automacao") || slug.includes("n8n")) return "n8n";
+  if (slug.includes("planejamento") || categorySlug === "estrategia") return "quarters";
+  if (slug.includes("google-ads") || slug.includes("meta-ads")) return "trend-line";
+
+  return undefined;
+}
+
+function decorateHeadings(html?: string | null) {
+  if (!html) {
+    return {
+      contentHtml: "",
+      headings: [] as SingleHeading[],
+    };
+  }
+
+  const headings: SingleHeading[] = [];
+
+  const contentHtml = html.replace(/<h2([^>]*)>([\s\S]*?)<\/h2>/gi, (_match, attrs, inner) => {
+    const label = stripHtml(inner);
+    const id = slugify(label);
+
+    headings.push({
+      href: `#${id}`,
+      label,
+    });
+
+    if (/id\s*=/.test(attrs)) {
+      return `<h2${attrs}>${inner}</h2>`;
+    }
+
+    return `<h2 id="${id}"${attrs}>${inner}</h2>`;
+  });
+
+  return { contentHtml, headings };
+}
+
+function mapMockSingleData(slug: string): BlogSingleData | null {
+  const post = getPostBySlug(slug);
+
+  if (!post) {
+    return null;
+  }
+
+  const author = getAuthorBySlug(post.authorSlug);
+  const primaryCategory = getCategoryBySlug(post.categorySlugs[0]);
+  const relatedPosts = post.relatedPostSlugs
+    .map((itemSlug) => getPostBySlug(itemSlug))
+    .filter((item): item is NonNullable<typeof item> => Boolean(item));
+
+  if (!author || !primaryCategory) {
+    return null;
+  }
+
+  return {
+    title: post.title,
+    excerpt: post.excerpt,
+    date: post.date,
+    modified: post.modified,
+    readingTime: post.readingTime,
+    featuredArtKey: post.featuredArtKey,
+    seo: post.seo,
+    author: {
+      slug: author.slug,
+      name: author.name,
+      initials: author.initials,
+      role: author.role,
+      bio: author.shortBio,
+      href: `/blog/autor/${author.slug}`,
+    },
+    primaryCategory: {
+      slug: primaryCategory.slug,
+      name: primaryCategory.name,
+      href: `/blog/categoria/${primaryCategory.slug}`,
+    },
+    tags: post.tagSlugs.map((tagSlug) => ({
+      href: `/blog/tag/${tagSlug}`,
+      label: mockContent.tags.find((tag) => tag.slug === tagSlug)?.name ?? tagSlug,
+    })),
+    relatedPosts: relatedPosts.map((item) => {
+      const itemAuthor = getAuthorBySlug(item.authorSlug);
+      const itemCategory = getCategoryBySlug(item.categorySlugs[0]);
+
+      return {
+        href: `/blog/${item.slug}`,
+        category: itemCategory?.name ?? "Blog",
+        date: item.date,
+        readingTime: item.readingTime,
+        title: item.title,
+        excerpt: item.excerpt,
+        author: itemAuthor?.name ?? "SMZ",
+        featuredArtKey: item.featuredArtKey,
+        slug: item.slug,
+      };
+    }),
+    headings: [
+      { href: "#ponto-de-partida", label: "Por que isso importa" },
+      { href: "#operacao", label: "Onde entrou na operação" },
+      { href: "#aprendizados", label: "Principais aprendizados" },
+      { href: "#faq", label: "Perguntas frequentes" },
+    ],
+    mockPost: post,
+    schemaPost: post,
+    schemaAuthor: author,
+    schemaCategory: primaryCategory,
+  };
+}
+
+function mapWpPostToSingleData(post: WpPost, relatedNodes: WpPost[]): BlogSingleData | null {
+  if (!post.id || !post.slug || !post.title || !post.date || !post.modified) {
+    return null;
+  }
+
+  const primaryCategory = post.categories?.nodes?.[0];
+  const authorNode = post.author?.node;
+
+  if (!primaryCategory?.slug || !primaryCategory.name || !authorNode?.slug || !authorNode.name) {
+    return null;
+  }
+
+  const decorated = decorateHeadings(post.content);
+  const featuredArtKey = deriveArtKey(post, primaryCategory.slug);
+  const seo: SeoData = {
+    title: post.seo?.title || stripHtml(post.title),
+    description: post.seo?.metaDesc || stripHtml(post.excerpt ?? post.content ?? ""),
+    canonical: post.seo?.canonical || `https://ag.smz/blog/${post.slug}`,
+    ogImage: post.seo?.opengraphImage?.sourceUrl ?? undefined,
+  };
+
+  const author: SingleAuthor = {
+    slug: authorNode.slug,
+    name: authorNode.name,
+    initials: getInitials(authorNode.name),
+    role: "Equipe editorial",
+    bio: authorNode.description?.trim() || "Autor da equipe editorial da SMZ.",
+    href: `/blog/autor/${authorNode.slug}`,
+  };
+
+  const schemaAuthor: Author = {
+    id: authorNode.id,
+    slug: author.slug,
+    name: author.name,
+    initials: author.initials,
+    role: author.role,
+    shortBio: author.bio,
+    longBio: [],
+    expertise: [],
+    stats: [],
+    socials: [],
+    seo: {
+      title: `${author.name} · SMZ`,
+      description: author.bio,
+      canonical: `https://ag.smz/blog/autor/${author.slug}`,
+    },
+  };
+
+  const schemaCategory: Category = {
+    id: primaryCategory.id,
+    slug: primaryCategory.slug,
+    name: primaryCategory.name,
+    description: primaryCategory.description?.trim() || "",
+    articleCount: 0,
+    seo: {
+      title: primaryCategory.seo?.title || `${primaryCategory.name} · Blog SMZ`,
+      description:
+        primaryCategory.seo?.metaDesc || primaryCategory.description?.trim() || "",
+      canonical:
+        primaryCategory.seo?.canonical ||
+        `https://ag.smz/blog/categoria/${primaryCategory.slug}`,
+      ogImage: primaryCategory.seo?.opengraphImage?.sourceUrl ?? undefined,
+    },
+  };
+
+  const schemaPost: Post = {
+    id: post.id,
+    slug: post.slug,
+    title: stripHtml(post.title),
+    excerpt: stripHtml(post.excerpt ?? post.content ?? ""),
+    content: stripHtml(post.content ?? ""),
+    date: post.date,
+    modified: post.modified,
+    readingTime: estimateReadingTime(post.content),
+    authorSlug: author.slug,
+    categorySlugs: [primaryCategory.slug],
+    tagSlugs: (post.tags?.nodes ?? []).flatMap((tag) => (tag?.slug ? [tag.slug] : [])),
+    featuredArtKey,
+    seo,
+    relatedPostSlugs: relatedNodes.flatMap((item) => (item.slug ? [item.slug] : [])),
+  };
+
+  return {
+    title: stripHtml(post.title),
+    excerpt: stripHtml(post.excerpt ?? post.content ?? ""),
+    date: post.date,
+    modified: post.modified,
+    readingTime: estimateReadingTime(post.content),
+    featuredArtKey,
+    seo,
+    author,
+    primaryCategory: {
+      slug: primaryCategory.slug,
+      name: primaryCategory.name,
+      href: `/blog/categoria/${primaryCategory.slug}`,
+    },
+    tags: (post.tags?.nodes ?? []).map((tag) => ({
+      href: `/blog/tag/${tag?.slug ?? ""}`,
+      label: tag?.name?.trim() || tag?.slug || "Tag",
+    })),
+    relatedPosts: relatedNodes
+      .filter((item) => item.slug && item.title && item.date)
+      .map((item) => {
+        const itemCategory = item.categories?.nodes?.[0];
+        const itemAuthor = item.author?.node?.name?.trim() || "SMZ";
+
+        return {
+          href: `/blog/${item.slug}`,
+          category: itemCategory?.name?.trim() || "Blog",
+          date: item.date!,
+          readingTime: estimateReadingTime(item.content),
+          title: stripHtml(item.title!),
+          excerpt: stripHtml(item.excerpt ?? item.content ?? ""),
+          author: itemAuthor,
+          featuredArtKey: deriveArtKey(item, itemCategory?.slug),
+          slug: item.slug!,
+        };
+      }),
+    headings: decorated.headings,
+    contentHtml: decorated.contentHtml,
+    schemaPost,
+    schemaAuthor,
+    schemaCategory,
+  };
+}
+
+export async function getBlogSingleStaticParams() {
+  if (!process.env.WORDPRESS_GRAPHQL_ENDPOINT) {
+    return mockContent.posts.map((post) => ({ slug: post.slug }));
+  }
+
+  try {
+    const response = await wpFetch<WpPostsQuery>({
+      query: GET_POSTS_QUERY,
+      variables: {
+        first: 50,
+      },
+      tags: ["wp:posts"],
+      revalidate: 300,
+    });
+
+    const slugs = (response.posts?.nodes ?? [])
+      .flatMap((post) => (post.slug ? [{ slug: post.slug }] : []));
+
+    return slugs.length ? slugs : mockContent.posts.map((post) => ({ slug: post.slug }));
+  } catch {
+    return mockContent.posts.map((post) => ({ slug: post.slug }));
+  }
+}
+
+export async function getBlogSingleData(slug: string): Promise<BlogSingleData | null> {
+  if (!process.env.WORDPRESS_GRAPHQL_ENDPOINT) {
+    return mapMockSingleData(slug);
+  }
+
+  try {
+    const [postResponse, relatedResponse] = await Promise.all([
+      wpFetch<WpPostBySlugQuery>({
+        query: GET_POST_BY_SLUG_QUERY,
+        variables: {
+          slug,
+        },
+        tags: [`wp:post:${slug}`],
+        revalidate: 300,
+      }),
+      wpFetch<WpPostsQuery>({
+        query: GET_POSTS_QUERY,
+        variables: {
+          first: 6,
+        },
+        tags: ["wp:posts"],
+        revalidate: 300,
+      }),
+    ]);
+
+    const post = postResponse.post;
+
+    if (!post) {
+      return mapMockSingleData(slug);
+    }
+
+    const relatedNodes = (relatedResponse.posts?.nodes ?? []).filter(
+      (item) => item.slug && item.slug !== slug,
+    );
+
+    return mapWpPostToSingleData(post, relatedNodes) ?? mapMockSingleData(slug);
+  } catch {
+    return mapMockSingleData(slug);
+  }
+}
