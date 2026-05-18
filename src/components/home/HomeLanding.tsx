@@ -83,38 +83,38 @@ const processSteps = [
 
 const testimonials = [
   {
-    initials: "CR",
-    name: "Camila Rezende",
-    role: "CEO · Loja Verde · E-commerce de moda",
+    initials: "FL",
+    name: "Fernando Lopes",
+    role: "CEO · BJJ STARS · Maior Evento da América Latina de Jiu Jitsu",
     quote:
-      "Em 6 meses, dobramos faturamento sem aumentar verba de mídia. A SMZ entrega o que muita agência só promete e devolveu o controle do crescimento.",
+      "Agencia muito pró ativa, com profissionais de comprometidos e com muita eficiência, Reocmendo 100%",
     featured: true,
   },
   {
-    initials: "DM",
-    name: "Daniel Marques",
-    role: "Fundador · Nexa Tech (SaaS B2B)",
+    initials: "CE",
+    name: "Carlos Eduardo",
+    role: "Atleta· Campeão de Jiu Jitsu",
     quote:
-      "Pela primeira vez sei exatamente quanto cada real investido me devolve. Isso mudou minha cabeça de negócio, não só o marketing.",
+      "Quem quer resultado precisa de uma boa equipe ao lado.Excelente profissionais, atenciosos nos mínimos detalhes. Obrigado pelo ótimo trabalho!",
   },
   {
-    initials: "RL",
-    name: "Renata Lopes",
-    role: "Head de Marketing · Velora",
+    initials: "DZ",
+    name: "Dayan Zaniquello",
+    role: "CEO · ZNQ Advogados e Associados",
     quote:
       "Time consultivo de verdade. Senta com a gente, questiona e ajuda a tomar decisão. Não é fornecedor, é parceria.",
   },
 ];
 
 const marqueeBrands = [
-  "Loja Verde",
-  "Nexa Tech",
-  "Velora",
-  "Casa Mont",
-  "Hábito Saúde",
-  "Norte Capital",
-  "Beira Café",
-  "Pulse Studio",
+  "BJJ STARS",
+  "Cacau Show",
+  "Vivo",
+  "Catho",
+  "ZNQ",
+  "Clinica Mirian",
+  "Kadu Jiu-Jitsu",
+  "Sensei Dojo",
 ];
 
 type HomeLandingProps = {
