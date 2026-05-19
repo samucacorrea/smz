@@ -1,6 +1,6 @@
 import "server-only";
 
-import { readFileSync, readdirSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync } from "node:fs";
 import path from "node:path";
 import { buildSiteUrl, getSiteOrigin } from "@/lib/site";
 
@@ -270,23 +270,43 @@ function parseServiceFile(slug: string): ServicePageData {
   };
 }
 
-const serviceFiles = readdirSync(path.join(process.cwd(), "_template_", "servicos"))
-  .filter((file) => file.endsWith(".html"))
-  .map((file) => file.replace(/\.html$/, ""))
-  .sort((a, b) => Object.keys(SERVICE_LABELS).indexOf(a) - Object.keys(SERVICE_LABELS).indexOf(b));
+function loadServices() {
+  const servicesDirectory = path.join(process.cwd(), "_template_", "servicos");
 
-const parsedServices = serviceFiles.map(parseServiceFile);
+  if (!existsSync(servicesDirectory)) {
+    console.error("[services] Missing directory in runtime:", servicesDirectory);
+    return [] as ServicePageData[];
+  }
 
-for (const service of parsedServices) {
-  service.related = parsedServices
-    .filter((item) => item.slug !== service.slug)
-    .slice(0, 3)
-    .map((item) => ({
-      slug: item.slug,
-      name: item.navLabel,
-      tag: item.serviceType,
-    }));
+  try {
+    const serviceFiles = readdirSync(servicesDirectory)
+      .filter((file) => file.endsWith(".html"))
+      .map((file) => file.replace(/\.html$/, ""))
+      .sort(
+        (a, b) => Object.keys(SERVICE_LABELS).indexOf(a) - Object.keys(SERVICE_LABELS).indexOf(b),
+      );
+
+    const parsedServices = serviceFiles.map(parseServiceFile);
+
+    for (const service of parsedServices) {
+      service.related = parsedServices
+        .filter((item) => item.slug !== service.slug)
+        .slice(0, 3)
+        .map((item) => ({
+          slug: item.slug,
+          name: item.navLabel,
+          tag: item.serviceType,
+        }));
+    }
+
+    return parsedServices;
+  } catch (error) {
+    console.error("[services] Failed to parse service templates:", error);
+    return [] as ServicePageData[];
+  }
 }
+
+const parsedServices = loadServices();
 
 export function getAllServices() {
   return parsedServices;
