@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { LeadCtaButton } from "@/components/lead/LeadCtaButton";
+import { MobileMenu } from "@/components/layout/MobileMenu";
 import { ThemeToggle } from "@/components/layout/ThemeToggle";
 import { getAllServices } from "@/lib/services";
 
@@ -82,6 +83,14 @@ export function SiteHeader() {
               <path d="M5 12h14M13 5l7 7-7 7" />
             </svg>
           </LeadCtaButton>
+
+          <MobileMenu
+            navigationItems={navigationItems}
+            services={services.map((service) => ({
+              slug: service.slug,
+              navLabel: service.navLabel,
+            }))}
+          />
         </div>
       </div>
     </header>

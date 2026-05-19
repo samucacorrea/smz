@@ -1,5 +1,6 @@
 "use client";
 
+import { sendGTMEvent } from "@next/third-parties/google";
 import {
   createContext,
   useCallback,
@@ -140,7 +141,37 @@ export function LeadCaptureProvider({ children }: LeadCaptureProviderProps) {
           throw new Error("Falha ao enviar o lead.");
         }
 
+        const data = (await response.json()) as {
+          ok?: boolean;
+          leadId?: string;
+          redirectUrl?: string;
+        };
+
+        sendGTMEvent({
+          event: "generate_lead",
+          form_name: "lead_modal",
+          lead_source: source,
+          page_location: typeof window !== "undefined" ? window.location.href : "",
+          page_path: typeof window !== "undefined" ? window.location.pathname : "",
+          user_name: name,
+          phone_provided: Boolean(phone),
+          utm_source: attribution.utm_source,
+          utm_medium: attribution.utm_medium,
+          utm_campaign: attribution.utm_campaign,
+          utm_content: attribution.utm_content,
+          utm_id: attribution.utm_id,
+          gclid: attribution.gclid,
+          fbclid: attribution.fbclid,
+          lead_id: data.leadId ?? "notset",
+        });
+
         setStatus("success");
+
+        if (data.redirectUrl) {
+          window.setTimeout(() => {
+            window.location.assign(data.redirectUrl as string);
+          }, 600);
+        }
       } catch (error) {
         setStatus("error");
         setErrorMessage(

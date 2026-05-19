@@ -14,6 +14,8 @@ type LeadPayload = {
 
 export async function POST(request: Request) {
   const webhookUrl = process.env.LEAD_WEBHOOK_URL;
+  const redirectUrl = process.env.LEAD_REDIRECT_URL?.trim();
+  const leadId = crypto.randomUUID();
 
   if (!webhookUrl) {
     return NextResponse.json(
@@ -41,6 +43,7 @@ export async function POST(request: Request) {
   }
 
   const leadPayload = {
+    leadId,
     name,
     phone,
     source: payload.source?.trim() || "cta",
@@ -72,5 +75,9 @@ export async function POST(request: Request) {
     );
   }
 
-  return NextResponse.json({ ok: true });
+  return NextResponse.json({
+    ok: true,
+    leadId,
+    redirectUrl: redirectUrl || null,
+  });
 }

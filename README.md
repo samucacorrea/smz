@@ -20,10 +20,12 @@ Use o arquivo `.env.example` como base.
 
 ```env
 NEXT_PUBLIC_SITE_URL=https://seudominio.com
+NEXT_PUBLIC_GTM_ID=GTM-XXXXXXX
 WORDPRESS_GRAPHQL_ENDPOINT=https://wp.seudominio.com/graphql
 WORDPRESS_SITE_URL=https://wp.seudominio.com
 REVALIDATE_SECRET=change-me
 LEAD_WEBHOOK_URL=https://hooks.seudominio.com/lead
+LEAD_REDIRECT_URL=https://wa.me/5511999999999
 ```
 
 ## Como rodar localmente
@@ -122,3 +124,11 @@ npm run start
 ## Observação sobre WordPress Headless
 
 O WordPress é externo e funciona apenas como CMS/headless backend. O frontend público será servido pelo Next.js, responsável por renderização, SEO, performance e experiência final.
+
+## GTM e eventos
+
+- O Google Tag Manager é instalado apenas no frontend Next.js.
+- Use `NEXT_PUBLIC_GTM_ID` para informar o container.
+- O WordPress não deve receber GTM, já que funciona apenas como CMS headless.
+- Após envio bem-sucedido do modal de lead, o app dispara o evento `generate_lead`.
+- Se `LEAD_REDIRECT_URL` estiver configurado, o usuário é redirecionado após o envio.

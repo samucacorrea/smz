@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { GoogleTagManager } from "@next/third-parties/google";
 import { LeadCaptureProvider } from "@/components/lead/LeadCaptureProvider";
 import { getSiteSeo } from "@/lib/site";
 import "@/styles/globals.css";
@@ -42,6 +43,8 @@ type RootLayoutProps = Readonly<{
 }>;
 
 export default function RootLayout({ children }: RootLayoutProps) {
+  const gtmId = process.env.NEXT_PUBLIC_GTM_ID?.trim();
+
   return (
     <html lang="pt-BR" suppressHydrationWarning>
       <head>
@@ -50,6 +53,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
       <body>
         <LeadCaptureProvider>{children}</LeadCaptureProvider>
       </body>
+      {gtmId ? <GoogleTagManager gtmId={gtmId} /> : null}
     </html>
   );
 }
