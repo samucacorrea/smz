@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { GoogleTagManager } from "@next/third-parties/google";
 import { LeadCaptureProvider } from "@/components/lead/LeadCaptureProvider";
 import { getSiteSeo } from "@/lib/site";
@@ -14,6 +14,9 @@ export const metadata: Metadata = {
     template: `%s · ${siteSeo.title}`,
   },
   description: siteSeo.description,
+  verification: {
+    google: "WR0yhxgK9EhLLrIAHcRkbSD5-xx4tQ05_AQq1claKNE",
+  },
   icons: {
     icon: [
       { url: "/assets/logos/logo-dark.png", media: "(prefers-color-scheme: dark)" },
@@ -23,6 +26,11 @@ export const metadata: Metadata = {
     apple: "/assets/logos/logo-light.png",
     shortcut: "/assets/logos/logo-dark.png",
   },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#0A0A0A",
+  colorScheme: "dark",
 };
 
 const themeBootstrapScript = `
