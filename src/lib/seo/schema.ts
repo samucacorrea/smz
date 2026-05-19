@@ -12,6 +12,20 @@ type CollectionPageInput = {
   description: string;
 };
 
+type ServiceSchemaInput = {
+  id: string;
+  name: string;
+  description: string;
+  serviceType: string;
+  url: string;
+  image?: string;
+};
+
+type FaqSchemaInput = Array<{
+  question: string;
+  answer: string;
+}>;
+
 const siteSeo = getSiteSeo();
 
 export function buildOrganizationSchema() {
@@ -118,5 +132,47 @@ export function buildArticleSchema(
     image: post.seo.ogImage ? [post.seo.ogImage] : undefined,
     articleSection: primaryTerm.name,
     keywords: post.tagSlugs.join(", "),
+  };
+}
+
+export function buildServiceSchema({
+  id,
+  name,
+  description,
+  serviceType,
+  url,
+  image,
+}: ServiceSchemaInput) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    "@id": id,
+    name,
+    description,
+    serviceType,
+    url,
+    image,
+    provider: {
+      "@id": `${siteSeo.canonical}#organization`,
+    },
+    areaServed: {
+      "@type": "Country",
+      name: "Brasil",
+    },
+  };
+}
+
+export function buildFaqPageSchema(items: FaqSchemaInput) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: items.map((item) => ({
+      "@type": "Question",
+      name: item.question,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: item.answer,
+      },
+    })),
   };
 }

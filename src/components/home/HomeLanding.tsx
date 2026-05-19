@@ -8,6 +8,7 @@ import { formatDateLabel } from "@/utils/format";
 const serviceCards = [
   {
     idx: "S/01",
+    href: "/servicos/trafego-pago",
     title: "Tráfego Pago",
     description:
       "Campanhas em Google, Meta, TikTok e YouTube estruturadas em funil real: aquisição, remarketing e recompra com KPIs alinhados ao seu P&L.",
@@ -15,6 +16,7 @@ const serviceCards = [
   },
   {
     idx: "S/02",
+    href: "/servicos/seo-e-conteudo",
     title: "SEO & Conteúdo",
     description:
       "Auditoria técnica, arquitetura de conteúdo e produção orgânica para capturar a intenção de compra antes do anúncio entrar na conta.",
@@ -22,6 +24,7 @@ const serviceCards = [
   },
   {
     idx: "S/03",
+    href: "/servicos/redes-sociais",
     title: "Redes Sociais",
     description:
       "Conteúdo que constrói marca e gera demanda com calendário editorial, produção, copy e gestão de comunidade.",
@@ -29,6 +32,7 @@ const serviceCards = [
   },
   {
     idx: "S/04",
+    href: "/servicos/sites-e-landing-pages",
     title: "Sites & Landing Pages",
     description:
       "Design e desenvolvimento de páginas pensadas como ferramenta de vendas, testadas, mensuradas e otimizadas continuamente.",
@@ -36,6 +40,7 @@ const serviceCards = [
   },
   {
     idx: "S/05",
+    href: "/servicos/automacao-e-crm",
     title: "Automação & CRM",
     description:
       "Implantação de HubSpot, RD ou n8n com fluxos de nutrição, qualificação e reativação para não perder lead no meio do caminho.",
@@ -43,6 +48,7 @@ const serviceCards = [
   },
   {
     idx: "S/06",
+    href: "/servicos/consultoria",
     title: "Consultoria Estratégica",
     description:
       "Para quem já tem time interno e precisa de direção: ICP, posicionamento, mix de canais, metas e governança.",
@@ -322,6 +328,11 @@ export function HomeLanding({ data }: HomeLandingProps) {
                       {tag}
                     </span>
                   ))}
+                </div>
+                <div style={{ marginTop: 18 }}>
+                  <Link href={service.href} className="inline-link">
+                    Ver serviço <span className="arrow">→</span>
+                  </Link>
                 </div>
               </article>
             ))}

@@ -5,6 +5,7 @@ import {
   GET_POSTS_QUERY,
   GET_TAGS_QUERY,
 } from "@/graphql/queries";
+import { getAllServices } from "@/lib/services";
 import { buildSiteUrl, getBlogSeo, getHomeSeo } from "@/lib/site";
 import { isWordPressConfigured } from "@/lib/wp-mode";
 import { wpFetch } from "@/lib/wp-client";
@@ -19,6 +20,7 @@ import type {
 export const dynamic = "force-dynamic";
 
 export async function GET() {
+  const services = getAllServices();
   let pageLines: string[] = [];
   let authorLines: string[] = [];
   let categoryLines: string[] = [];
@@ -107,6 +109,13 @@ export async function GET() {
     "",
     "Blog root:",
     `- ${getBlogSeo().canonical}`,
+    "",
+    "Services:",
+    `- Index | ${buildSiteUrl("/servicos")}`,
+    ...services.map(
+      (service) =>
+        `- ${service.navLabel} | ${service.serviceType} | ${buildSiteUrl(`/servicos/${service.slug}`)}`,
+    ),
     "",
     "Pages:",
     ...pageLines,

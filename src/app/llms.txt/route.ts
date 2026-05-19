@@ -4,6 +4,7 @@ import {
   GET_PAGES_QUERY,
   GET_POSTS_QUERY,
 } from "@/graphql/queries";
+import { getAllServices } from "@/lib/services";
 import { buildSiteUrl, getBlogSeo, getHomeSeo } from "@/lib/site";
 import { isWordPressConfigured } from "@/lib/wp-mode";
 import { wpFetch } from "@/lib/wp-client";
@@ -12,6 +13,7 @@ import type { WpAuthorsQuery, WpCategoriesQuery, WpPagesQuery, WpPostsQuery } fr
 export const dynamic = "force-dynamic";
 
 export async function GET() {
+  const services = getAllServices();
   let categoryLines: string[] = [];
   let authorLines: string[] = [];
   let pageLines: string[] = [];
@@ -80,6 +82,8 @@ export async function GET() {
     "Key sections:",
     `- Home: ${getHomeSeo().canonical}`,
     `- Blog: ${getBlogSeo().canonical}`,
+    `- Services: ${buildSiteUrl("/servicos")}`,
+    ...services.map((service) => `- Service: ${buildSiteUrl(`/servicos/${service.slug}`)}`),
     ...pageLines,
     ...postLines,
     ...categoryLines,

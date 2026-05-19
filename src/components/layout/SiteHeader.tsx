@@ -2,9 +2,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { LeadCtaButton } from "@/components/lead/LeadCtaButton";
 import { ThemeToggle } from "@/components/layout/ThemeToggle";
+import { getAllServices } from "@/lib/services";
 
 const navigationItems = [
-  { href: "/#servicos", label: "Serviços" },
   { href: "/#resultados", label: "Resultados" },
   { href: "/#processo", label: "Processo" },
   { href: "/blog", label: "Blog" },
@@ -12,6 +12,8 @@ const navigationItems = [
 ];
 
 export function SiteHeader() {
+  const services = getAllServices();
+
   return (
     <header className="site-header">
       <div className="container nav">
@@ -36,6 +38,23 @@ export function SiteHeader() {
 
         <nav aria-label="Principal">
           <ul className="nav-links">
+            <li className="nav-dropdown">
+              <Link href="/servicos" className="nav-dropdown-trigger">
+                Serviços
+              </Link>
+              <div className="nav-dropdown-menu" role="menu" aria-label="Serviços SMZ">
+                {services.map((service) => (
+                  <Link
+                    key={service.slug}
+                    href={`/servicos/${service.slug}`}
+                    className="nav-dropdown-item"
+                  >
+                    <span className="nav-dropdown-title">{service.navLabel}</span>
+                    <span className="nav-dropdown-meta">{service.serviceType}</span>
+                  </Link>
+                ))}
+              </div>
+            </li>
             {navigationItems.map((item) => (
               <li key={item.href}>
                 <Link href={item.href}>{item.label}</Link>

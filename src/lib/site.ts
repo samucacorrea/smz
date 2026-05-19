@@ -43,3 +43,12 @@ export function getBlogSeo(): SeoData {
     canonical: buildSiteUrl("/blog"),
   };
 }
+
+export function getServicesSeo(): SeoData {
+  return {
+    title: "Serviços SMZ",
+    description:
+      "Páginas de serviços da SMZ para tráfego pago, SEO, redes sociais, sites, automação e consultoria estratégica.",
+    canonical: buildSiteUrl("/servicos"),
+  };
+}

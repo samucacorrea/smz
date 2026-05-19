@@ -6,6 +6,7 @@ import {
   GET_POSTS_QUERY,
   GET_TAGS_QUERY,
 } from "@/graphql/queries";
+import { getAllServices } from "@/lib/services";
 import { buildSiteUrl, getSiteOrigin } from "@/lib/site";
 import { isWordPressConfigured } from "@/lib/wp-mode";
 import { wpFetch } from "@/lib/wp-client";
@@ -22,6 +23,7 @@ export const dynamic = "force-dynamic";
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
   const siteOrigin = getSiteOrigin();
+  const services = getAllServices();
 
   const staticRoutes: MetadataRoute.Sitemap = [
     {
@@ -42,6 +44,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "weekly",
       priority: 0.5,
     },
+    {
+      url: buildSiteUrl("/servicos"),
+      lastModified: now,
+      changeFrequency: "weekly",
+      priority: 0.85,
+    },
+    ...services.map((service) => ({
+      url: buildSiteUrl(`/servicos/${service.slug}`),
+      lastModified: now,
+      changeFrequency: "monthly" as const,
+      priority: 0.8,
+    })),
   ];
 
   if (!isWordPressConfigured()) {
