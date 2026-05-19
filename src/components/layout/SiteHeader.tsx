@@ -20,7 +20,7 @@ export function SiteHeader() {
         <Link href="/" className="brand" aria-label="SMZ — Início">
           <Image
             className="logo-dark"
-            src="/assets/logos/logo-dark.png"
+            src="/assets/logos/logo-light.png"
             alt="SMZ"
             width={152}
             height={44}

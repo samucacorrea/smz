@@ -32,7 +32,7 @@ export function SiteFooter() {
           <div className="footer-brand">
             <Image
               className="logo-dark"
-              src="/assets/logos/logo-dark.png"
+              src="/assets/logos/logo-light.png"
               alt="SMZ"
               width={152}
               height={44}
