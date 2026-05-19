@@ -36,7 +36,7 @@ function getGraphQLEndpoint() {
 export async function wpFetch<TData, TVariables extends GraphQLVariables = GraphQLVariables>({
   query,
   variables,
-  revalidate = 300,
+  revalidate = 30,
   tags = [],
   cache = "force-cache",
 }: WpClientOptions<TVariables>): Promise<TData> {

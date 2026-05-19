@@ -22,6 +22,8 @@ type AuthorArchivePost = {
   date: string;
   readingTime: string;
   categoryName: string;
+  featuredImageUrl?: string;
+  featuredImageAlt?: string;
   featuredArtKey?: string;
 };
 
@@ -110,6 +112,8 @@ function mapWpPost(post: WpPost): AuthorArchivePost | null {
     date: post.date,
     readingTime: estimateReadingTime(post.content),
     categoryName: primaryCategory?.name?.trim() || "Blog",
+    featuredImageUrl: post.featuredImage?.node?.sourceUrl ?? undefined,
+    featuredImageAlt: post.featuredImage?.node?.altText ?? undefined,
     featuredArtKey: deriveArtKey(post, primaryCategory?.slug),
   };
 }
@@ -160,7 +164,7 @@ export async function getBlogAuthorStaticParams() {
         first: 50,
       },
       tags: ["wp:authors"],
-      revalidate: 300,
+      revalidate: 30,
     });
 
     const slugs = (response.users?.nodes ?? []).flatMap((author) =>
@@ -187,7 +191,7 @@ export async function getBlogAuthorData(slug: string): Promise<BlogAuthorData | 
           slug,
         },
         tags: [`wp:author:${slug}`],
-        revalidate: 300,
+        revalidate: 30,
       }),
       wpFetch<WpPostsQuery>({
         query: GET_POSTS_QUERY,
@@ -195,7 +199,7 @@ export async function getBlogAuthorData(slug: string): Promise<BlogAuthorData | 
           first: 50,
         },
         tags: ["wp:posts"],
-        revalidate: 300,
+        revalidate: 30,
       }),
     ]);
 

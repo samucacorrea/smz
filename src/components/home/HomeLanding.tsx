@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { PostArtwork } from "@/components/blog/PostArtwork";
 import { PostCard } from "@/components/blog/PostCard";
+import { PostMedia } from "@/components/blog/PostMedia";
 import { LeadCtaButton } from "@/components/lead/LeadCtaButton";
 import type { HomePageData } from "@/lib/wp-home";
 import { formatDateLabel } from "@/utils/format";
@@ -183,11 +183,11 @@ export function HomeLanding({ data }: HomeLandingProps) {
               <div className="hero-stat-card">
                 <span className="stat-label">Resultado em destaque · Q1 2026</span>
                 <div className="stat-value">
-                  +312<span className="stat-suffix">%</span>
+                  +70<span className="stat-suffix">%</span>
                 </div>
                 <p className="stat-foot">
-                  de receita atribuída em 9 meses para um e-commerce de moda, reduzindo o
-                  CAC em 41%. Mesma verba, novo plano.
+                  de receita atribuída nos primeiros 4 meses para um e-commerce, reduzindo o
+                  CAC em 17%. Mesma verba, novo plano.
                 </p>
               </div>
 
@@ -261,10 +261,10 @@ export function HomeLanding({ data }: HomeLandingProps) {
             <div>
               <div className="num-tag">Mídia gerenciada</div>
               <p className="num-value">
-                R$ 38<span className="unit">MI+</span>
+                R$ 90<span className="unit">MI+</span>
               </p>
               <p className="num-label">
-                investidos em Google, Meta e TikTok desde 2019.
+                investidos em Google, Meta e TikTok desde 2014.
               </p>
             </div>
             <div>
@@ -452,7 +452,14 @@ export function HomeLanding({ data }: HomeLandingProps) {
                 title={post.title}
                 excerpt={post.excerpt}
                 author={post.authorName}
-                cover={<PostArtwork artKey={post.featuredArtKey} label={post.categoryName} />}
+                cover={
+                  <PostMedia
+                    imageUrl={post.featuredImageUrl}
+                    imageAlt={post.featuredImageAlt}
+                    artKey={post.featuredArtKey}
+                    label={post.categoryName}
+                  />
+                }
                 readMoreLabel={post.slug.includes("case") ? "Ler case" : "Ler artigo"}
               />
             ))}

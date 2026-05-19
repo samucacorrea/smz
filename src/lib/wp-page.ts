@@ -64,7 +64,7 @@ async function fetchPageBySlug(slug: string) {
         slug: candidate,
       },
       tags: [`wp:page:${slug}`],
-      revalidate: 300,
+      revalidate: 30,
     });
 
     if (response.page) {
@@ -87,7 +87,7 @@ export async function getWpPageStaticParams() {
         first: 100,
       },
       tags: ["wp:pages"],
-      revalidate: 300,
+      revalidate: 30,
     });
 
     return (response.pages?.nodes ?? [])

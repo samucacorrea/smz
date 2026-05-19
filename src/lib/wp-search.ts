@@ -52,7 +52,7 @@ export async function getSearchPageData(query: string): Promise<SearchPageData> 
           first: 24,
         },
         tags: ["wp:posts", `wp:search:${trimmedQuery}`],
-        revalidate: 300,
+        revalidate: 30,
       }),
       wpFetch<WpCategoriesQuery>({
         query: GET_CATEGORIES_QUERY,
@@ -60,7 +60,7 @@ export async function getSearchPageData(query: string): Promise<SearchPageData> 
           first: 50,
         },
         tags: ["wp:categories"],
-        revalidate: 300,
+        revalidate: 30,
       }),
       wpFetch<WpTagsQuery>({
         query: GET_TAGS_QUERY,
@@ -68,7 +68,7 @@ export async function getSearchPageData(query: string): Promise<SearchPageData> 
           first: 50,
         },
         tags: ["wp:tags"],
-        revalidate: 300,
+        revalidate: 30,
       }),
     ]);
 

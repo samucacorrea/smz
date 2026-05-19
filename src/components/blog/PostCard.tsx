@@ -31,7 +31,7 @@ export function PostCard({
   return (
     <Link href={href} className="post" data-cat={categoryKey}>
       <div className="post-cover">
-        <div className="cover-art">{cover}</div>
+        {cover}
       </div>
       <div className="post-body">
         <div className="post-meta">

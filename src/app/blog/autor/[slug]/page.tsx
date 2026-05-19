@@ -3,12 +3,12 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { Breadcrumbs } from "@/components/blog/Breadcrumbs";
 import { NewsletterCta } from "@/components/blog/NewsletterCta";
+import { PostMedia } from "@/components/blog/PostMedia";
 import { MainLayout } from "@/components/layout/MainLayout";
 import { LeadCtaButton } from "@/components/lead/LeadCtaButton";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { buildPageMetadata } from "@/lib/seo/metadata";
 import { buildBreadcrumbListSchema, buildCollectionPageSchema, buildPersonSchema } from "@/lib/seo/schema";
-import { PostArtwork } from "@/components/blog/PostArtwork";
 import { getBlogSeo, getHomeSeo } from "@/lib/site";
 import { getBlogAuthorData } from "@/lib/wp-author";
 import { formatDateLabel } from "@/utils/format";
@@ -153,7 +153,13 @@ export default async function AuthorPage({ params }: AuthorPageProps) {
                 return (
                   <article key={post.slug} className="cat-row">
                     <div className="row-thumb">
-                      <PostArtwork artKey={post.featuredArtKey} label={post.categoryName} />
+                      <PostMedia
+                        imageUrl={post.featuredImageUrl}
+                        imageAlt={post.featuredImageAlt}
+                        artKey={post.featuredArtKey}
+                        label={post.categoryName}
+                        variant="bare"
+                      />
                     </div>
                     <div className="row-content">
                       <div className="row-meta">

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { PostArtwork } from "@/components/blog/PostArtwork";
+import { PostMedia } from "@/components/blog/PostMedia";
 import { MainLayout } from "@/components/layout/MainLayout";
 import { LeadCtaButton } from "@/components/lead/LeadCtaButton";
 import { JsonLd } from "@/components/seo/JsonLd";
@@ -11,7 +11,12 @@ import { RelatedPosts } from "@/components/single/RelatedPosts";
 import { ShareBar } from "@/components/single/ShareBar";
 import { TableOfContents } from "@/components/single/TableOfContents";
 import { buildPageMetadata } from "@/lib/seo/metadata";
-import { buildArticleSchema, buildBreadcrumbListSchema, buildPersonSchema } from "@/lib/seo/schema";
+import {
+  buildArticleSchema,
+  buildBreadcrumbListSchema,
+  buildFaqPageSchema,
+  buildPersonSchema,
+} from "@/lib/seo/schema";
 import { buildSiteUrl, getBlogSeo, getHomeSeo } from "@/lib/site";
 import { getBlogSingleData } from "@/lib/wp-single";
 import { formatDateLabel } from "@/utils/format";
@@ -59,6 +64,16 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         />
         <JsonLd data={buildPersonSchema(post.schemaAuthor)} />
         <JsonLd data={buildArticleSchema(post.schemaPost, post.schemaAuthor, post.schemaCategory)} />
+        {post.schemaPost.faq?.length ? (
+          <JsonLd
+            data={buildFaqPageSchema(
+              post.schemaPost.faq.map((item) => ({
+                question: item.question,
+                answer: item.answer,
+              })),
+            )}
+          />
+        ) : null}
         <article>
           <ArticleHeader
             category={{
@@ -81,7 +96,14 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
           <div className="article-cover">
             <div className="cover-frame" role="img" aria-label={post.title}>
-              <PostArtwork artKey={post.featuredArtKey} label={post.primaryCategory.name} />
+              <PostMedia
+                imageUrl={post.featuredImageUrl}
+                imageAlt={post.featuredImageAlt}
+                artKey={post.featuredArtKey}
+                label={post.primaryCategory.name}
+                variant="bare"
+                priority
+              />
             </div>
           </div>
 
@@ -136,6 +158,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                 </aside>
 
                 <ArticleBody
+                  faq={post.schemaPost.faq}
                   tags={post.tags}
                   cta={{
                     title: "Quer aplicar isso na sua operação?",
@@ -185,7 +208,14 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             title: item.title,
             excerpt: item.excerpt,
             author: item.author,
-            cover: <PostArtwork artKey={item.featuredArtKey} label={item.category} />,
+            cover: (
+              <PostMedia
+                imageUrl={item.featuredImageUrl}
+                imageAlt={item.featuredImageAlt}
+                artKey={item.featuredArtKey}
+                label={item.category}
+              />
+            ),
             readMoreLabel: item.slug.includes("case") ? "Ler case" : "Ler artigo",
           }))}
         />

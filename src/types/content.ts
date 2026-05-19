@@ -69,6 +69,7 @@ export type Post = {
   categorySlugs: string[];
   tagSlugs: string[];
   featuredImage?: string;
+  featuredImageAlt?: string;
   featuredArtKey?: string;
   seo: SeoData;
   faq?: FaqItem[];

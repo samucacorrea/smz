@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Breadcrumbs } from "@/components/blog/Breadcrumbs";
 import { NewsletterCta } from "@/components/blog/NewsletterCta";
 import { Pagination } from "@/components/blog/Pagination";
-import { PostArtwork } from "@/components/blog/PostArtwork";
+import { PostMedia } from "@/components/blog/PostMedia";
 import { MainLayout } from "@/components/layout/MainLayout";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { buildPageMetadata } from "@/lib/seo/metadata";
@@ -134,7 +134,13 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
                 return (
                   <article key={post.slug} className="cat-row">
                     <div className="row-thumb">
-                      <PostArtwork artKey={post.featuredArtKey} label={post.categoryName} />
+                      <PostMedia
+                        imageUrl={post.featuredImageUrl}
+                        imageAlt={post.featuredImageAlt}
+                        artKey={post.featuredArtKey}
+                        label={post.categoryName}
+                        variant="bare"
+                      />
                     </div>
                     <div className="row-content">
                       <div className="row-meta">

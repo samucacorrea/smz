@@ -34,31 +34,31 @@ export async function GET() {
           query: GET_PAGES_QUERY,
           variables: { first: 100 },
           tags: ["wp:pages"],
-          revalidate: 300,
+          revalidate: 30,
         }),
         wpFetch<WpAuthorsQuery>({
           query: GET_AUTHORS_QUERY,
           variables: { first: 100 },
           tags: ["wp:authors"],
-          revalidate: 300,
+          revalidate: 30,
         }),
         wpFetch<WpCategoriesQuery>({
           query: GET_CATEGORIES_QUERY,
           variables: { first: 100 },
           tags: ["wp:categories"],
-          revalidate: 300,
+          revalidate: 30,
         }),
         wpFetch<WpTagsQuery>({
           query: GET_TAGS_QUERY,
           variables: { first: 100 },
           tags: ["wp:tags"],
-          revalidate: 300,
+          revalidate: 30,
         }),
         wpFetch<WpPostsQuery>({
           query: GET_POSTS_QUERY,
           variables: { first: 100 },
           tags: ["wp:posts"],
-          revalidate: 300,
+          revalidate: 30,
         }),
       ]);
 

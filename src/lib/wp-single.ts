@@ -42,6 +42,8 @@ type SingleRelatedPost = {
   title: string;
   excerpt: string;
   author: string;
+  featuredImageUrl?: string;
+  featuredImageAlt?: string;
   featuredArtKey?: string;
   slug: string;
 };
@@ -52,6 +54,8 @@ export type BlogSingleData = {
   date: string;
   modified: string;
   readingTime: string;
+  featuredImageUrl?: string;
+  featuredImageAlt?: string;
   featuredArtKey?: string;
   seo: SeoData;
   author: SingleAuthor;
@@ -64,6 +68,18 @@ export type BlogSingleData = {
   schemaAuthor: Author;
   schemaCategory: Category | Tag;
 };
+
+function normalizeWpDate(value?: string | null) {
+  if (!value) {
+    return "";
+  }
+
+  if (/([zZ]|[+-]\d{2}:\d{2})$/.test(value)) {
+    return value;
+  }
+
+  return `${value}-03:00`;
+}
 
 function stripHtml(value: string) {
   return value.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
@@ -144,6 +160,36 @@ function decorateHeadings(html?: string | null) {
   return { contentHtml, headings };
 }
 
+function extractFaqFromContent(html?: string | null) {
+  if (!html) {
+    return [] as Post["faq"];
+  }
+
+  const yoastFaq = [
+    ...html.matchAll(
+      /<div class="schema-faq-section"[\s\S]*?<strong class="schema-faq-question">([\s\S]*?)<\/strong>[\s\S]*?<p class="schema-faq-answer">([\s\S]*?)<\/p>[\s\S]*?<\/div>/gi,
+    ),
+  ].map((match) => ({
+    question: stripHtml(match[1]),
+    answer: stripHtml(match[2]),
+  }));
+
+  if (yoastFaq.length) {
+    return yoastFaq;
+  }
+
+  const rankMathFaq = [
+    ...html.matchAll(
+      /<div class="rank-math-list-item"[\s\S]*?<h3 class="rank-math-question">([\s\S]*?)<\/h3>[\s\S]*?<div class="rank-math-answer">([\s\S]*?)<\/div>[\s\S]*?<\/div>/gi,
+    ),
+  ].map((match) => ({
+    question: stripHtml(match[1]),
+    answer: stripHtml(match[2]),
+  }));
+
+  return rankMathFaq;
+}
+
 function mapWpPostToSingleData(post: WpPost, relatedNodes: WpPost[]): BlogSingleData | null {
   if (!post.id || !post.slug || !post.title || !post.date || !post.modified) {
     return null;
@@ -157,12 +203,16 @@ function mapWpPostToSingleData(post: WpPost, relatedNodes: WpPost[]): BlogSingle
   }
 
   const decorated = decorateHeadings(post.content);
+  const faq = extractFaqFromContent(post.content);
   const featuredArtKey = deriveArtKey(post, primaryCategory.slug);
   const seo: SeoData = {
-    title: post.seo?.title || stripHtml(post.title),
-    description: post.seo?.metaDesc || stripHtml(post.excerpt ?? post.content ?? ""),
-    canonical: post.seo?.canonical || buildSiteUrl(`/blog/${post.slug}`),
-    ogImage: post.seo?.opengraphImage?.sourceUrl ?? undefined,
+    title: stripHtml(post.title),
+    description: stripHtml(post.excerpt ?? post.content ?? ""),
+    canonical: buildSiteUrl(`/blog/${post.slug}`),
+    ogImage:
+      post.featuredImage?.node?.sourceUrl ??
+      post.seo?.opengraphImage?.sourceUrl ??
+      undefined,
   };
 
   const author: SingleAuthor = {
@@ -213,23 +263,28 @@ function mapWpPostToSingleData(post: WpPost, relatedNodes: WpPost[]): BlogSingle
     title: stripHtml(post.title),
     excerpt: stripHtml(post.excerpt ?? post.content ?? ""),
     content: stripHtml(post.content ?? ""),
-    date: post.date,
-    modified: post.modified,
+    date: normalizeWpDate(post.date),
+    modified: normalizeWpDate(post.modified),
     readingTime: estimateReadingTime(post.content),
     authorSlug: author.slug,
     categorySlugs: [primaryCategory.slug],
     tagSlugs: (post.tags?.nodes ?? []).flatMap((tag) => (tag?.slug ? [tag.slug] : [])),
+    featuredImage: post.featuredImage?.node?.sourceUrl ?? undefined,
+    featuredImageAlt: post.featuredImage?.node?.altText ?? undefined,
     featuredArtKey,
     seo,
+    faq,
     relatedPostSlugs: relatedNodes.flatMap((item) => (item.slug ? [item.slug] : [])),
   };
 
   return {
     title: stripHtml(post.title),
     excerpt: stripHtml(post.excerpt ?? post.content ?? ""),
-    date: post.date,
-    modified: post.modified,
+    date: normalizeWpDate(post.date),
+    modified: normalizeWpDate(post.modified),
     readingTime: estimateReadingTime(post.content),
+    featuredImageUrl: post.featuredImage?.node?.sourceUrl ?? undefined,
+    featuredImageAlt: post.featuredImage?.node?.altText ?? undefined,
     featuredArtKey,
     seo,
     author,
@@ -256,6 +311,8 @@ function mapWpPostToSingleData(post: WpPost, relatedNodes: WpPost[]): BlogSingle
           title: stripHtml(item.title!),
           excerpt: stripHtml(item.excerpt ?? item.content ?? ""),
           author: itemAuthor,
+          featuredImageUrl: item.featuredImage?.node?.sourceUrl ?? undefined,
+          featuredImageAlt: item.featuredImage?.node?.altText ?? undefined,
           featuredArtKey: deriveArtKey(item, itemCategory?.slug),
           slug: item.slug!,
         };
@@ -280,7 +337,7 @@ export async function getBlogSingleStaticParams() {
         first: 50,
       },
       tags: ["wp:posts"],
-      revalidate: 300,
+      revalidate: 30,
     });
 
     const slugs = (response.posts?.nodes ?? [])
@@ -306,7 +363,7 @@ export async function getBlogSingleData(slug: string): Promise<BlogSingleData | 
           slug,
         },
         tags: [`wp:post:${slug}`],
-        revalidate: 300,
+        revalidate: 30,
       }),
       wpFetch<WpPostsQuery>({
         query: GET_POSTS_QUERY,
@@ -314,7 +371,7 @@ export async function getBlogSingleData(slug: string): Promise<BlogSingleData | 
           first: 6,
         },
         tags: ["wp:posts"],
-        revalidate: 300,
+        revalidate: 30,
       }),
     ]);
 

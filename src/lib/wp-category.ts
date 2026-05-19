@@ -27,6 +27,8 @@ type CategoryArchivePost = {
   readingTime: string;
   authorInitials: string;
   categoryName: string;
+  featuredImageUrl?: string;
+  featuredImageAlt?: string;
   featuredArtKey?: string;
 };
 
@@ -106,6 +108,8 @@ function mapWpPost(post: WpPost): CategoryArchivePost | null {
     readingTime: estimateReadingTime(post.content),
     authorInitials: getInitials(authorName),
     categoryName: primaryCategory?.name?.trim() || "Blog",
+    featuredImageUrl: post.featuredImage?.node?.sourceUrl ?? undefined,
+    featuredImageAlt: post.featuredImage?.node?.altText ?? undefined,
     featuredArtKey: deriveArtKey(post, primaryCategory?.slug),
   };
 }
@@ -131,7 +135,7 @@ export async function getBlogCategoryStaticParams() {
         first: 50,
       },
       tags: ["wp:categories"],
-      revalidate: 300,
+      revalidate: 30,
     });
 
     const slugs = (response.categories?.nodes ?? []).flatMap((category) =>
@@ -158,7 +162,7 @@ export async function getBlogCategoryData(slug: string): Promise<BlogCategoryDat
           slug,
         },
         tags: [`wp:category:${slug}`],
-        revalidate: 300,
+        revalidate: 30,
       }),
       wpFetch<WpPostsQuery>({
         query: GET_POSTS_BY_CATEGORY_SLUG_QUERY,
@@ -167,7 +171,7 @@ export async function getBlogCategoryData(slug: string): Promise<BlogCategoryDat
           first: 24,
         },
         tags: [`wp:category:${slug}`, "wp:posts"],
-        revalidate: 300,
+        revalidate: 30,
       }),
       wpFetch<WpCategoriesQuery>({
         query: GET_CATEGORIES_QUERY,
@@ -175,7 +179,7 @@ export async function getBlogCategoryData(slug: string): Promise<BlogCategoryDat
           first: 50,
         },
         tags: ["wp:categories"],
-        revalidate: 300,
+        revalidate: 30,
       }),
     ]);
 

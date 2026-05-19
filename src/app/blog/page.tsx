@@ -3,9 +3,9 @@ import { Breadcrumbs } from "@/components/blog/Breadcrumbs";
 import { FeaturedSlider } from "@/components/blog/FeaturedSlider";
 import { NewsletterCta } from "@/components/blog/NewsletterCta";
 import { Pagination } from "@/components/blog/Pagination";
-import { PostArtwork } from "@/components/blog/PostArtwork";
 import { PostCard } from "@/components/blog/PostCard";
 import { PostGrid } from "@/components/blog/PostGrid";
+import { PostMedia } from "@/components/blog/PostMedia";
 import { MainLayout } from "@/components/layout/MainLayout";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { getBlogArchiveData } from "@/lib/wp-blog";
@@ -45,7 +45,14 @@ export default async function BlogPage() {
             ? "Guia · 2026"
             : `Em destaque · ${post.categoryName}`,
       artwork: (
-        <PostArtwork artKey={post.featuredArtKey} label={post.categoryName} variant="bare" />
+        <PostMedia
+          imageUrl={post.featuredImageUrl}
+          imageAlt={post.featuredImageAlt}
+          artKey={post.featuredArtKey}
+          label={post.categoryName}
+          variant="bare"
+          priority
+        />
       ),
     };
   });
@@ -119,7 +126,14 @@ export default async function BlogPage() {
                     title={post.title}
                     excerpt={post.excerpt}
                     author={post.authorName}
-                    cover={<PostArtwork artKey={post.featuredArtKey} label={post.categoryName} />}
+                    cover={
+                      <PostMedia
+                        imageUrl={post.featuredImageUrl}
+                        imageAlt={post.featuredImageAlt}
+                        artKey={post.featuredArtKey}
+                        label={post.categoryName}
+                      />
+                    }
                     readMoreLabel={post.slug.includes("case") ? "Ler case" : "Ler"}
                   />
                 );

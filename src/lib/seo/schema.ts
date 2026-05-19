@@ -114,6 +114,8 @@ export function buildArticleSchema(
   author: Author,
   primaryTerm: Category | Tag,
 ) {
+  const image = post.featuredImage || post.seo.ogImage;
+
   return {
     "@context": "https://schema.org",
     "@type": "Article",
@@ -129,7 +131,7 @@ export function buildArticleSchema(
     publisher: {
       "@id": `${siteSeo.canonical}#organization`,
     },
-    image: post.seo.ogImage ? [post.seo.ogImage] : undefined,
+    image: image ? [image] : undefined,
     articleSection: primaryTerm.name,
     keywords: post.tagSlugs.join(", "),
   };

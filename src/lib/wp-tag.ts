@@ -107,7 +107,7 @@ export async function getBlogTagStaticParams() {
         first: 50,
       },
       tags: ["wp:tags"],
-      revalidate: 300,
+      revalidate: 30,
     });
 
     const slugs = (response.tags?.nodes ?? []).flatMap((tag) =>
@@ -134,7 +134,7 @@ export async function getBlogTagData(slug: string): Promise<BlogTagData | null> 
           slug,
         },
         tags: [`wp:tag:${slug}`],
-        revalidate: 300,
+        revalidate: 30,
       }),
       wpFetch<WpPostsQuery>({
         query: GET_POSTS_BY_TAG_SLUG_QUERY,
@@ -143,7 +143,7 @@ export async function getBlogTagData(slug: string): Promise<BlogTagData | null> 
           first: 24,
         },
         tags: [`wp:tag:${slug}`, "wp:posts"],
-        revalidate: 300,
+        revalidate: 30,
       }),
       wpFetch<WpTagsQuery>({
         query: GET_TAGS_QUERY,
@@ -151,7 +151,7 @@ export async function getBlogTagData(slug: string): Promise<BlogTagData | null> 
           first: 50,
         },
         tags: ["wp:tags"],
-        revalidate: 300,
+        revalidate: 30,
       }),
     ]);
 

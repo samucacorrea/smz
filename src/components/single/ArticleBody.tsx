@@ -4,6 +4,10 @@ import { LeadCtaButton } from "@/components/lead/LeadCtaButton";
 
 type ArticleBodyProps = {
   children: ReactNode;
+  faq?: Array<{
+    question: string;
+    answer: string;
+  }>;
   tags?: Array<{
     href: string;
     label: string;
@@ -16,10 +20,34 @@ type ArticleBodyProps = {
   };
 };
 
-export function ArticleBody({ children, cta, tags }: ArticleBodyProps) {
+export function ArticleBody({ children, cta, faq, tags }: ArticleBodyProps) {
   return (
     <div className="prose">
       {children}
+
+      {faq?.length ? (
+        <section className="article-faq" aria-label="Perguntas frequentes">
+          <h2>Perguntas frequentes</h2>
+          <div className="faq-list">
+            {faq.map((item, index) => (
+              <details key={item.question} className="faq-item" open={index === 0}>
+                <summary className="faq-q">
+                  <span className="q-num">Q/{String(index + 1).padStart(2, "0")}</span>
+                  <span className="q-text">{item.question}</span>
+                  <span className="q-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+                      <path d="M12 5v14M5 12h14" />
+                    </svg>
+                  </span>
+                </summary>
+                <div className="faq-a">
+                  <p>{item.answer}</p>
+                </div>
+              </details>
+            ))}
+          </div>
+        </section>
+      ) : null}
 
       {tags?.length ? (
         <div className="article-tags" aria-label="Tags">

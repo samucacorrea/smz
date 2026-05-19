@@ -19,6 +19,8 @@ export type BlogArchivePost = {
   authorInitials: string;
   categoryName: string;
   categorySlug?: string;
+  featuredImageUrl?: string;
+  featuredImageAlt?: string;
   featuredArtKey?: string;
 };
 
@@ -88,6 +90,8 @@ function mapWpPostToArchivePost(post: WpPost): BlogArchivePost | null {
     authorInitials: getInitials(authorName),
     categoryName: primaryCategory?.name?.trim() || "Blog",
     categorySlug: primaryCategory?.slug ?? undefined,
+    featuredImageUrl: post.featuredImage?.node?.sourceUrl ?? undefined,
+    featuredImageAlt: post.featuredImage?.node?.altText ?? undefined,
     featuredArtKey: deriveArtKey(post, primaryCategory ?? undefined),
   };
 }
@@ -105,7 +109,7 @@ export async function getBlogArchiveData(): Promise<BlogArchiveData> {
           first: 12,
         },
         tags: ["wp:posts"],
-        revalidate: 300,
+        revalidate: 30,
       }),
       wpFetch<WpCategoriesQuery>({
         query: GET_CATEGORIES_QUERY,
@@ -113,7 +117,7 @@ export async function getBlogArchiveData(): Promise<BlogArchiveData> {
           first: 50,
         },
         tags: ["wp:categories"],
-        revalidate: 300,
+        revalidate: 30,
       }),
     ]);
 
