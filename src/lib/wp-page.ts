@@ -44,7 +44,7 @@ function mapWpPage(page: WpPage): WpPageData | null {
 
   const title = stripHtml(page.title);
   const seo = buildPageSeo(page, page.slug);
-  const faq = extractFaqFromHtml(page.content);
+  const faq = extractFaqFromHtml(page.content) ?? [];
 
   return {
     slug: page.slug,

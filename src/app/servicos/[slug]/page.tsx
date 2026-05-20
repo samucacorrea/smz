@@ -6,6 +6,7 @@ import { buildPageMetadata } from "@/lib/seo/metadata";
 import {
   buildBreadcrumbListSchema,
   buildFaqPageSchema,
+  buildOrganizationSchema,
   buildServiceSchema,
   buildWebPageSchema,
 } from "@/lib/seo/schema";
