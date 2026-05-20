@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import Image from "next/image";
 import Link from "next/link";
 import { Breadcrumbs } from "@/components/blog/Breadcrumbs";
 import { NewsletterCta } from "@/components/blog/NewsletterCta";
@@ -75,7 +76,18 @@ export default async function AuthorPage({ params }: AuthorPageProps) {
             <div className="author-hero-grid">
               <div className="author-portrait" role="img" aria-label={author.name}>
                 <span className="accent-corner" aria-hidden="true" />
-                <span className="initials">{author.initials}</span>
+                {author.avatarUrl ? (
+                  <Image
+                    src={author.avatarUrl}
+                    alt={author.name}
+                    fill
+                    className="author-photo"
+                    sizes="(max-width: 900px) 100vw, 320px"
+                    unoptimized
+                  />
+                ) : (
+                  <span className="initials">{author.initials}</span>
+                )}
                 <span className="status-dot">Escrevendo</span>
               </div>
 

@@ -100,8 +100,10 @@ export function buildPersonSchema(author: Author) {
     "@id": `${author.seo.canonical}#person`,
     name: author.name,
     description: author.shortBio,
+    image: author.avatarUrl,
     jobTitle: author.role,
     url: author.seo.canonical,
+    knowsAbout: author.expertise.length ? author.expertise : undefined,
     sameAs: author.socials.map((social) => social.href),
     worksFor: {
       "@id": `${siteSeo.canonical}#organization`,

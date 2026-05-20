@@ -25,6 +25,9 @@ export type WpAuthor = {
   slug?: string | null;
   name?: string | null;
   description?: string | null;
+  avatar?: {
+    url?: string | null;
+  } | null;
 };
 
 export type WpCategory = {

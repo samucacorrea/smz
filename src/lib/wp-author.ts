@@ -38,6 +38,7 @@ export type BlogAuthorData = {
     slug: string;
     name: string;
     initials: string;
+    avatarUrl?: string;
     role: string;
     shortBio: string;
     longBio: string[];
@@ -152,6 +153,40 @@ function buildStats(posts: AuthorArchivePost[]): AuthorStatsItem[] {
   ];
 }
 
+function splitAuthorBio(rawDescription?: string | null) {
+  const normalized = (rawDescription ?? "")
+    .replace(/\r/g, "")
+    .split(/\n{2,}/)
+    .map((paragraph) => paragraph.trim())
+    .filter(Boolean);
+
+  if (normalized.length > 1) {
+    return {
+      shortBio: normalized[0],
+      longBio: normalized.slice(1),
+    };
+  }
+
+  const singleParagraph = normalized[0] ?? "";
+  const sentenceMatches = singleParagraph.match(/[^.!?]+[.!?]+/g)?.map((item) => item.trim()) ?? [];
+
+  if (sentenceMatches.length > 1) {
+    return {
+      shortBio: sentenceMatches[0],
+      longBio: [sentenceMatches.slice(1).join(" ")],
+    };
+  }
+
+  return {
+    shortBio: singleParagraph || "Autor da equipe editorial da SMZ.",
+    longBio: [],
+  };
+}
+
+function deriveExpertise(posts: AuthorArchivePost[]) {
+  return [...new Set(posts.map((post) => post.categoryName).filter(Boolean))].slice(0, 6);
+}
+
 export async function getBlogAuthorStaticParams() {
   if (!isWordPressConfigured()) {
     return [];
@@ -208,19 +243,24 @@ export async function getBlogAuthorData(slug: string): Promise<BlogAuthorData | 
     if (!author?.slug || !author.name) {
       throw new Error(`WordPress returned no author for slug "${slug}".`);
     }
+
     const posts = (postsResponse.posts?.nodes ?? [])
       .filter((post) => post.author?.node?.slug === author.slug)
       .map(mapWpPost)
       .filter((post): post is AuthorArchivePost => Boolean(post));
 
+    const { shortBio, longBio } = splitAuthorBio(author.description);
+    const expertise = deriveExpertise(posts);
+
     const authorData = {
       slug: author.slug,
       name: author.name,
       initials: getInitials(author.name),
+      avatarUrl: author.avatar?.url ?? undefined,
       role: "Equipe editorial",
-      shortBio: author.description?.trim() || "Autor da equipe editorial da SMZ.",
-      longBio: [author.description?.trim() || "Especialista da equipe editorial da SMZ."],
-      expertise: [],
+      shortBio,
+      longBio,
+      expertise,
       socials: [],
       stats: buildStats(posts),
       seo: buildSeo(author),
@@ -234,11 +274,12 @@ export async function getBlogAuthorData(slug: string): Promise<BlogAuthorData | 
       role: authorData.role,
       shortBio: authorData.shortBio,
       longBio: authorData.longBio,
-      expertise: authorData.expertise,
+      expertise,
       stats: authorData.stats,
       quote: undefined,
       socials: authorData.socials,
       seo: authorData.seo,
+      avatarUrl: authorData.avatarUrl,
     };
 
     return {

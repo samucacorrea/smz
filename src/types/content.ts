@@ -20,6 +20,7 @@ export type Author = {
   slug: string;
   name: string;
   initials: string;
+  avatarUrl?: string;
   role: string;
   shortBio: string;
   longBio: string[];

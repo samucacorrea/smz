@@ -19,6 +19,9 @@ export const AUTHOR_FIELDS = /* GraphQL */ `
       slug
       name
       description
+      avatar {
+        url
+      }
     }
   }
 `;
@@ -84,6 +87,9 @@ export const AUTHOR_BASE_FIELDS = /* GraphQL */ `
   slug
   name
   description
+  avatar {
+    url
+  }
 `;
 
 export const GET_POSTS_QUERY = /* GraphQL */ `
