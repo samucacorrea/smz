@@ -71,6 +71,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                 question: item.question,
                 answer: item.answer,
               })),
+              post.seo.canonical,
             )}
           />
         ) : null}
@@ -90,6 +91,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               href: post.author.href,
               initials: post.author.initials,
               name: post.author.name,
+              avatarUrl: post.author.avatarUrl,
               role: post.author.role,
             }}
           />
@@ -173,8 +175,10 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                   <AuthorBio
                     initials={post.author.initials}
                     name={post.author.name}
+                    avatarUrl={post.author.avatarUrl}
                     bio={post.author.bio}
                     href={post.author.href}
+                    roleLabel={post.author.profileLabel}
                   />
                 </ArticleBody>
 

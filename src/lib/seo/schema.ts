@@ -47,13 +47,18 @@ export function buildWebSiteSchema() {
     "@id": `${siteSeo.canonical}#website`,
     url: siteSeo.canonical,
     name: "SMZ",
+    alternateName: "SMZ Agency",
     description: siteSeo.description,
+    inLanguage: "pt-BR",
     publisher: {
       "@id": `${siteSeo.canonical}#organization`,
     },
     potentialAction: {
       "@type": "SearchAction",
-      target: `${siteSeo.canonical}busca?q={search_term_string}`,
+      target: {
+        "@type": "EntryPoint",
+        urlTemplate: `${siteSeo.canonical}busca?q={search_term_string}`,
+      },
       "query-input": "required name=search_term_string",
     },
   };
@@ -166,10 +171,18 @@ export function buildServiceSchema({
   };
 }
 
-export function buildFaqPageSchema(items: FaqSchemaInput) {
+export function buildFaqPageSchema(items: FaqSchemaInput, canonicalUrl?: string) {
+  const pageUrl = canonicalUrl || siteSeo.canonical;
+
   return {
     "@context": "https://schema.org",
     "@type": "FAQPage",
+    "@id": `${pageUrl}#faq`,
+    url: pageUrl,
+    inLanguage: "pt-BR",
+    isPartOf: {
+      "@id": `${siteSeo.canonical}#website`,
+    },
     mainEntity: items.map((item) => ({
       "@type": "Question",
       name: item.question,

@@ -23,6 +23,8 @@ type SingleAuthor = {
   slug: string;
   name: string;
   initials: string;
+  avatarUrl?: string;
+  profileLabel: string;
   role: string;
   bio: string;
   href: string;
@@ -110,6 +112,11 @@ function getInitials(name?: string | null) {
     .slice(0, 2);
 
   return parts.map((part) => part[0]?.toUpperCase() ?? "").join("") || "SMZ";
+}
+
+function inferProfileLabel(description?: string | null) {
+  const normalized = (description ?? "").toLowerCase();
+  return /\b(ela|dela)\b/.test(normalized) ? "Autora" : "Autor";
 }
 
 function deriveArtKey(post: WpPost, categorySlug?: string | null) {
@@ -219,6 +226,8 @@ function mapWpPostToSingleData(post: WpPost, relatedNodes: WpPost[]): BlogSingle
     slug: authorNode.slug,
     name: authorNode.name,
     initials: getInitials(authorNode.name),
+    avatarUrl: authorNode.avatar?.url ?? undefined,
+    profileLabel: inferProfileLabel(authorNode.description),
     role: "Equipe editorial",
     bio: authorNode.description?.trim() || "Autor da equipe editorial da SMZ.",
     href: `/blog/autor/${authorNode.slug}`,
@@ -229,6 +238,7 @@ function mapWpPostToSingleData(post: WpPost, relatedNodes: WpPost[]): BlogSingle
     slug: author.slug,
     name: author.name,
     initials: author.initials,
+    avatarUrl: author.avatarUrl,
     role: author.role,
     shortBio: author.bio,
     longBio: [],

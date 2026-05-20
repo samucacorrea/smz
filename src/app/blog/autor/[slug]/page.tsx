@@ -92,7 +92,7 @@ export default async function AuthorPage({ params }: AuthorPageProps) {
               </div>
 
               <div className="author-info">
-                <span className="role-label">Autora · {author.role}</span>
+                <span className="role-label">{author.profileLabel} · {author.role}</span>
                 <h1 className="author-name">
                   {author.name.split(" ")[0]} <span className="accent">{author.name.split(" ").slice(1).join(" ")}.</span>
                 </h1>

@@ -81,6 +81,7 @@ export default async function ServiceSlugPage({ params }: ServiceSlugPageProps) 
             question: item.question,
             answer: item.answerHtml.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim(),
           })),
+          service.canonical,
         )}
       />
       <ServicePage service={service} />

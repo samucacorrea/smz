@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 type ArticleHeaderProps = {
@@ -14,6 +15,7 @@ type ArticleHeaderProps = {
     href: string;
     initials: string;
     name: string;
+    avatarUrl?: string;
     role: string;
   };
   editedAt?: string;
@@ -53,7 +55,20 @@ export function ArticleHeader({
 
         <div className="byline">
           <div className="author-mini">
-            <div className="avatar">{author.initials}</div>
+            <div className="avatar">
+              {author.avatarUrl ? (
+                <Image
+                  src={author.avatarUrl}
+                  alt={author.name}
+                  fill
+                  className="avatar-photo"
+                  sizes="40px"
+                  unoptimized
+                />
+              ) : (
+                author.initials
+              )}
+            </div>
             <div>
               <div className="name">
                 <Link

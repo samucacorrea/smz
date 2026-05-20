@@ -39,6 +39,7 @@ export type BlogAuthorData = {
     name: string;
     initials: string;
     avatarUrl?: string;
+    profileLabel: string;
     role: string;
     shortBio: string;
     longBio: string[];
@@ -183,6 +184,11 @@ function splitAuthorBio(rawDescription?: string | null) {
   };
 }
 
+function inferProfileLabel(description?: string | null) {
+  const normalized = (description ?? "").toLowerCase();
+  return /\b(ela|dela)\b/.test(normalized) ? "Autora" : "Autor";
+}
+
 function deriveExpertise(posts: AuthorArchivePost[]) {
   return [...new Set(posts.map((post) => post.categoryName).filter(Boolean))].slice(0, 6);
 }
@@ -257,6 +263,7 @@ export async function getBlogAuthorData(slug: string): Promise<BlogAuthorData | 
       name: author.name,
       initials: getInitials(author.name),
       avatarUrl: author.avatar?.url ?? undefined,
+      profileLabel: inferProfileLabel(author.description),
       role: "Equipe editorial",
       shortBio,
       longBio,
