@@ -6,8 +6,8 @@ import { buildPageMetadata } from "@/lib/seo/metadata";
 import {
   buildBreadcrumbListSchema,
   buildFaqPageSchema,
-  buildOrganizationSchema,
   buildServiceSchema,
+  buildWebPageSchema,
 } from "@/lib/seo/schema";
 import { getServiceBySlug, getServiceStaticParams } from "@/lib/services";
 import { buildSiteUrl } from "@/lib/site";
@@ -66,6 +66,19 @@ export default async function ServiceSlugPage({ params }: ServiceSlugPageProps) 
         ])}
       />
       <JsonLd
+        data={buildWebPageSchema({
+          seo: {
+            title: service.pageTitle.replace(/\s+\|\s+SMZ$/, ""),
+            description: service.description,
+            canonical: service.canonical,
+            ogImage: service.ogImage,
+          },
+          name: service.navLabel,
+          description: service.description,
+          type: ["WebPage", "Service"],
+        })}
+      />
+      <JsonLd
         data={buildServiceSchema({
           id: `${service.canonical}#service`,
           name: service.navLabel,
@@ -75,15 +88,17 @@ export default async function ServiceSlugPage({ params }: ServiceSlugPageProps) 
           image: service.ogImage,
         })}
       />
-      <JsonLd
-        data={buildFaqPageSchema(
-          service.faq.map((item) => ({
-            question: item.question,
-            answer: item.answerHtml.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim(),
-          })),
-          service.canonical,
-        )}
-      />
+      {service.faq.length ? (
+        <JsonLd
+          data={buildFaqPageSchema(
+            service.faq.map((item) => ({
+              question: item.question,
+              answer: item.answerHtml.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim(),
+            })),
+            service.canonical,
+          )}
+        />
+      ) : null}
       <ServicePage service={service} />
     </>
   );

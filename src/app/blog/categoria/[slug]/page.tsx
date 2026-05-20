@@ -8,8 +8,13 @@ import { PostMedia } from "@/components/blog/PostMedia";
 import { MainLayout } from "@/components/layout/MainLayout";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { buildPageMetadata } from "@/lib/seo/metadata";
-import { buildBreadcrumbListSchema, buildCollectionPageSchema } from "@/lib/seo/schema";
-import { getBlogSeo, getHomeSeo } from "@/lib/site";
+import {
+  buildBreadcrumbListSchema,
+  buildCollectionPageSchema,
+  buildItemListSchema,
+  buildWebPageSchema,
+} from "@/lib/seo/schema";
+import { buildSiteUrl, getBlogSeo, getHomeSeo } from "@/lib/site";
 import { getBlogCategoryData } from "@/lib/wp-category";
 import { formatDateLabel } from "@/utils/format";
 
@@ -56,6 +61,24 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
             seo: category.seo,
             name: `Categoria ${category.name}`,
             description: category.description,
+          })}
+        />
+        <JsonLd
+          data={buildWebPageSchema({
+            seo: category.seo,
+            name: `Categoria ${category.name}`,
+            description: category.description,
+            type: "CollectionPage",
+          })}
+        />
+        <JsonLd
+          data={buildItemListSchema({
+            id: `${category.seo.canonical}#post-list`,
+            name: `Artigos da categoria ${category.name}`,
+            items: posts.map((post) => ({
+              name: post.title,
+              url: buildSiteUrl(`/blog/${post.slug}`),
+            })),
           })}
         />
         <section className="cat-hero">

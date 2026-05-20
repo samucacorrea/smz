@@ -1,6 +1,7 @@
 import type { SeoData } from "@/types/content";
 import { GET_PAGE_BY_SLUG_QUERY, GET_PAGES_QUERY } from "@/graphql/queries";
-import { buildBreadcrumbListSchema } from "@/lib/seo/schema";
+import { extractFaqFromHtml } from "@/lib/seo/faq";
+import { buildBreadcrumbListSchema, buildFaqPageSchema, buildWebPageSchema } from "@/lib/seo/schema";
 import { getSiteOrigin } from "@/lib/site";
 import {
   getWordPressConfigurationError,
@@ -16,6 +17,8 @@ export type WpPageData = {
   contentHtml: string;
   seo: SeoData;
   breadcrumbSchema: ReturnType<typeof buildBreadcrumbListSchema>;
+  webPageSchema: ReturnType<typeof buildWebPageSchema>;
+  faqSchema?: ReturnType<typeof buildFaqPageSchema>;
 };
 
 function stripHtml(value: string) {
@@ -41,6 +44,7 @@ function mapWpPage(page: WpPage): WpPageData | null {
 
   const title = stripHtml(page.title);
   const seo = buildPageSeo(page, page.slug);
+  const faq = extractFaqFromHtml(page.content);
 
   return {
     slug: page.slug,
@@ -51,6 +55,12 @@ function mapWpPage(page: WpPage): WpPageData | null {
       { name: "Início", url: `${getSiteOrigin()}/` },
       { name: title, url: seo.canonical },
     ]),
+    webPageSchema: buildWebPageSchema({
+      seo,
+      name: title,
+      description: seo.description,
+    }),
+    faqSchema: faq.length ? buildFaqPageSchema(faq, seo.canonical) : undefined,
   };
 }
 

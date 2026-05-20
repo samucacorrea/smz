@@ -35,18 +35,8 @@ export default async function WpPageRoute({ params }: WpPageRouteProps) {
   return (
     <MainLayout>
       <JsonLd data={page.breadcrumbSchema} />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "WebPage",
-            name: page.title,
-            url: page.seo.canonical,
-            description: page.seo.description,
-          }),
-        }}
-      />
+      <JsonLd data={page.webPageSchema} />
+      {page.faqSchema ? <JsonLd data={page.faqSchema} /> : null}
       <main>
         <section className="article-body">
           <div className="container">

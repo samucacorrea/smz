@@ -9,8 +9,14 @@ import { MainLayout } from "@/components/layout/MainLayout";
 import { LeadCtaButton } from "@/components/lead/LeadCtaButton";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { buildPageMetadata } from "@/lib/seo/metadata";
-import { buildBreadcrumbListSchema, buildCollectionPageSchema, buildPersonSchema } from "@/lib/seo/schema";
-import { getBlogSeo, getHomeSeo } from "@/lib/site";
+import {
+  buildBreadcrumbListSchema,
+  buildCollectionPageSchema,
+  buildItemListSchema,
+  buildPersonSchema,
+  buildWebPageSchema,
+} from "@/lib/seo/schema";
+import { buildSiteUrl, getBlogSeo, getHomeSeo } from "@/lib/site";
 import { getBlogAuthorData } from "@/lib/wp-author";
 import { formatDateLabel } from "@/utils/format";
 
@@ -59,6 +65,24 @@ export default async function AuthorPage({ params }: AuthorPageProps) {
             seo: author.seo,
             name: `Artigos de ${author.name}`,
             description: author.shortBio,
+          })}
+        />
+        <JsonLd
+          data={buildWebPageSchema({
+            seo: author.seo,
+            name: author.name,
+            description: author.shortBio,
+            type: ["ProfilePage", "CollectionPage"],
+          })}
+        />
+        <JsonLd
+          data={buildItemListSchema({
+            id: `${author.seo.canonical}#post-list`,
+            name: `Artigos de ${author.name}`,
+            items: posts.map((post) => ({
+              name: post.title,
+              url: buildSiteUrl(`/blog/${post.slug}`),
+            })),
           })}
         />
         <section className="author-hero">

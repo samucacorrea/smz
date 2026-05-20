@@ -4,8 +4,8 @@ import { MainLayout } from "@/components/layout/MainLayout";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { getHomePageData } from "@/lib/wp-home";
 import { buildPageMetadata } from "@/lib/seo/metadata";
-import { buildOrganizationSchema, buildWebSiteSchema } from "@/lib/seo/schema";
-import { getHomeSeo } from "@/lib/site";
+import { buildItemListSchema, buildWebPageSchema } from "@/lib/seo/schema";
+import { buildSiteUrl, getHomeSeo } from "@/lib/site";
 
 export const dynamic = "force-dynamic";
 
@@ -18,8 +18,23 @@ export default async function HomePage() {
 
   return (
     <MainLayout>
-      <JsonLd data={buildOrganizationSchema()} />
-      <JsonLd data={buildWebSiteSchema()} />
+      <JsonLd
+        data={buildWebPageSchema({
+          seo: data.seo,
+          name: data.seo.title,
+          description: data.seo.description,
+        })}
+      />
+      <JsonLd
+        data={buildItemListSchema({
+          id: `${data.seo.canonical}#featured-posts`,
+          name: "Posts em destaque",
+          items: data.featuredPosts.map((post) => ({
+            name: post.title,
+            url: buildSiteUrl(`/blog/${post.slug}`),
+          })),
+        })}
+      />
       <HomeLanding data={data} />
     </MainLayout>
   );

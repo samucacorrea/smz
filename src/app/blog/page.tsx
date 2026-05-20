@@ -10,8 +10,13 @@ import { MainLayout } from "@/components/layout/MainLayout";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { getBlogArchiveData } from "@/lib/wp-blog";
 import { buildPageMetadata } from "@/lib/seo/metadata";
-import { buildBreadcrumbListSchema, buildCollectionPageSchema } from "@/lib/seo/schema";
-import { getBlogSeo, getHomeSeo } from "@/lib/site";
+import {
+  buildBreadcrumbListSchema,
+  buildCollectionPageSchema,
+  buildItemListSchema,
+  buildWebPageSchema,
+} from "@/lib/seo/schema";
+import { buildSiteUrl, getBlogSeo, getHomeSeo } from "@/lib/site";
 import { formatDateLabel } from "@/utils/format";
 
 export const dynamic = "force-dynamic";
@@ -71,6 +76,24 @@ export default async function BlogPage() {
             seo: getBlogSeo(),
             name: "Blog SMZ",
             description: getBlogSeo().description,
+          })}
+        />
+        <JsonLd
+          data={buildWebPageSchema({
+            seo: getBlogSeo(),
+            name: "Blog SMZ",
+            description: getBlogSeo().description,
+            type: "CollectionPage",
+          })}
+        />
+        <JsonLd
+          data={buildItemListSchema({
+            id: `${getBlogSeo().canonical}#post-list`,
+            name: "Posts do blog SMZ",
+            items: archive.posts.map((post) => ({
+              name: post.title,
+              url: buildSiteUrl(`/blog/${post.slug}`),
+            })),
           })}
         />
         <section className="blog-hero">

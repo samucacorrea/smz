@@ -6,10 +6,31 @@ type BreadcrumbItem = {
   url?: string;
 };
 
+type SiteNavigationItem = {
+  name: string;
+  url: string;
+};
+
 type CollectionPageInput = {
   seo: SeoData;
   name: string;
   description: string;
+};
+
+type WebPageSchemaInput = {
+  seo: SeoData;
+  name: string;
+  description: string;
+  type?: string | string[];
+};
+
+type ItemListInput = {
+  id: string;
+  name: string;
+  items: Array<{
+    name: string;
+    url: string;
+  }>;
 };
 
 type ServiceSchemaInput = {
@@ -37,6 +58,7 @@ export function buildOrganizationSchema() {
     url: siteSeo.canonical,
     logo: `${siteSeo.canonical}assets/logos/logo-dark.png`,
     description: siteSeo.description,
+    sameAs: ["https://instagram.com/smz.agency"],
   };
 }
 
@@ -77,6 +99,44 @@ export function buildBreadcrumbListSchema(items: BreadcrumbItem[]) {
   };
 }
 
+export function buildSiteNavigationSchema(items: SiteNavigationItem[]) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "@id": `${siteSeo.canonical}#primary-navigation`,
+    name: "Navegação principal",
+    itemListElement: items.map((item, index) => ({
+      "@type": "SiteNavigationElement",
+      position: index + 1,
+      name: item.name,
+      url: item.url,
+    })),
+  };
+}
+
+export function buildWebPageSchema({
+  seo,
+  name,
+  description,
+  type = "WebPage",
+}: WebPageSchemaInput) {
+  return {
+    "@context": "https://schema.org",
+    "@type": type,
+    "@id": `${seo.canonical}#webpage`,
+    url: seo.canonical,
+    name,
+    description,
+    inLanguage: "pt-BR",
+    isPartOf: {
+      "@id": `${siteSeo.canonical}#website`,
+    },
+    about: {
+      "@id": `${siteSeo.canonical}#organization`,
+    },
+  };
+}
+
 export function buildCollectionPageSchema({
   seo,
   name,
@@ -89,6 +149,7 @@ export function buildCollectionPageSchema({
     url: seo.canonical,
     name,
     description,
+    inLanguage: "pt-BR",
     isPartOf: {
       "@id": `${siteSeo.canonical}#website`,
     },
@@ -168,6 +229,23 @@ export function buildServiceSchema({
       "@type": "Country",
       name: "Brasil",
     },
+  };
+}
+
+export function buildItemListSchema({ id, name, items }: ItemListInput) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "@id": id,
+    name,
+    itemListOrder: "https://schema.org/ItemListOrderAscending",
+    numberOfItems: items.length,
+    itemListElement: items.map((item, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      name: item.name,
+      url: item.url,
+    })),
   };
 }
 

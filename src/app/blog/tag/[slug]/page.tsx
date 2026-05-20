@@ -6,8 +6,13 @@ import { NewsletterCta } from "@/components/blog/NewsletterCta";
 import { MainLayout } from "@/components/layout/MainLayout";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { buildPageMetadata } from "@/lib/seo/metadata";
-import { buildBreadcrumbListSchema, buildCollectionPageSchema } from "@/lib/seo/schema";
-import { getBlogSeo, getHomeSeo } from "@/lib/site";
+import {
+  buildBreadcrumbListSchema,
+  buildCollectionPageSchema,
+  buildItemListSchema,
+  buildWebPageSchema,
+} from "@/lib/seo/schema";
+import { buildSiteUrl, getBlogSeo, getHomeSeo } from "@/lib/site";
 import { getBlogTagData } from "@/lib/wp-tag";
 import { formatDateLabel } from "@/utils/format";
 
@@ -55,6 +60,24 @@ export default async function TagPage({ params }: TagPageProps) {
             seo: tag.seo,
             name: `Tag ${tag.name}`,
             description: tag.description,
+          })}
+        />
+        <JsonLd
+          data={buildWebPageSchema({
+            seo: tag.seo,
+            name: `Tag ${tag.name}`,
+            description: tag.description,
+            type: "CollectionPage",
+          })}
+        />
+        <JsonLd
+          data={buildItemListSchema({
+            id: `${tag.seo.canonical}#post-list`,
+            name: `Artigos com a tag ${tag.name}`,
+            items: posts.map((post) => ({
+              name: post.title,
+              url: buildSiteUrl(`/blog/${post.slug}`),
+            })),
           })}
         />
         <section className="tag-hero">

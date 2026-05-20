@@ -16,6 +16,7 @@ import {
   buildBreadcrumbListSchema,
   buildFaqPageSchema,
   buildPersonSchema,
+  buildWebPageSchema,
 } from "@/lib/seo/schema";
 import { buildSiteUrl, getBlogSeo, getHomeSeo } from "@/lib/site";
 import { getBlogSingleData } from "@/lib/wp-single";
@@ -63,6 +64,14 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           ])}
         />
         <JsonLd data={buildPersonSchema(post.schemaAuthor)} />
+        <JsonLd
+          data={buildWebPageSchema({
+            seo: post.seo,
+            name: post.title,
+            description: post.excerpt,
+            type: "Article",
+          })}
+        />
         <JsonLd data={buildArticleSchema(post.schemaPost, post.schemaAuthor, post.schemaCategory)} />
         {post.schemaPost.faq?.length ? (
           <JsonLd

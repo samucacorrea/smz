@@ -1,6 +1,13 @@
 import type { Metadata, Viewport } from "next";
 import { GoogleTagManager } from "@next/third-parties/google";
 import { LeadCaptureProvider } from "@/components/lead/LeadCaptureProvider";
+import { JsonLd } from "@/components/seo/JsonLd";
+import {
+  buildOrganizationSchema,
+  buildSiteNavigationSchema,
+  buildWebSiteSchema,
+} from "@/lib/seo/schema";
+import { getAllServices } from "@/lib/services";
 import { getSiteSeo } from "@/lib/site";
 import "@/styles/globals.css";
 
@@ -52,6 +59,19 @@ type RootLayoutProps = Readonly<{
 
 export default function RootLayout({ children }: RootLayoutProps) {
   const gtmId = process.env.NEXT_PUBLIC_GTM_ID?.trim();
+  const services = getAllServices();
+  const navigationItems = [
+    { name: "Início", url: `${siteSeo.canonical}` },
+    { name: "Serviços", url: `${siteSeo.canonical}servicos` },
+    ...services.map((service) => ({
+      name: service.navLabel,
+      url: service.canonical,
+    })),
+    { name: "Resultados", url: `${siteSeo.canonical}#resultados` },
+    { name: "Processo", url: `${siteSeo.canonical}#processo` },
+    { name: "Blog", url: `${siteSeo.canonical}blog` },
+    { name: "Contato", url: `${siteSeo.canonical}#contato` },
+  ];
 
   return (
     <html lang="pt-BR" suppressHydrationWarning>
@@ -59,6 +79,9 @@ export default function RootLayout({ children }: RootLayoutProps) {
         <script dangerouslySetInnerHTML={{ __html: themeBootstrapScript }} />
       </head>
       <body>
+        <JsonLd data={buildOrganizationSchema()} />
+        <JsonLd data={buildWebSiteSchema()} />
+        <JsonLd data={buildSiteNavigationSchema(navigationItems)} />
         <LeadCaptureProvider>{children}</LeadCaptureProvider>
       </body>
       {gtmId ? <GoogleTagManager gtmId={gtmId} /> : null}

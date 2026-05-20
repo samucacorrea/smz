@@ -1,5 +1,6 @@
 import type { Author, Category, Post, SeoData, Tag } from "@/types/content";
 import { GET_POST_BY_SLUG_QUERY, GET_POSTS_QUERY } from "@/graphql/queries";
+import { extractFaqFromHtml } from "@/lib/seo/faq";
 import { buildSiteUrl } from "@/lib/site";
 import {
   getWordPressConfigurationError,
@@ -167,71 +168,6 @@ function decorateHeadings(html?: string | null) {
   return { contentHtml, headings };
 }
 
-function extractFaqFromContent(html?: string | null) {
-  if (!html) {
-    return [] as Post["faq"];
-  }
-
-  const yoastFaq = [
-    ...html.matchAll(
-      /<div class="schema-faq-section"[\s\S]*?<strong class="schema-faq-question">([\s\S]*?)<\/strong>[\s\S]*?<p class="schema-faq-answer">([\s\S]*?)<\/p>[\s\S]*?<\/div>/gi,
-    ),
-  ].map((match) => ({
-    question: stripHtml(match[1]),
-    answer: stripHtml(match[2]),
-  }));
-
-  if (yoastFaq.length) {
-    return yoastFaq;
-  }
-
-  const rankMathFaq = [
-    ...html.matchAll(
-      /<div class="rank-math-list-item"[\s\S]*?<h3 class="rank-math-question">([\s\S]*?)<\/h3>[\s\S]*?<div class="rank-math-answer">([\s\S]*?)<\/div>[\s\S]*?<\/div>/gi,
-    ),
-  ].map((match) => ({
-    question: stripHtml(match[1]),
-    answer: stripHtml(match[2]),
-  }));
-
-  if (rankMathFaq.length) {
-    return rankMathFaq;
-  }
-
-  const faqSectionMatch = html.match(
-    /<h2[^>]*>\s*(?:faq|perguntas frequentes)\s*<\/h2>([\s\S]*?)(?=<h2[^>]*>|$)/i,
-  );
-
-  if (!faqSectionMatch?.[1]) {
-    return [];
-  }
-
-  const faqSection = faqSectionMatch[1];
-  const editorialFaq = [...faqSection.matchAll(/<h3[^>]*>([\s\S]*?)<\/h3>([\s\S]*?)(?=<h3[^>]*>|$)/gi)]
-    .map((match) => {
-      const question = stripHtml(match[1]);
-      const answer = stripHtml(
-        (match[2] ?? "")
-          .replace(/<ul[\s\S]*?<\/ul>/gi, " ")
-          .replace(/<ol[\s\S]*?<\/ol>/gi, " ")
-          .replace(/<blockquote[\s\S]*?<\/blockquote>/gi, " ")
-          .replace(/<figure[\s\S]*?<\/figure>/gi, " "),
-      );
-
-      if (!question || !answer) {
-        return null;
-      }
-
-      return {
-        question,
-        answer,
-      };
-    })
-    .filter((item): item is NonNullable<typeof item> => Boolean(item));
-
-  return editorialFaq;
-}
-
 function mapWpPostToSingleData(post: WpPost, relatedNodes: WpPost[]): BlogSingleData | null {
   if (!post.id || !post.slug || !post.title || !post.date || !post.modified) {
     return null;
@@ -245,7 +181,7 @@ function mapWpPostToSingleData(post: WpPost, relatedNodes: WpPost[]): BlogSingle
   }
 
   const decorated = decorateHeadings(post.content);
-  const faq = extractFaqFromContent(post.content);
+  const faq = extractFaqFromHtml(post.content);
   const featuredArtKey = deriveArtKey(post, primaryCategory.slug);
   const seo: SeoData = {
     title: stripHtml(post.title),

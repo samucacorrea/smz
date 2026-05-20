@@ -3,7 +3,12 @@ import { MainLayout } from "@/components/layout/MainLayout";
 import { SearchExperience } from "@/components/search/SearchExperience";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { buildPageMetadata } from "@/lib/seo/metadata";
-import { buildBreadcrumbListSchema, buildCollectionPageSchema } from "@/lib/seo/schema";
+import {
+  buildBreadcrumbListSchema,
+  buildCollectionPageSchema,
+  buildItemListSchema,
+  buildWebPageSchema,
+} from "@/lib/seo/schema";
 import { buildSiteUrl } from "@/lib/site";
 import { getSearchPageData } from "@/lib/wp-search";
 
@@ -54,6 +59,28 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
             },
             name: `Busca por ${data.query}`,
             description: `Resultados de busca por ${data.query} no conteúdo da SMZ.`,
+          })}
+        />
+        <JsonLd
+          data={buildWebPageSchema({
+            seo: {
+              title: `Busca por ${data.query} — SMZ`,
+              description: `Resultados de busca por ${data.query} no conteúdo da SMZ.`,
+              canonical,
+            },
+            name: `Busca por ${data.query}`,
+            description: `Resultados de busca por ${data.query} no conteúdo da SMZ.`,
+            type: "SearchResultsPage",
+          })}
+        />
+        <JsonLd
+          data={buildItemListSchema({
+            id: `${canonical}#search-results`,
+            name: `Resultados de busca por ${data.query}`,
+            items: data.results.map((item) => ({
+              name: item.title,
+              url: buildSiteUrl(item.href),
+            })),
           })}
         />
         <SearchExperience initialQuery={data.query} results={data.results} />
