@@ -28,9 +28,9 @@ export function getSiteSeo(): SeoData {
 
 export function getHomeSeo(): SeoData {
   return {
-    title: "SMZ",
+    title: "Agência de Marketing Digital para PME | SMZ Agency",
     description:
-      "Estrategia que se paga. Marketing que se mede. Operacao, acquisicao e crescimento orientados por dados.",
+      "Tráfego pago, SEO e estratégia para PMEs com gestão direta do sócio. Sem júnior, sem fidelidade, sem promessa vazia. Solicite um diagnóstico gratuito.",
     canonical: buildSiteUrl("/"),
   };
 }
