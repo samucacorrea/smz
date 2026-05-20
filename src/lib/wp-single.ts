@@ -194,7 +194,42 @@ function extractFaqFromContent(html?: string | null) {
     answer: stripHtml(match[2]),
   }));
 
-  return rankMathFaq;
+  if (rankMathFaq.length) {
+    return rankMathFaq;
+  }
+
+  const faqSectionMatch = html.match(
+    /<h2[^>]*>\s*(?:faq|perguntas frequentes)\s*<\/h2>([\s\S]*?)(?=<h2[^>]*>|$)/i,
+  );
+
+  if (!faqSectionMatch?.[1]) {
+    return [];
+  }
+
+  const faqSection = faqSectionMatch[1];
+  const editorialFaq = [...faqSection.matchAll(/<h3[^>]*>([\s\S]*?)<\/h3>([\s\S]*?)(?=<h3[^>]*>|$)/gi)]
+    .map((match) => {
+      const question = stripHtml(match[1]);
+      const answer = stripHtml(
+        (match[2] ?? "")
+          .replace(/<ul[\s\S]*?<\/ul>/gi, " ")
+          .replace(/<ol[\s\S]*?<\/ol>/gi, " ")
+          .replace(/<blockquote[\s\S]*?<\/blockquote>/gi, " ")
+          .replace(/<figure[\s\S]*?<\/figure>/gi, " "),
+      );
+
+      if (!question || !answer) {
+        return null;
+      }
+
+      return {
+        question,
+        answer,
+      };
+    })
+    .filter((item): item is NonNullable<typeof item> => Boolean(item));
+
+  return editorialFaq;
 }
 
 function mapWpPostToSingleData(post: WpPost, relatedNodes: WpPost[]): BlogSingleData | null {
