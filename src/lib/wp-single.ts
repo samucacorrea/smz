@@ -1,5 +1,10 @@
 import type { Author, Category, Post, SeoData, Tag } from "@/types/content";
-import { GET_POST_BY_SLUG_QUERY, GET_POSTS_QUERY } from "@/graphql/queries";
+import {
+  GET_POST_BY_SLUG_QUERY,
+  GET_POST_BY_SLUG_WITH_CUSTOM_SCHEMA_FIELDS_QUERY,
+  GET_POST_BY_SLUG_WITH_CUSTOM_SCHEMA_QUERY,
+  GET_POSTS_QUERY,
+} from "@/graphql/queries";
 import { extractFaqFromHtml } from "@/lib/seo/faq";
 import { buildSiteUrl } from "@/lib/site";
 import {
@@ -7,7 +12,7 @@ import {
   handleWordPressError,
   isWordPressConfigured,
 } from "@/lib/wp-mode";
-import { wpFetch } from "@/lib/wp-client";
+import { WpGraphQLRequestError, wpFetch } from "@/lib/wp-client";
 import type { WpPost, WpPostBySlugQuery, WpPostsQuery } from "@/types/wp";
 
 type SingleHeading = {
@@ -67,6 +72,7 @@ export type BlogSingleData = {
   relatedPosts: SingleRelatedPost[];
   headings: SingleHeading[];
   contentHtml: string;
+  customSchema?: Record<string, unknown> | Array<Record<string, unknown>>;
   schemaPost: Post;
   schemaAuthor: Author;
   schemaCategory: Category | Tag;
@@ -168,6 +174,38 @@ function decorateHeadings(html?: string | null) {
   return { contentHtml, headings };
 }
 
+function parseCustomSchema(rawValue?: string | null) {
+  const normalized = (rawValue ?? "")
+    .trim()
+    .replace(/^```(?:json)?/i, "")
+    .replace(/```$/i, "")
+    .replace(/<script[^>]*type=["']application\/ld\+json["'][^>]*>/i, "")
+    .replace(/<\/script>/i, "")
+    .trim();
+
+  if (!normalized) {
+    return undefined;
+  }
+
+  try {
+    const parsed = JSON.parse(normalized) as unknown;
+
+    if (Array.isArray(parsed)) {
+      return parsed.filter(
+        (item): item is Record<string, unknown> => Boolean(item) && typeof item === "object",
+      );
+    }
+
+    if (parsed && typeof parsed === "object") {
+      return parsed as Record<string, unknown>;
+    }
+  } catch {
+    return undefined;
+  }
+
+  return undefined;
+}
+
 function mapWpPostToSingleData(post: WpPost, relatedNodes: WpPost[]): BlogSingleData | null {
   if (!post.id || !post.slug || !post.title || !post.date || !post.modified) {
     return null;
@@ -182,6 +220,7 @@ function mapWpPostToSingleData(post: WpPost, relatedNodes: WpPost[]): BlogSingle
 
   const decorated = decorateHeadings(post.content);
   const faq = extractFaqFromHtml(post.content);
+  const customSchema = parseCustomSchema(post.customSchemaGroup?.schema);
   const featuredArtKey = deriveArtKey(post, primaryCategory.slug);
   const seo: SeoData = {
     title: stripHtml(post.title),
@@ -300,10 +339,56 @@ function mapWpPostToSingleData(post: WpPost, relatedNodes: WpPost[]): BlogSingle
       }),
     headings: decorated.headings,
     contentHtml: decorated.contentHtml || "<p>Conteudo indisponivel.</p>",
+    customSchema,
     schemaPost,
     schemaAuthor,
     schemaCategory,
   };
+}
+
+function canFallbackToBasePostQuery(error: unknown) {
+  if (!(error instanceof WpGraphQLRequestError)) {
+    return false;
+  }
+
+  const message = error.message.toLowerCase();
+
+  return (
+    message.includes('cannot query field "seo"') ||
+    message.includes('cannot query field "seofields"') ||
+    message.includes('cannot query field "schema"')
+  );
+}
+
+async function fetchPostBySlug(slug: string) {
+  const queryAttempts = [
+    GET_POST_BY_SLUG_WITH_CUSTOM_SCHEMA_QUERY,
+    GET_POST_BY_SLUG_WITH_CUSTOM_SCHEMA_FIELDS_QUERY,
+    GET_POST_BY_SLUG_QUERY,
+  ];
+
+  for (const query of queryAttempts) {
+    try {
+      const response = await wpFetch<WpPostBySlugQuery>({
+        query,
+        variables: {
+          slug,
+        },
+        tags: [`wp:post:${slug}`],
+        revalidate: 30,
+      });
+
+      return response.post ?? null;
+    } catch (error) {
+      if (query !== GET_POST_BY_SLUG_QUERY && canFallbackToBasePostQuery(error)) {
+        continue;
+      }
+
+      throw error;
+    }
+  }
+
+  return null;
 }
 
 export async function getBlogSingleStaticParams() {
@@ -338,14 +423,7 @@ export async function getBlogSingleData(slug: string): Promise<BlogSingleData | 
 
   try {
     const [postResponse, relatedResponse] = await Promise.all([
-      wpFetch<WpPostBySlugQuery>({
-        query: GET_POST_BY_SLUG_QUERY,
-        variables: {
-          slug,
-        },
-        tags: [`wp:post:${slug}`],
-        revalidate: 30,
-      }),
+      fetchPostBySlug(slug),
       wpFetch<WpPostsQuery>({
         query: GET_POSTS_QUERY,
         variables: {
@@ -356,7 +434,7 @@ export async function getBlogSingleData(slug: string): Promise<BlogSingleData | 
       }),
     ]);
 
-    const post = postResponse.post;
+    const post = postResponse;
 
     if (!post) {
       return null;

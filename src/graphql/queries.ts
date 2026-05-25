@@ -132,6 +132,28 @@ export const GET_POST_BY_SLUG_QUERY = /* GraphQL */ `
   }
 `;
 
+export const GET_POST_BY_SLUG_WITH_CUSTOM_SCHEMA_QUERY = /* GraphQL */ `
+  query GetPostBySlugWithCustomSchema($slug: ID!) {
+    post(id: $slug, idType: SLUG) {
+      ${POST_BASE_FIELDS}
+      customSchemaGroup: seo {
+        schema
+      }
+    }
+  }
+`;
+
+export const GET_POST_BY_SLUG_WITH_CUSTOM_SCHEMA_FIELDS_QUERY = /* GraphQL */ `
+  query GetPostBySlugWithCustomSchemaFields($slug: ID!) {
+    post(id: $slug, idType: SLUG) {
+      ${POST_BASE_FIELDS}
+      customSchemaGroup: seoFields {
+        schema
+      }
+    }
+  }
+`;
+
 export const GET_PAGES_QUERY = /* GraphQL */ `
   query GetPages($first: Int = 20, $after: String) {
     pages(first: $first, after: $after) {

@@ -75,6 +75,9 @@ export type WpPost = {
   featuredImage?: {
     node?: WpMediaItem | null;
   } | null;
+  customSchemaGroup?: {
+    schema?: string | null;
+  } | null;
 };
 
 export type WpPage = {

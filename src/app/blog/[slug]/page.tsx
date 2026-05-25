@@ -49,6 +49,8 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     notFound();
   }
 
+  const hasCustomSchema = Boolean(post.customSchema);
+
   return (
     <MainLayout>
       <main>
@@ -63,17 +65,22 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             { name: post.title, url: post.seo.canonical },
           ])}
         />
-        <JsonLd data={buildPersonSchema(post.schemaAuthor)} />
-        <JsonLd
-          data={buildWebPageSchema({
-            seo: post.seo,
-            name: post.title,
-            description: post.excerpt,
-            type: "Article",
-          })}
-        />
-        <JsonLd data={buildArticleSchema(post.schemaPost, post.schemaAuthor, post.schemaCategory)} />
-        {post.schemaPost.faq?.length ? (
+        {hasCustomSchema ? <JsonLd data={post.customSchema!} /> : null}
+        {!hasCustomSchema ? <JsonLd data={buildPersonSchema(post.schemaAuthor)} /> : null}
+        {!hasCustomSchema ? (
+          <JsonLd
+            data={buildWebPageSchema({
+              seo: post.seo,
+              name: post.title,
+              description: post.excerpt,
+              type: "Article",
+            })}
+          />
+        ) : null}
+        {!hasCustomSchema ? (
+          <JsonLd data={buildArticleSchema(post.schemaPost, post.schemaAuthor, post.schemaCategory)} />
+        ) : null}
+        {!hasCustomSchema && post.schemaPost.faq?.length ? (
           <JsonLd
             data={buildFaqPageSchema(
               post.schemaPost.faq.map((item) => ({

@@ -11,6 +11,9 @@ import { wpFetch } from "@/lib/wp-client";
 import type { WpAuthorsQuery, WpCategoriesQuery, WpPagesQuery, WpPostsQuery } from "@/types/wp";
 
 export const dynamic = "force-dynamic";
+export const revalidate = 10;
+
+const DISCOVERY_REVALIDATE_SECONDS = 10;
 
 export async function GET() {
   const services = getAllServices();
@@ -25,25 +28,25 @@ export async function GET() {
         query: GET_CATEGORIES_QUERY,
         variables: { first: 20 },
         tags: ["wp:categories"],
-        revalidate: 30,
+        revalidate: DISCOVERY_REVALIDATE_SECONDS,
       }),
       wpFetch<WpAuthorsQuery>({
         query: GET_AUTHORS_QUERY,
         variables: { first: 20 },
         tags: ["wp:authors"],
-        revalidate: 30,
+        revalidate: DISCOVERY_REVALIDATE_SECONDS,
       }),
       wpFetch<WpPagesQuery>({
         query: GET_PAGES_QUERY,
         variables: { first: 50 },
         tags: ["wp:pages"],
-        revalidate: 30,
+        revalidate: DISCOVERY_REVALIDATE_SECONDS,
       }),
       wpFetch<WpPostsQuery>({
         query: GET_POSTS_QUERY,
         variables: { first: 50 },
         tags: ["wp:posts"],
-        revalidate: 30,
+        revalidate: DISCOVERY_REVALIDATE_SECONDS,
       }),
     ]);
 
