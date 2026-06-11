@@ -5,6 +5,7 @@ import {
   isWordPressConfigured,
 } from "@/lib/wp-mode";
 import { wpFetch } from "@/lib/wp-client";
+import { normalizeExcerpt, stripHtml } from "@/utils/text";
 import type { WpCategoriesQuery, WpCategory, WpPost, WpPostsQuery } from "@/types/wp";
 
 export type BlogArchivePost = {
@@ -28,10 +29,6 @@ export type BlogArchiveData = {
   posts: BlogArchivePost[];
   categoryCount: number;
 };
-
-function stripHtml(value: string) {
-  return value.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
-}
 
 function estimateReadingTime(content?: string | null) {
   const plainText = stripHtml(content ?? "");
@@ -82,7 +79,7 @@ function mapWpPostToArchivePost(post: WpPost): BlogArchivePost | null {
     id: post.id,
     slug: post.slug,
     title: stripHtml(post.title),
-    excerpt: stripHtml(post.excerpt ?? post.content ?? ""),
+    excerpt: normalizeExcerpt(post.excerpt ?? post.content ?? ""),
     date: post.date,
     readingTime: estimateReadingTime(post.content),
     authorName,

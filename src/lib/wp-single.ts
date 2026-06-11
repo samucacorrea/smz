@@ -13,6 +13,7 @@ import {
   isWordPressConfigured,
 } from "@/lib/wp-mode";
 import { WpGraphQLRequestError, wpFetch } from "@/lib/wp-client";
+import { normalizeExcerpt, stripHtml } from "@/utils/text";
 import type { WpPost, WpPostBySlugQuery, WpPostsQuery } from "@/types/wp";
 
 type SingleHeading = {
@@ -88,10 +89,6 @@ function normalizeWpDate(value?: string | null) {
   }
 
   return `${value}-03:00`;
-}
-
-function stripHtml(value: string) {
-  return value.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
 }
 
 function slugify(value: string) {
@@ -222,9 +219,10 @@ function mapWpPostToSingleData(post: WpPost, relatedNodes: WpPost[]): BlogSingle
   const faq = extractFaqFromHtml(post.content);
   const customSchema = parseCustomSchema(post.customSchemaGroup?.schema);
   const featuredArtKey = deriveArtKey(post, primaryCategory.slug);
+  const normalizedExcerpt = normalizeExcerpt(post.excerpt ?? post.content ?? "");
   const seo: SeoData = {
     title: stripHtml(post.title),
-    description: stripHtml(post.excerpt ?? post.content ?? ""),
+    description: normalizedExcerpt,
     canonical: buildSiteUrl(`/blog/${post.slug}`),
     ogImage:
       post.featuredImage?.node?.sourceUrl ??
@@ -281,7 +279,7 @@ function mapWpPostToSingleData(post: WpPost, relatedNodes: WpPost[]): BlogSingle
     id: post.id,
     slug: post.slug,
     title: stripHtml(post.title),
-    excerpt: stripHtml(post.excerpt ?? post.content ?? ""),
+    excerpt: normalizedExcerpt,
     content: stripHtml(post.content ?? ""),
     date: normalizeWpDate(post.date),
     modified: normalizeWpDate(post.modified),
@@ -299,7 +297,7 @@ function mapWpPostToSingleData(post: WpPost, relatedNodes: WpPost[]): BlogSingle
 
   return {
     title: stripHtml(post.title),
-    excerpt: stripHtml(post.excerpt ?? post.content ?? ""),
+    excerpt: normalizedExcerpt,
     date: normalizeWpDate(post.date),
     modified: normalizeWpDate(post.modified),
     readingTime: estimateReadingTime(post.content),
@@ -329,7 +327,7 @@ function mapWpPostToSingleData(post: WpPost, relatedNodes: WpPost[]): BlogSingle
           date: item.date!,
           readingTime: estimateReadingTime(item.content),
           title: stripHtml(item.title!),
-          excerpt: stripHtml(item.excerpt ?? item.content ?? ""),
+          excerpt: normalizeExcerpt(item.excerpt ?? item.content ?? ""),
           author: itemAuthor,
           featuredImageUrl: item.featuredImage?.node?.sourceUrl ?? undefined,
           featuredImageAlt: item.featuredImage?.node?.altText ?? undefined,

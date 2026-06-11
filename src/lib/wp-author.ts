@@ -7,6 +7,7 @@ import {
   isWordPressConfigured,
 } from "@/lib/wp-mode";
 import { wpFetch } from "@/lib/wp-client";
+import { normalizeExcerpt, stripHtml } from "@/utils/text";
 import type {
   WpAuthor,
   WpAuthorBySlugQuery,
@@ -59,10 +60,6 @@ export type BlogAuthorData = {
   schemaAuthor: Author;
 };
 
-function stripHtml(value: string) {
-  return value.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
-}
-
 function estimateReadingTime(content?: string | null) {
   const plainText = stripHtml(content ?? "");
   const wordCount = plainText ? plainText.split(/\s+/).length : 0;
@@ -110,7 +107,7 @@ function mapWpPost(post: WpPost): AuthorArchivePost | null {
   return {
     slug: post.slug,
     title: stripHtml(post.title),
-    excerpt: stripHtml(post.excerpt ?? post.content ?? ""),
+    excerpt: normalizeExcerpt(post.excerpt ?? post.content ?? ""),
     date: post.date,
     readingTime: estimateReadingTime(post.content),
     categoryName: primaryCategory?.name?.trim() || "Blog",

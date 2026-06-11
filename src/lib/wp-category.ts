@@ -11,6 +11,7 @@ import {
 } from "@/graphql/queries";
 import { buildSiteUrl } from "@/lib/site";
 import { wpFetch } from "@/lib/wp-client";
+import { normalizeExcerpt, stripHtml } from "@/utils/text";
 import type {
   WpCategoriesQuery,
   WpCategory,
@@ -50,10 +51,6 @@ export type BlogCategoryData = {
   categories: CategoryNavItem[];
   authorCount: number;
 };
-
-function stripHtml(value: string) {
-  return value.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
-}
 
 function estimateReadingTime(content?: string | null) {
   const plainText = stripHtml(content ?? "");
@@ -103,7 +100,7 @@ function mapWpPost(post: WpPost): CategoryArchivePost | null {
   return {
     slug: post.slug,
     title: stripHtml(post.title),
-    excerpt: stripHtml(post.excerpt ?? post.content ?? ""),
+    excerpt: normalizeExcerpt(post.excerpt ?? post.content ?? ""),
     date: post.date,
     readingTime: estimateReadingTime(post.content),
     authorInitials: getInitials(authorName),

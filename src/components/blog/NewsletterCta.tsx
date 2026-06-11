@@ -29,11 +29,11 @@ export function NewsletterCta({
           <div className="form-card" style={{ background: "var(--bg)" }}>
             <div className="field">
               <label>O que você recebe</label>
-              <input type="text" value="Insights práticos, sem ruído e sem spam" readOnly />
+              <input type="text" value="Leituras práticas, sem ruído e sem spam" readOnly />
             </div>
             <div className="field">
-              <label>Captação automática</label>
-              <input type="text" value="UTMs, gclid e fbclid seguem junto no lead" readOnly />
+              <label>Como funciona</label>
+              <input type="text" value="Você deixa seus dados e o time envia os próximos conteúdos por esse canal" readOnly />
             </div>
             <LeadCtaButton className="btn btn-primary newsletter-submit" source="newsletter_cta">
               {formTitle}

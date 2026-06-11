@@ -220,18 +220,17 @@ export function LeadCaptureProvider({ children }: LeadCaptureProviderProps) {
               <span className="eyebrow">Contato rapido</span>
               <h2 id="lead-modal-title">Fale com a SMZ em menos de 1 minuto.</h2>
               <p>
-                Preencha nome e telefone. O restante da origem da visita segue junto no
-                webhook automaticamente.
+                Deixe seus dados para o nosso time entrar em contato e entender o seu momento.
               </p>
             </div>
 
             <form className="form-card lead-modal-form" onSubmit={handleSubmit}>
               <div className="field">
-                <label htmlFor="lead-name">Nome</label>
+                <label htmlFor="lead-name">Seu nome</label>
                 <input
                   id="lead-name"
                   type="text"
-                  placeholder="Como te chamamos?"
+                  placeholder="Ex.: Samuel Correa"
                   value={name}
                   onChange={(event) => setName(event.target.value)}
                   required
@@ -239,11 +238,11 @@ export function LeadCaptureProvider({ children }: LeadCaptureProviderProps) {
               </div>
 
               <div className="field">
-                <label htmlFor="lead-phone">Telefone</label>
+                <label htmlFor="lead-phone">Seu WhatsApp</label>
                 <input
                   id="lead-phone"
                   type="tel"
-                  placeholder="(11) 90000-0000"
+                  placeholder="Ex.: (11) 99999-9999"
                   value={phone}
                   onChange={(event) => setPhone(event.target.value)}
                   required
@@ -273,12 +272,12 @@ export function LeadCaptureProvider({ children }: LeadCaptureProviderProps) {
               </button>
 
               <p className="lead-source">
-                Origem do CTA: <strong>{source}</strong>
+                Atendimento em horário comercial. Origem: <strong>{source}</strong>
               </p>
 
               {status === "success" ? (
                 <p className="lead-feedback success">
-                  Lead enviado. O time da SMZ deve retornar em breve.
+                  Recebemos seus dados. O time da SMZ fala com você em breve.
                 </p>
               ) : null}
 

@@ -3,12 +3,12 @@ import Link from "next/link";
 import { LeadCtaButton } from "@/components/lead/LeadCtaButton";
 
 const serviceLinks = [
-  "Tráfego pago",
-  "SEO & conteúdo",
-  "Redes sociais",
-  "Sites & LPs",
-  "Automação & CRM",
-  "Consultoria",
+  { href: "/servicos/trafego-pago", label: "Tráfego pago" },
+  { href: "/servicos/seo-e-conteudo", label: "SEO & conteúdo" },
+  { href: "/servicos/redes-sociais", label: "Redes sociais" },
+  { href: "/servicos/sites-e-landing-pages", label: "Sites & LPs" },
+  { href: "/servicos/automacao-e-crm", label: "Automação & CRM" },
+  { href: "/servicos/consultoria", label: "Consultoria" },
 ];
 
 const agencyLinks = [
@@ -55,9 +55,9 @@ export function SiteFooter() {
           <div className="footer-col">
             <h4>Serviços</h4>
             <ul>
-              {serviceLinks.map((label) => (
-                <li key={label}>
-                  <Link href="/#servicos">{label}</Link>
+              {serviceLinks.map((item) => (
+                <li key={item.href}>
+                  <Link href={item.href}>{item.label}</Link>
                 </li>
               ))}
             </ul>

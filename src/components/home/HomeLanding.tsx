@@ -519,21 +519,21 @@ export function HomeLanding({ data }: HomeLandingProps) {
 
             <div className="form-card">
               <div className="field">
-                <label>Como funciona</label>
-                <input type="text" value="Nome + telefone em menos de 1 minuto" readOnly />
+                <label>Como começamos</label>
+                <input type="text" value="Você envia nome e WhatsApp em menos de 1 minuto" readOnly />
               </div>
               <div className="field">
-                <label>Captura automática</label>
+                <label>O que analisamos</label>
                 <input
                   type="text"
-                  value="utm_source, utm_medium, gclid, fbclid e campanha"
+                  value="Sua origem de contato e o contexto da visita para responder com mais precisão"
                   readOnly
                 />
               </div>
               <div className="field">
-                <label>Retorno</label>
+                <label>Próximo passo</label>
                 <textarea
-                  value="Seu lead vai para o webhook configurado no ambiente e o time retorna com o próximo passo."
+                  value="Depois do envio, nosso time analisa o cenário e entra em contato para entender a operação e indicar o melhor caminho."
                   readOnly
                 />
               </div>

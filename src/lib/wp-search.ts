@@ -6,16 +6,13 @@ import {
   isWordPressConfigured,
 } from "@/lib/wp-mode";
 import { wpFetch } from "@/lib/wp-client";
+import { normalizeExcerpt, stripHtml } from "@/utils/text";
 import type { WpCategoriesQuery, WpPostsQuery, WpTagsQuery } from "@/types/wp";
 
 export type SearchPageData = {
   query: string;
   results: SearchResult[];
 };
-
-function stripHtml(value: string) {
-  return value.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
-}
 
 function normalizeText(value: string) {
   return value.trim().toLowerCase();
@@ -85,7 +82,7 @@ export async function getSearchPageData(query: string): Promise<SearchPageData> 
           type: post.slug?.includes("case") ? "case" : "post",
           title: stripHtml(post.title!),
           href: `/blog/${post.slug}`,
-          snippet: stripHtml(post.excerpt ?? post.content ?? ""),
+          snippet: normalizeExcerpt(post.excerpt ?? post.content ?? ""),
           breadcrumb: ["smz.agency", "blog", post.slug!],
           meta: [
             post.date ? new Date(post.date).toLocaleDateString("pt-BR") : "Sem data",
