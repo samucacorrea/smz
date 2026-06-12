@@ -519,14 +519,14 @@ export function HomeLanding({ data }: HomeLandingProps) {
 
             <div className="form-card">
               <div className="field">
-                <label>Como começamos</label>
-                <input type="text" value="Você envia nome e WhatsApp em menos de 1 minuto" readOnly />
+                <label>Nome</label>
+                <input type="text" value="Digite seu Nome" readOnly />
               </div>
               <div className="field">
-                <label>O que analisamos</label>
+                <label>Telefone</label>
                 <input
                   type="text"
-                  value="Sua origem de contato e o contexto da visita para responder com mais precisão"
+                  value="(11) 99999-9999"
                   readOnly
                 />
               </div>
