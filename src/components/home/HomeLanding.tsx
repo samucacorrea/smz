@@ -5,6 +5,29 @@ import { LeadCtaButton } from "@/components/lead/LeadCtaButton";
 import type { HomePageData } from "@/lib/wp-home";
 import { formatDateLabel } from "@/utils/format";
 
+export const homeFaqItems = [
+  {
+    question: "O que faz uma agência de marketing digital?",
+    answer:
+      "Uma agência de marketing digital planeja, executa e otimiza canais de aquisição como tráfego pago, SEO, conteúdo, landing pages, CRM e automação. O objetivo não é apenas gerar visitas, mas transformar demanda em pipeline, vendas e receita previsível.",
+  },
+  {
+    question: "Quanto custa contratar uma agência de marketing digital para PME?",
+    answer:
+      "O investimento varia conforme estágio da operação, metas e escopo. Uma PME que precisa de mídia, site e inteligência comercial exige uma estrutura diferente de uma empresa que busca apenas otimizar campanhas já existentes. Na SMZ, o diagnóstico inicial serve justamente para dimensionar o plano sem empurrar entregas desnecessárias.",
+  },
+  {
+    question: "A SMZ atende PMEs de quais segmentos?",
+    answer:
+      "Atendemos PMEs de serviços, educação, saúde, varejo, infoprodutos, indústria e operações locais que precisam crescer com mais controle. O ponto em comum não é o setor, e sim a necessidade de substituir achismo por estratégia, mensuração e cadência de otimização.",
+  },
+  {
+    question: "Quando vale trocar freelancer ou equipe interna por uma agência de marketing digital?",
+    answer:
+      "Quando a empresa precisa de visão integrada entre mídia, conteúdo, CRO, CRM e receita. Em vez de depender de esforços isolados, a agência passa a operar com método, metas e leitura de funil completo, acelerando decisões e evitando desperdício de verba.",
+  },
+];
+
 const serviceCards = [
   {
     idx: "S/01",
@@ -139,14 +162,15 @@ export function HomeLanding({ data }: HomeLandingProps) {
             <div>
               <span className="eyebrow">Agência de marketing focada em resultado</span>
               <h1 className="hero-headline">
-                Estratégia <em>que se paga.</em>
+                Agência de marketing digital
                 <br />
-                Marketing <span className="accent">que se mede.</span>
+                para PMEs <span className="accent">que cansaram de achismo.</span>
               </h1>
               <p className="hero-sub">
-                Da primeira reunião ao relatório do mês, cada decisão da SMZ é guiada por
-                dados, validada por testes e medida em receita. Sem achismo, sem vaidade,
-                sem desperdício de verba.
+                A SMZ é uma agência de marketing digital com gestão direta do sócio para
+                empresas que precisam transformar mídia, SEO, conteúdo e site em receita
+                mensurável. Da primeira reunião ao relatório do mês, cada decisão é guiada
+                por dados, validada por testes e medida em resultado comercial.
               </p>
               <div className="hero-cta-row">
                 <LeadCtaButton className="btn btn-primary" source="home_hero_primary">
@@ -247,13 +271,48 @@ export function HomeLanding({ data }: HomeLandingProps) {
           </div>
           <div className="section-head">
             <h2>
-              O que entregamos quando
+              A agência de marketing digital
               <br />
-              nos contratam para pensar.
+              focada em resultado mensurável
+              <br />
+              entrega quando assume a operação.
             </h2>
             <p className="head-right">
-              Quatro números que repetem em quase todos os contratos. Não são médias
-              inflacionadas, são a régua de qualidade que nos cobramos a cada trimestre.
+              Como agência de marketing digital para PMEs, a SMZ organiza aquisição,
+              mensuração e otimização sob uma mesma estratégia. Os números abaixo não são
+              promessas de pitch: são a régua interna que usamos para avaliar qualidade,
+              retenção e geração de receita ao longo dos contratos.
+            </p>
+          </div>
+
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1.1fr 0.9fr",
+              gap: 28,
+              marginBottom: 36,
+            }}
+          >
+            <p className="lede" style={{ margin: 0, maxWidth: "none" }}>
+              Boa parte das PMEs chega até nós depois de testar fornecedor demais, canal
+              demais e ferramenta demais sem uma linha de raciocínio que conecte tudo. A
+              função de uma agência de marketing digital não é gerar volume por vaidade,
+              mas construir previsibilidade: entender margem, identificar gargalos do
+              funil, definir prioridades e concentrar energia no que realmente move
+              pipeline.
+            </p>
+            <p
+              style={{
+                margin: 0,
+                color: "var(--text-muted)",
+                fontSize: "1rem",
+                lineHeight: 1.8,
+              }}
+            >
+              Por isso a SMZ combina tráfego pago, SEO, conteúdo, CRO e CRM com leitura de
+              negócio. Quando a estratégia nasce do P&amp;L e não do achismo, a operação
+              fica mais enxuta, o CAC tende a cair e a empresa ganha clareza sobre onde
+              insistir, onde pausar e onde escalar.
             </p>
           </div>
 
@@ -310,11 +369,19 @@ export function HomeLanding({ data }: HomeLandingProps) {
               sob uma só liderança.
             </h2>
             <p className="head-right">
-              Não somos uma agência de tudo. Somos uma agência de aquisição. O que
-              escolhemos fazer, fazemos com profundidade e sob a mesma estratégia
-              comercial.
+              Não somos uma agência de tudo. Somos uma agência de marketing digital
+              orientada a aquisição, retenção e eficiência comercial. O que escolhemos
+              fazer, fazemos com profundidade, processo e leitura financeira da operação.
             </p>
           </div>
+
+          <p className="lede" style={{ marginTop: 0, marginBottom: 28, maxWidth: "72ch" }}>
+            Cada frente abaixo existe para resolver um pedaço real do crescimento. Em vez
+            de empilhar entregas desconectadas, nossa agência de marketing digital monta um
+            sistema em que mídia, conteúdo, páginas e CRM conversam entre si. Isso reduz
+            desperdício, acelera aprendizado e melhora a qualidade das oportunidades que
+            chegam ao time comercial.
+          </p>
 
           <div className="services-grid">
             {serviceCards.map((service) => (
@@ -353,9 +420,17 @@ export function HomeLanding({ data }: HomeLandingProps) {
             </h2>
             <p className="head-right">
               O <em className="italic-accent">Framework R/4</em> é como organizamos cada
-              conta. Mesmo time, mesmo padrão, do diagnóstico à otimização semanal.
+              conta. Mesmo time, mesmo padrão, do diagnóstico à otimização semanal, para
+              que a agência de marketing digital não dependa de improviso para performar.
             </p>
           </div>
+
+          <p className="lede" style={{ marginTop: 0, marginBottom: 28, maxWidth: "70ch" }}>
+            O método existe porque crescimento saudável não nasce de campanha isolada. Ele
+            nasce de diagnóstico claro, definição de prioridade, execução disciplinada e
+            revisão frequente das métricas certas. É essa sequência que separa operação
+            profissional de marketing reativo.
+          </p>
 
           <div className="process-grid">
             {processSteps.map((step) => (
@@ -435,7 +510,8 @@ export function HomeLanding({ data }: HomeLandingProps) {
             </h2>
             <p className="head-right">
               Artigos escritos pelo time estratégico, baseados em contas reais que
-              gerenciamos. Sem manual genérico, sem conteúdo inflado.
+              gerenciamos. Sem manual genérico, sem conteúdo inflado e sem repetir fórmulas
+              vazias que muita agência de marketing digital publica só para preencher blog.
             </p>
           </div>
 
@@ -489,7 +565,9 @@ export function HomeLanding({ data }: HomeLandingProps) {
               </h2>
               <p className="lede" style={{ marginTop: 28 }}>
                 Conte rapidamente sobre seu negócio. Em até <strong>1 dia útil</strong>{" "}
-                voltamos com um diagnóstico inicial e uma proposta de conversa.
+                voltamos com um diagnóstico inicial para entender se a SMZ faz sentido
+                como agência de marketing digital para a sua fase, seu canal e sua meta de
+                crescimento.
               </p>
 
               <div className="contact-info">
@@ -553,6 +631,52 @@ export function HomeLanding({ data }: HomeLandingProps) {
                   <path d="M5 12h14M13 5l7 7-7 7" />
                 </svg>
               </LeadCtaButton>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="pillar-faq" id="faq">
+        <div className="container">
+          <div className="section-label">
+            <span className="num">07 /</span> FAQ
+          </div>
+          <div className="faq-grid">
+            <aside className="faq-aside">
+              <h2>
+                Perguntas comuns antes de contratar
+                <br />
+                uma agência de marketing digital.
+              </h2>
+              <p>
+                Reunimos respostas objetivas para dúvidas que aparecem com frequência em
+                reuniões comerciais. A ideia é ajudar sua empresa a entender quando vale
+                estruturar aquisição com método e quando ainda faz mais sentido ajustar a
+                base antes de acelerar investimento.
+              </p>
+              <p className="faq-help">
+                Se preferir, você pode falar direto com a SMZ e receber um diagnóstico
+                inicial da operação, sem compromisso.
+              </p>
+            </aside>
+
+            <div className="faq-list">
+              {homeFaqItems.map((item, index) => (
+                <details key={item.question} className="faq-item" open={index === 0}>
+                  <summary className="faq-q">
+                    <span className="q-marker">{String(index + 1).padStart(2, "0")}</span>
+                    <span>{item.question}</span>
+                    <span className="q-icon" aria-hidden="true">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M12 5v14M5 12h14" />
+                      </svg>
+                    </span>
+                  </summary>
+                  <div className="faq-a">
+                    <p>{item.answer}</p>
+                  </div>
+                </details>
+              ))}
             </div>
           </div>
         </div>

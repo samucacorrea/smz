@@ -62,6 +62,46 @@ export function buildOrganizationSchema() {
   };
 }
 
+export function buildLocalBusinessSchema() {
+  return {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "@id": `${siteSeo.canonical}#local-business`,
+    name: "SMZ Agency",
+    alternateName: "SMZ",
+    url: siteSeo.canonical,
+    logo: `${siteSeo.canonical}assets/logos/logo-dark.png`,
+    image: `${siteSeo.canonical}assets/logos/logo-dark.png`,
+    description:
+      "Agência de marketing digital para PMEs com atuação em tráfego pago, SEO, conteúdo, CRM, automação e estratégia de crescimento.",
+    areaServed: [
+      {
+        "@type": "AdministrativeArea",
+        name: "São Paulo",
+      },
+      {
+        "@type": "Country",
+        name: "Brasil",
+      },
+    ],
+    serviceArea: {
+      "@type": "Country",
+      name: "Brasil",
+    },
+    sameAs: ["https://instagram.com/smz.agency"],
+    priceRange: "$$",
+    knowsAbout: [
+      "Agência de marketing digital",
+      "Tráfego pago",
+      "SEO",
+      "Conteúdo",
+      "CRO",
+      "CRM",
+      "Automação de marketing",
+    ],
+  };
+}
+
 export function buildWebSiteSchema() {
   return {
     "@context": "https://schema.org",

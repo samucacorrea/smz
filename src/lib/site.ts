@@ -30,7 +30,7 @@ export function getHomeSeo(): SeoData {
   return {
     title: "Agência de Marketing Digital para PME | SMZ Agency",
     description:
-      "Tráfego pago, SEO e estratégia para PMEs com gestão direta do sócio. Sem júnior, sem fidelidade, sem promessa vazia. Solicite um diagnóstico gratuito.",
+      "A SMZ é uma agência de marketing digital para PMEs. Tráfego pago, SEO e estratégia com gestão direta do sócio, sem júnior, sem promessa vazia.",
     canonical: buildSiteUrl("/"),
   };
 }

@@ -1,10 +1,15 @@
 import type { Metadata } from "next";
-import { HomeLanding } from "@/components/home/HomeLanding";
+import { HomeLanding, homeFaqItems } from "@/components/home/HomeLanding";
 import { MainLayout } from "@/components/layout/MainLayout";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { getHomePageData } from "@/lib/wp-home";
 import { buildPageMetadata } from "@/lib/seo/metadata";
-import { buildItemListSchema, buildWebPageSchema } from "@/lib/seo/schema";
+import {
+  buildFaqPageSchema,
+  buildItemListSchema,
+  buildLocalBusinessSchema,
+  buildWebPageSchema,
+} from "@/lib/seo/schema";
 import { buildSiteUrl, getHomeSeo } from "@/lib/site";
 
 export const dynamic = "force-dynamic";
@@ -25,6 +30,7 @@ export default async function HomePage() {
           description: data.seo.description,
         })}
       />
+      <JsonLd data={buildLocalBusinessSchema()} />
       <JsonLd
         data={buildItemListSchema({
           id: `${data.seo.canonical}#featured-posts`,
@@ -35,6 +41,7 @@ export default async function HomePage() {
           })),
         })}
       />
+      <JsonLd data={buildFaqPageSchema(homeFaqItems, data.seo.canonical)} />
       <HomeLanding data={data} />
     </MainLayout>
   );
