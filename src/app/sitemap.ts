@@ -1,10 +1,8 @@
 import type { MetadataRoute } from "next";
 import {
   GET_AUTHORS_QUERY,
-  GET_CATEGORIES_QUERY,
   GET_PAGES_QUERY,
   GET_POSTS_QUERY,
-  GET_TAGS_QUERY,
 } from "@/graphql/queries";
 import { getAllServices } from "@/lib/services";
 import { buildSiteUrl, getSiteOrigin } from "@/lib/site";
@@ -12,16 +10,15 @@ import { isWordPressConfigured } from "@/lib/wp-mode";
 import { wpFetch } from "@/lib/wp-client";
 import type {
   WpAuthorsQuery,
-  WpCategoriesQuery,
   WpPagesQuery,
   WpPostsQuery,
-  WpTagsQuery,
 } from "@/types/wp";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 10;
 
 const DISCOVERY_REVALIDATE_SECONDS = 10;
+const PRIMARY_AUTHOR_SLUG = "samuel-correa";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
@@ -65,24 +62,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     return staticRoutes;
   }
 
-  const [postsResult, categoriesResult, tagsResult, authorsResult, pagesResult] =
-    await Promise.allSettled([
+  const [postsResult, authorsResult, pagesResult] = await Promise.allSettled([
       wpFetch<WpPostsQuery>({
         query: GET_POSTS_QUERY,
         variables: { first: 100 },
         tags: ["wp:posts"],
-        revalidate: DISCOVERY_REVALIDATE_SECONDS,
-      }),
-      wpFetch<WpCategoriesQuery>({
-        query: GET_CATEGORIES_QUERY,
-        variables: { first: 100 },
-        tags: ["wp:categories"],
-        revalidate: DISCOVERY_REVALIDATE_SECONDS,
-      }),
-      wpFetch<WpTagsQuery>({
-        query: GET_TAGS_QUERY,
-        variables: { first: 100 },
-        tags: ["wp:tags"],
         revalidate: DISCOVERY_REVALIDATE_SECONDS,
       }),
       wpFetch<WpAuthorsQuery>({
@@ -100,8 +84,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ]);
 
   const postsResponse = postsResult.status === "fulfilled" ? postsResult.value : null;
-  const categoriesResponse = categoriesResult.status === "fulfilled" ? categoriesResult.value : null;
-  const tagsResponse = tagsResult.status === "fulfilled" ? tagsResult.value : null;
   const authorsResponse = authorsResult.status === "fulfilled" ? authorsResult.value : null;
   const pagesResponse = pagesResult.status === "fulfilled" ? pagesResult.value : null;
 
@@ -114,32 +96,26 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.8,
     }));
 
-  const categoryRoutes: MetadataRoute.Sitemap = (categoriesResponse?.categories?.nodes ?? [])
-    .filter((category) => Boolean(category.slug))
-    .map((category) => ({
-      url: buildSiteUrl(`/blog/categoria/${category.slug}`),
-      lastModified: now,
-      changeFrequency: "weekly",
-      priority: 0.7,
-    }));
-
-  const tagRoutes: MetadataRoute.Sitemap = (tagsResponse?.tags?.nodes ?? [])
-    .filter((tag) => Boolean(tag.slug))
-    .map((tag) => ({
-      url: buildSiteUrl(`/blog/tag/${tag.slug}`),
-      lastModified: now,
-      changeFrequency: "weekly",
-      priority: 0.6,
-    }));
-
   const authorRoutes: MetadataRoute.Sitemap = (authorsResponse?.users?.nodes ?? [])
-    .filter((author) => Boolean(author.slug))
+    .filter((author) => Boolean(author.slug) && author.slug === PRIMARY_AUTHOR_SLUG)
     .map((author) => ({
       url: buildSiteUrl(`/blog/autor/${author.slug}`),
       lastModified: now,
       changeFrequency: "monthly",
-      priority: 0.6,
+      priority: 0.75,
     }));
+
+  const fallbackAuthorRoute: MetadataRoute.Sitemap =
+    authorRoutes.length > 0
+      ? []
+      : [
+          {
+            url: buildSiteUrl(`/blog/autor/${PRIMARY_AUTHOR_SLUG}`),
+            lastModified: now,
+            changeFrequency: "monthly",
+            priority: 0.75,
+          },
+        ];
 
   const pageRoutes: MetadataRoute.Sitemap = (pagesResponse?.pages?.nodes ?? [])
     .filter((page) => Boolean(page.slug) && page.slug !== "home" && page.slug !== "blog")
@@ -154,8 +130,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...staticRoutes,
     ...pageRoutes,
     ...postRoutes,
-    ...categoryRoutes,
-    ...tagRoutes,
     ...authorRoutes,
+    ...fallbackAuthorRoute,
   ];
 }
