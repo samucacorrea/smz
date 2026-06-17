@@ -137,15 +137,30 @@ export function LeadCaptureProvider({ children }: LeadCaptureProviderProps) {
           }),
         });
 
+        const data = (await response.json().catch(() => null)) as
+          | {
+              ok?: boolean;
+              error?: string;
+              leadId?: string;
+              redirectUrl?: string;
+              response?: unknown;
+            }
+          | null;
+
         if (!response.ok) {
-          throw new Error("Falha ao enviar o lead.");
+          const errorText =
+            data?.error ||
+            (typeof data?.response === "string" ? data.response : "") ||
+            "Falha ao enviar o lead.";
+          window.alert(errorText);
+          throw new Error(errorText);
         }
 
-        const data = (await response.json()) as {
-          ok?: boolean;
-          leadId?: string;
-          redirectUrl?: string;
-        };
+        if (!data?.leadId) {
+          const errorText = "O webhook nao retornou um leadId valido.";
+          window.alert(errorText);
+          throw new Error(errorText);
+        }
 
         sendGTMEvent({
           event: "generate_lead",
@@ -162,7 +177,8 @@ export function LeadCaptureProvider({ children }: LeadCaptureProviderProps) {
           utm_id: attribution.utm_id,
           gclid: attribution.gclid,
           fbclid: attribution.fbclid,
-          lead_id: data.leadId ?? "notset",
+          leadId: data.leadId,
+          lead_id: data.leadId,
         });
 
         setStatus("success");
