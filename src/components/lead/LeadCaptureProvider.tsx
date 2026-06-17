@@ -181,6 +181,14 @@ export function LeadCaptureProvider({ children }: LeadCaptureProviderProps) {
           lead_id: data.leadId,
         });
 
+        if (typeof window !== "undefined") {
+          window.dataLayer = window.dataLayer || [];
+          window.dataLayer.push({
+            event: "generate_lead",
+            leadId: data.leadId,
+          });
+  }
+
         setStatus("success");
 
         if (data.redirectUrl) {
