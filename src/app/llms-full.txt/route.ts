@@ -1,9 +1,7 @@
 import {
   GET_AUTHORS_QUERY,
-  GET_CATEGORIES_QUERY,
   GET_PAGES_QUERY,
   GET_POSTS_QUERY,
-  GET_TAGS_QUERY,
 } from "@/graphql/queries";
 import { getAllServices } from "@/lib/services";
 import { buildSiteUrl, getBlogSeo, getHomeSeo } from "@/lib/site";
@@ -11,28 +9,24 @@ import { isWordPressConfigured } from "@/lib/wp-mode";
 import { wpFetch } from "@/lib/wp-client";
 import type {
   WpAuthorsQuery,
-  WpCategoriesQuery,
   WpPagesQuery,
   WpPostsQuery,
-  WpTagsQuery,
 } from "@/types/wp";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 10;
 
 const DISCOVERY_REVALIDATE_SECONDS = 10;
+const PRIMARY_AUTHOR_SLUG = "samuel-correa";
 
 export async function GET() {
   const services = getAllServices();
   let pageLines: string[] = [];
   let authorLines: string[] = [];
-  let categoryLines: string[] = [];
-  let tagLines: string[] = [];
   let postLines: string[] = [];
 
   if (isWordPressConfigured()) {
-    const [pagesResult, authorsResult, categoriesResult, tagsResult, postsResult] =
-      await Promise.allSettled([
+    const [pagesResult, authorsResult, postsResult] = await Promise.allSettled([
         wpFetch<WpPagesQuery>({
           query: GET_PAGES_QUERY,
           variables: { first: 100 },
@@ -45,18 +39,6 @@ export async function GET() {
           tags: ["wp:authors"],
           revalidate: DISCOVERY_REVALIDATE_SECONDS,
         }),
-        wpFetch<WpCategoriesQuery>({
-          query: GET_CATEGORIES_QUERY,
-          variables: { first: 100 },
-          tags: ["wp:categories"],
-          revalidate: DISCOVERY_REVALIDATE_SECONDS,
-        }),
-        wpFetch<WpTagsQuery>({
-          query: GET_TAGS_QUERY,
-          variables: { first: 100 },
-          tags: ["wp:tags"],
-          revalidate: DISCOVERY_REVALIDATE_SECONDS,
-        }),
         wpFetch<WpPostsQuery>({
           query: GET_POSTS_QUERY,
           variables: { first: 100 },
@@ -67,9 +49,6 @@ export async function GET() {
 
     const pagesResponse = pagesResult.status === "fulfilled" ? pagesResult.value : null;
     const authorsResponse = authorsResult.status === "fulfilled" ? authorsResult.value : null;
-    const categoriesResponse =
-      categoriesResult.status === "fulfilled" ? categoriesResult.value : null;
-    const tagsResponse = tagsResult.status === "fulfilled" ? tagsResult.value : null;
     const postsResponse = postsResult.status === "fulfilled" ? postsResult.value : null;
 
     pageLines = (pagesResponse?.pages?.nodes ?? [])
@@ -77,25 +56,17 @@ export async function GET() {
       .map((page) => `- ${page.title ?? page.slug} | ${buildSiteUrl(`/${page.slug}`)}`);
 
     authorLines = (authorsResponse?.users?.nodes ?? [])
-      .filter((author) => author.slug && author.name)
+      .filter((author) => author.slug === PRIMARY_AUTHOR_SLUG && author.name)
       .map(
         (author) =>
           `- ${author.name} | Equipe editorial | ${buildSiteUrl(`/blog/autor/${author.slug}`)}`,
       );
 
-    categoryLines = (categoriesResponse?.categories?.nodes ?? [])
-      .filter((category) => category.slug && category.name)
-      .map(
-        (category) =>
-          `- ${category.name} | ${category.description ?? ""} | ${buildSiteUrl(`/blog/categoria/${category.slug}`)}`,
-      );
-
-    tagLines = (tagsResponse?.tags?.nodes ?? [])
-      .filter((tag) => tag.slug && tag.name)
-      .map(
-        (tag) =>
-          `- ${tag.name} | ${tag.description ?? ""} | ${buildSiteUrl(`/blog/tag/${tag.slug}`)}`,
-      );
+    if (authorLines.length === 0) {
+      authorLines = [
+        `- Samuel Correa | Equipe editorial | ${buildSiteUrl(`/blog/autor/${PRIMARY_AUTHOR_SLUG}`)}`,
+      ];
+    }
 
     postLines = (postsResponse?.posts?.nodes ?? [])
       .filter((post) => post.slug && post.title && post.date)
@@ -125,12 +96,6 @@ export async function GET() {
     "",
     "Authors:",
     ...authorLines,
-    "",
-    "Categories:",
-    ...categoryLines,
-    "",
-    "Tags:",
-    ...tagLines,
     "",
     "Posts:",
     ...postLines,

@@ -1,6 +1,5 @@
 import {
   GET_AUTHORS_QUERY,
-  GET_CATEGORIES_QUERY,
   GET_PAGES_QUERY,
   GET_POSTS_QUERY,
 } from "@/graphql/queries";
@@ -8,28 +7,22 @@ import { getAllServices } from "@/lib/services";
 import { buildSiteUrl, getBlogSeo, getHomeSeo } from "@/lib/site";
 import { isWordPressConfigured } from "@/lib/wp-mode";
 import { wpFetch } from "@/lib/wp-client";
-import type { WpAuthorsQuery, WpCategoriesQuery, WpPagesQuery, WpPostsQuery } from "@/types/wp";
+import type { WpAuthorsQuery, WpPagesQuery, WpPostsQuery } from "@/types/wp";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 10;
 
 const DISCOVERY_REVALIDATE_SECONDS = 10;
+const PRIMARY_AUTHOR_SLUG = "samuel-correa";
 
 export async function GET() {
   const services = getAllServices();
-  let categoryLines: string[] = [];
   let authorLines: string[] = [];
   let pageLines: string[] = [];
   let postLines: string[] = [];
 
   if (isWordPressConfigured()) {
-    const [categoriesResult, authorsResult, pagesResult, postsResult] = await Promise.allSettled([
-      wpFetch<WpCategoriesQuery>({
-        query: GET_CATEGORIES_QUERY,
-        variables: { first: 20 },
-        tags: ["wp:categories"],
-        revalidate: DISCOVERY_REVALIDATE_SECONDS,
-      }),
+    const [authorsResult, pagesResult, postsResult] = await Promise.allSettled([
       wpFetch<WpAuthorsQuery>({
         query: GET_AUTHORS_QUERY,
         variables: { first: 20 },
@@ -50,19 +43,17 @@ export async function GET() {
       }),
     ]);
 
-    const categoriesResponse =
-      categoriesResult.status === "fulfilled" ? categoriesResult.value : null;
     const authorsResponse = authorsResult.status === "fulfilled" ? authorsResult.value : null;
     const pagesResponse = pagesResult.status === "fulfilled" ? pagesResult.value : null;
     const postsResponse = postsResult.status === "fulfilled" ? postsResult.value : null;
 
-    categoryLines = (categoriesResponse?.categories?.nodes ?? [])
-      .filter((category) => category.slug)
-      .map((category) => `- Category: ${buildSiteUrl(`/blog/categoria/${category.slug}`)}`);
-
     authorLines = (authorsResponse?.users?.nodes ?? [])
-      .filter((author) => author.slug)
+      .filter((author) => author.slug === PRIMARY_AUTHOR_SLUG)
       .map((author) => `- Author: ${buildSiteUrl(`/blog/autor/${author.slug}`)}`);
+
+    if (authorLines.length === 0) {
+      authorLines = [`- Author: ${buildSiteUrl(`/blog/autor/${PRIMARY_AUTHOR_SLUG}`)}`];
+    }
 
     pageLines = (pagesResponse?.pages?.nodes ?? [])
       .filter((page) => page.slug && page.slug !== "home" && page.slug !== "blog")
@@ -89,7 +80,6 @@ export async function GET() {
     ...services.map((service) => `- Service: ${buildSiteUrl(`/servicos/${service.slug}`)}`),
     ...pageLines,
     ...postLines,
-    ...categoryLines,
     ...authorLines,
     "",
     "Primary topics:",

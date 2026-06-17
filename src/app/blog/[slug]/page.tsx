@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { PostMedia } from "@/components/blog/PostMedia";
 import { MainLayout } from "@/components/layout/MainLayout";
-import { LeadCtaButton } from "@/components/lead/LeadCtaButton";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { ArticleBody } from "@/components/single/ArticleBody";
 import { ArticleHeader } from "@/components/single/ArticleHeader";
@@ -197,23 +196,6 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                     roleLabel={post.author.profileLabel}
                   />
                 </ArticleBody>
-
-                <aside className="col-right" aria-label="Lateral">
-                  <div className="rail-card">
-                    <p className="rail-label">Diagnóstico SMZ</p>
-                    <h4>Vale a pena começar com IA no seu marketing agora?</h4>
-                    <p>
-                      Uma conversa curta para identificar pontos de aceleração sem forçar
-                      ferramenta onde ela não cabe.
-                    </p>
-                    <LeadCtaButton className="btn btn-primary btn-sm" source="single_sidebar_contact">
-                      Agendar conversa
-                      <svg className="arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M5 12h14M13 5l7 7-7 7" />
-                      </svg>
-                    </LeadCtaButton>
-                  </div>
-                </aside>
               </div>
             </div>
           </section>

@@ -19,7 +19,7 @@ const agencyLinks = [
 ];
 
 const contactLinks = [
-  { href: "https://instagram.com/smz.agency", label: "@smz.agency", type: "external" as const },
+  { href: "https://instagram.com/ag.smz", label: "@ag.smz", type: "external" as const },
   { label: "WhatsApp", type: "lead" as const },
   { href: "mailto:contato@smz.agency", label: "contato@smz.agency", type: "external" as const },
 ];
@@ -31,15 +31,7 @@ export function SiteFooter() {
         <div className="footer-grid">
           <div className="footer-brand">
             <Image
-              className="logo-dark"
-              src="/assets/logos/logo-light.png"
-              alt="SMZ"
-              width={152}
-              height={44}
-              sizes="152px"
-            />
-            <Image
-              className="logo-light"
+              className="footer-logo"
               src="/assets/logos/logo-light.png"
               alt="SMZ"
               width={152}
