@@ -185,7 +185,7 @@ export function LeadCaptureProvider({ children }: LeadCaptureProviderProps) {
 
         if (data.redirectUrl) {
           window.setTimeout(() => {
-            window.location.assign(data.redirectUrl as string);
+            window.open(data.redirectUrl as string, "_blank");
           }, 600);
         }
       } catch (error) {
