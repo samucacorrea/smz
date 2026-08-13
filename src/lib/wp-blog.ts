@@ -30,6 +30,8 @@ export type BlogArchiveData = {
   categoryCount: number;
 };
 
+const POSTS_BATCH_SIZE = 100;
+
 function estimateReadingTime(content?: string | null) {
   const plainText = stripHtml(content ?? "");
   const wordCount = plainText ? plainText.split(/\s+/).length : 0;
@@ -93,6 +95,40 @@ function mapWpPostToArchivePost(post: WpPost): BlogArchivePost | null {
   };
 }
 
+async function getAllBlogPosts() {
+  const posts: WpPost[] = [];
+  let after: string | undefined;
+
+  do {
+    const response = await wpFetch<WpPostsQuery>({
+      query: GET_POSTS_QUERY,
+      variables: {
+        first: POSTS_BATCH_SIZE,
+        ...(after ? { after } : {}),
+      },
+      tags: ["wp:posts"],
+      revalidate: 30,
+    });
+    const connection = response.posts;
+
+    posts.push(...(connection?.nodes ?? []));
+
+    if (!connection?.pageInfo?.hasNextPage) {
+      break;
+    }
+
+    const nextCursor = connection.pageInfo.endCursor ?? undefined;
+
+    if (!nextCursor || nextCursor === after) {
+      throw new Error("WordPress returned an invalid cursor while loading blog posts.");
+    }
+
+    after = nextCursor;
+  } while (after);
+
+  return posts;
+}
+
 export async function getBlogArchiveData(): Promise<BlogArchiveData> {
   if (!isWordPressConfigured()) {
     throw getWordPressConfigurationError("blog archive");
@@ -100,14 +136,7 @@ export async function getBlogArchiveData(): Promise<BlogArchiveData> {
 
   try {
     const [postsResponse, categoriesResponse] = await Promise.all([
-      wpFetch<WpPostsQuery>({
-        query: GET_POSTS_QUERY,
-        variables: {
-          first: 12,
-        },
-        tags: ["wp:posts"],
-        revalidate: 30,
-      }),
+      getAllBlogPosts(),
       wpFetch<WpCategoriesQuery>({
         query: GET_CATEGORIES_QUERY,
         variables: {
@@ -118,7 +147,7 @@ export async function getBlogArchiveData(): Promise<BlogArchiveData> {
       }),
     ]);
 
-    const posts = (postsResponse.posts?.nodes ?? [])
+    const posts = postsResponse
       .map(mapWpPostToArchivePost)
       .filter((post): post is BlogArchivePost => Boolean(post));
 

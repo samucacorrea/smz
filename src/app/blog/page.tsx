@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import { Breadcrumbs } from "@/components/blog/Breadcrumbs";
 import { FeaturedSlider } from "@/components/blog/FeaturedSlider";
 import { NewsletterCta } from "@/components/blog/NewsletterCta";
@@ -25,10 +26,50 @@ export function generateMetadata(): Metadata {
   return buildPageMetadata(getBlogSeo());
 }
 
-export default async function BlogPage() {
+const POSTS_PER_PAGE = 12;
+
+type BlogPageProps = {
+  searchParams?: Promise<{
+    page?: string | string[];
+  }>;
+};
+
+function getPageNumber(value?: string | string[]) {
+  const rawValue = Array.isArray(value) ? value[0] : value;
+  const page = Number(rawValue ?? "1");
+
+  return Number.isInteger(page) && page > 0 ? page : 1;
+}
+
+function getPageHref(page: number) {
+  return page === 1 ? "/blog" : `/blog?page=${page}`;
+}
+
+export default async function BlogPage({ searchParams }: BlogPageProps) {
+  const resolvedSearchParams = await searchParams;
+  const currentPage = getPageNumber(resolvedSearchParams?.page);
   const archive = await getBlogArchiveData();
-  const featuredPosts = archive.posts.slice(0, 3);
-  const latestPosts = archive.posts.slice(3, 12);
+  const totalPosts = archive.posts.length;
+  const totalPages = Math.max(1, Math.ceil(totalPosts / POSTS_PER_PAGE));
+
+  if (currentPage > totalPages) {
+    notFound();
+  }
+
+  const pageStart = (currentPage - 1) * POSTS_PER_PAGE;
+  const pageEnd = Math.min(pageStart + POSTS_PER_PAGE, totalPosts);
+  const pagePosts = archive.posts.slice(pageStart, pageEnd);
+  const featuredPosts = currentPage === 1 ? pagePosts.slice(0, 3) : [];
+  const latestPosts = currentPage === 1 ? pagePosts.slice(3) : pagePosts;
+  const paginationPages = Array.from({ length: totalPages }, (_, index) => {
+    const page = index + 1;
+
+    return {
+      label: String(page),
+      href: getPageHref(page),
+      isCurrent: page === currentPage,
+    };
+  });
 
   const sliderItems = featuredPosts.map((post) => {
     return {
@@ -90,7 +131,7 @@ export default async function BlogPage() {
           data={buildItemListSchema({
             id: `${getBlogSeo().canonical}#post-list`,
             name: "Posts do blog SMZ",
-            items: archive.posts.map((post) => ({
+            items: pagePosts.map((post) => ({
               name: post.title,
               url: buildSiteUrl(`/blog/${post.slug}`),
             })),
@@ -117,7 +158,7 @@ export default async function BlogPage() {
                 </p>
                 <div className="meta-strip">
                   <span>
-                    <strong>{archive.posts.length}</strong> artigos publicados
+                    <strong>{totalPosts}</strong> artigos publicados
                   </span>
                   <span>
                     <strong>{archive.categoryCount}</strong> categorias
@@ -129,7 +170,7 @@ export default async function BlogPage() {
               </div>
             </div>
 
-            <FeaturedSlider items={sliderItems} />
+            {currentPage === 1 ? <FeaturedSlider items={sliderItems} /> : null}
           </div>
         </section>
 
@@ -164,8 +205,10 @@ export default async function BlogPage() {
             </PostGrid>
 
             <Pagination
-              summary={`Mostrando 1–${archive.posts.length} de ${archive.posts.length} artigos`}
-              pages={[{ label: "1", href: "/blog", isCurrent: true }]}
+              summary={`Mostrando ${pageStart + 1}–${pageEnd} de ${totalPosts} artigos`}
+              previousHref={currentPage > 1 ? getPageHref(currentPage - 1) : undefined}
+              nextHref={currentPage < totalPages ? getPageHref(currentPage + 1) : undefined}
+              pages={paginationPages}
             />
           </div>
         </section>
